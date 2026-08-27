@@ -4,8 +4,8 @@ require_once __DIR__ . '/../includes/db.php';
 $sql  = "SELECT
     FORMAT(t.Trans_date,'MMM-yyyy') AS Month,
     s.SIZE_DESC AS Size,
-    COUNT(t.Trans_no) AS TxnCount,
-    SUM(t.Trans_amount) AS TotalSales
+    COUNT(DISTINCT t.Trans_no) AS TxnCount,
+    SUM(d.amount) AS TotalSales
 FROM [Transaction] t
 JOIN trans_detail d ON d.Trans_no = t.Trans_no
 JOIN Item_Stock s   ON s.STOCK_NUMBER = d.stock_number

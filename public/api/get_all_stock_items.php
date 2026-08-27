@@ -7,12 +7,12 @@ $term = '%' . $q . '%';
 
 $sql  = "SELECT TOP 500
              STOCK_NUMBER, BRAND_NAME, ITEM_NAME, ITEM_TYPE,
-             VOLUME_ML, PRICE, QTY_INHAND, UNITS_PERITEM,
+             VOLUME_L, PRICE, PURCHASE_PRICE, QTY_INHAND, UNITS_PERITEM,
              UNIT_TYPE, PERCENTAGE_DISC, SIZE_DESC, LOCATION
          FROM Item_Stock
          WHERE AVAILABLE_STATUS = 'Active'
            AND (
-               STOCK_NUMBER LIKE ?
+               CONVERT(VARCHAR(20), STOCK_NUMBER) LIKE ?
             OR BRAND_NAME   LIKE ?
             OR ITEM_NAME    LIKE ?
            )

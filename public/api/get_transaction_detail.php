@@ -7,6 +7,7 @@ if (!$id) { echo json_encode(['error' => 'No ID']); exit; }
 
 $sqlH = "SELECT
              t.Trans_no,
+             t.Invoice_reference,
              t.Cust_name,
              t.Cust_telno,
              CONVERT(VARCHAR(20), t.Trans_date, 103) AS Trans_date,
@@ -18,8 +19,16 @@ $sqlH = "SELECT
              t.Balance_amount,
              t.User_id,
              t.Branch_code,
-             t.Tax_status
+             t.Tax_status,
+             t.Sale_Person_id,
+             e.Full_Name AS Sale_Person_Name,
+             t.Description,
+             t.Remarks,
+             t.Is_Cancelled,
+             t.Cancelled_By,
+             t.Cancel_Reason
          FROM [Transaction] t
+         LEFT JOIN Employee e ON e.Emp_no = t.Sale_Person_id
          WHERE t.Trans_no = ?";
 
 $stmtH = sqlsrv_query($conn, $sqlH, [$id]);
@@ -30,7 +39,7 @@ $sqlD = "SELECT
              s.BRAND_NAME,
              s.ITEM_NAME,
              s.ITEM_TYPE,
-             s.VOLUME_ML,
+             s.VOLUME_L,
              s.SIZE_DESC,
              d.quantity,
              d.Price_PerItem,

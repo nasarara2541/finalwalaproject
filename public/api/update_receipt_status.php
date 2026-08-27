@@ -9,4 +9,4 @@ if (!$id) { echo json_encode(['error'=>'No invoice ID']); exit; }
 
 $stmt = sqlsrv_query($conn, "UPDATE ST_STOCKRECEIPT SET STATUS=? WHERE Invoice_no=?", [$status, $id]);
 sqlsrv_close($conn);
-echo json_encode($stmt ? ['success'=>true] : ['error'=>sqlsrv_errors()[0]['message']]);
+echo json_encode($stmt ? ['success'=>true] : ['error'=>sqlsrv_errors()[0]['message'] ?? 'Update failed']);
