@@ -52,6 +52,12 @@ function buildNavMenu(): array {
                 ['label' => 'Purchase Order', 'file' => 'qasim/public/purchase_order.php', 'bucket' => 'inventory'],
             ],
         ],
+        'ai' => [
+            'label' => 'AI',
+            'items' => [
+                ['label' => 'AI Insights', 'file' => 'ai_insights.php', 'bucket' => 'admin_area'],
+            ],
+        ],
         'admin' => [
             'label' => 'Admin',
             'items' => [
