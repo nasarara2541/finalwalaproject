@@ -72,7 +72,15 @@ foreach (buildNavMenu() as $key => $cat) {
     background: #d4d0c8; border: 1px solid; border-color: #ffffff #808080 #808080 #ffffff;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.3); padding: 2px;
 }
-.win-dropdown-item { border: none !important; display: block; text-align: left; white-space: nowrap; }
+.win-dropdown-item {
+    border: none !important; display: block; text-align: left; white-space: nowrap;
+    /* Explicit, not inherited -- the category button above a dropdown often
+       carries color:white !important (.nav-active/.nav-parent-active, for its
+       own navy/purple highlight), and color is an inherited property, so
+       without this every non-active item in the dropdown silently inherited
+       that white text against the dropdown's light grey background. */
+    color: #000;
+}
 .nav-active { background: #0a246a !important; color: white !important; }
 .nav-parent-active { background: #5b3a8a !important; color: white !important; }
 .nav-category:focus, .win-dropdown-item:focus, .nav-user-toggle:focus {
