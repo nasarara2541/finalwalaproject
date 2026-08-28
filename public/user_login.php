@@ -27,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = sqlsrv_query($conn, $sql, [$userId]);
         $row  = $stmt ? sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC) : null;
 
-        if (!$row || $row['Login_status'] !== 'Y' || !password_verify($password, $row['User_password'] ?? '')) {
+        // Plain-text comparison, not password_verify() -- per explicit user
+        // instruction, matching how Zeeshan's Manage Users screen already
+        // stores passwords. Every real User_password value in the database
+        // must be plain text for login to work at all now, not a bcrypt hash.
+        if (!$row || $row['Login_status'] !== 'Y' || $password !== ($row['User_password'] ?? '')) {
             $error = 'Invalid User ID or Password.';
             $focusPassword = true;
         } else {

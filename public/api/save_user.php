@@ -91,10 +91,11 @@ if ($empId) {
 }
 
 if ($isNew) {
-    $hash  = password_hash($password, PASSWORD_DEFAULT);
+    // Plain text, not password_hash() -- per explicit user instruction, to
+    // match user_login.php's plain-text comparison and Zeeshan's screen.
     $stmtU = sqlsrv_query($conn,
         "INSERT INTO Interface_User (User_id, User_name, User_password, Login_status, User_desc, EMP_ID) VALUES (?,?,?,?,?,?)",
-        [$targetUserId, $fullName, $hash, $loginStatus, $userDesc, $empId]
+        [$targetUserId, $fullName, $password, $loginStatus, $userDesc, $empId]
     );
     if (!$stmtU) {
         sqlsrv_rollback($conn);
@@ -114,8 +115,7 @@ if ($isNew) {
     // A blank password field means "keep the current password" — only
     // touch User_password when the admin actually typed a new one.
     if ($password !== '') {
-        $hash = password_hash($password, PASSWORD_DEFAULT);
-        sqlsrv_query($conn, "UPDATE Interface_User SET User_password=? WHERE User_id=?", [$hash, $targetUserId]);
+        sqlsrv_query($conn, "UPDATE Interface_User SET User_password=? WHERE User_id=?", [$password, $targetUserId]);
     }
 }
 
