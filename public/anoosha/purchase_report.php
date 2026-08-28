@@ -88,7 +88,7 @@ include 'includes/navbar.php';
 
 <script>
 function prNotImplemented() {
-    alert('This report is not wired up yet — coming soon.');
+    alert('This report is not wired up yet - coming soon.');
 }
 
 let prSupplierTimer = null;

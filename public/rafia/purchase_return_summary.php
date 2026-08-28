@@ -80,7 +80,7 @@ input[type=month] {
             <span id="return-count" style="font-weight:normal;color:#555;"></span>
         </div>
         <div style="padding:4px 8px;color:#555;background:#fff8dc;border-bottom:1px solid #808080;">
-            Reporting-only — always honestly empty right now. No entry screen exists yet to record a return; this table will populate once one is built.
+            Reporting-only - always honestly empty right now. No entry screen exists yet to record a return; this table will populate once one is built.
         </div>
         <div style="overflow:auto;max-height:300px;">
             <table class="win-table">
@@ -121,7 +121,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -140,17 +140,17 @@ function renderTable(bodyId, footId, countId, rows, noun) {
     }
     body.innerHTML = rows.map(r => `
         <tr>
-            <td>${r.trans_no || '—'}</td>
+            <td>${r.trans_no || '-'}</td>
             <td>${r.invoice_no}</td>
             <td>${esc(r.invoice_date)}</td>
-            <td>${esc(r.alias) || '—'}</td>
-            <td>${esc(r.supplier_name) || '—'}</td>
+            <td>${esc(r.alias) || '-'}</td>
+            <td>${esc(r.supplier_name) || '-'}</td>
             <td style="text-align:right;">${Number(r.bonus).toLocaleString()}</td>
             <td style="text-align:right;">${Number(r.qty).toLocaleString()}</td>
             <td style="text-align:right;">${esc(r.total_amount)}</td>
-            <td>${esc(r.created_by) || '—'}</td>
-            <td>${esc(r.posted_by) || '—'}</td>
-            <td>${esc(r.posted_on) || '—'}</td>
+            <td>${esc(r.created_by) || '-'}</td>
+            <td>${esc(r.posted_by) || '-'}</td>
+            <td>${esc(r.posted_on) || '-'}</td>
         </tr>`).join('');
     let qtySum = 0, amtSum = 0;
     rows.forEach(r => { qtySum += Number(r.qty); amtSum += Number(String(r.total_amount).replace(/,/g,'')); });

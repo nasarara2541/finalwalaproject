@@ -31,7 +31,7 @@ $baseSelect = "SELECT TOP 200
          FROM [Transaction]";
 
 if ($q === '') {
-    // No search — just the most recent transactions.
+    // No search - just the most recent transactions.
     $stmt = sqlsrv_query($conn, $baseSelect . " ORDER BY Trans_no DESC");
 } else {
     $term = '%' . $q . '%';

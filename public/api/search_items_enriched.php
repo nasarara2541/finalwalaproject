@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/db.php';
 
 // Same matching behaviour as api/search_items.php (name/barcode, Active +
 // in-stock only), but joined out to Manufacture/ST_Supplier and including
-// LOCATION/UNITS_PERITEM/SAFETY_LEVEL — the extra columns sale_items.php's
+// LOCATION/UNITS_PERITEM/SAFETY_LEVEL - the extra columns sale_items.php's
 // reference layout shows that the plain Available Products grid on pos.php
 // never needed. Deliberately a separate endpoint (not a shared query with
 // search_items.php) so nothing here can ever affect pos.php's Sale tab.

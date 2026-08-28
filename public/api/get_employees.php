@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 
-// Backs the Sale Person picker on sale_items.php — deliberately not
+// Backs the Sale Person picker on sale_items.php - deliberately not
 // admin-gated like get_users.php (which exposes login/role data), this only
 // returns the employee list itself.
 $sql  = "SELECT Emp_no, Full_Name FROM Employee ORDER BY Full_Name";

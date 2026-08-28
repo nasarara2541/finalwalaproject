@@ -53,7 +53,7 @@
     let lastMode = null, lastStart = null, lastEnd = null;
 
     function fmt(val, isNumeric, key) {
-        if (val === null || val === undefined || val === '') return '&mdash;';
+        if (val === null || val === undefined || val === '') return '-';
         if (!isNumeric) return String(val).replace(/</g, '&lt;');
         const n = parseFloat(val);
         if (key === 'TotalQty' || key === 'Trans_no') return Number(n).toLocaleString();

@@ -103,22 +103,22 @@ body { background: #d4d0c8; overflow: hidden; }
         <div class="kpi-row">
             <div class="kpi-card kpi-red">
                 <span class="kpi-label">Needs Reorder Soon</span>
-                <span class="kpi-value" id="kpi-reorder-count">—</span>
+                <span class="kpi-value" id="kpi-reorder-count">-</span>
                 <span class="kpi-sub">products below next month's forecast</span>
             </div>
             <div class="kpi-card kpi-blue">
                 <span class="kpi-label">Forecasted Demand</span>
-                <span class="kpi-value" id="kpi-forecast">—</span>
+                <span class="kpi-value" id="kpi-forecast">-</span>
                 <span class="kpi-sub">total packs, next month, all products</span>
             </div>
             <div class="kpi-card kpi-green">
                 <span class="kpi-label">Fastest Growing</span>
-                <span class="kpi-value" id="kpi-growing" style="font-size:14px;">—</span>
+                <span class="kpi-value" id="kpi-growing" style="font-size:14px;">-</span>
                 <span class="kpi-sub" id="kpi-growing-sub">&nbsp;</span>
             </div>
             <div class="kpi-card kpi-amber">
                 <span class="kpi-label">Slowest / Declining</span>
-                <span class="kpi-value" id="kpi-declining" style="font-size:14px;">—</span>
+                <span class="kpi-value" id="kpi-declining" style="font-size:14px;">-</span>
                 <span class="kpi-sub" id="kpi-declining-sub">&nbsp;</span>
             </div>
         </div>
@@ -126,7 +126,7 @@ body { background: #d4d0c8; overflow: hidden; }
         <div class="how-strip">
             <i class="fa-solid fa-circle-info"></i>
             How this works: for each product, next month's forecast is a weighted average of real sales over the last 3 months
-            (most recent month weighted heaviest) &mdash; compared against what's actually on the shelf right now. No outside AI
+            (most recent month weighted heaviest) - compared against what's actually on the shelf right now. No outside AI
             service and nothing invented; every number here is computed straight from your own sales and stock records.
         </div>
 
@@ -172,7 +172,7 @@ function setStatus(msg) { document.getElementById('status-msg').textContent = ms
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -208,9 +208,9 @@ function loadInsights() {
         const s = res.summary;
         document.getElementById('kpi-reorder-count').textContent = s ? fmt(s.reorder_count) : '0';
         document.getElementById('kpi-forecast').textContent = s ? fmt(s.total_forecast) + ' pk' : '0 pk';
-        document.getElementById('kpi-growing').textContent = s && s.growing_label ? s.growing_label : '—';
+        document.getElementById('kpi-growing').textContent = s && s.growing_label ? s.growing_label : '-';
         document.getElementById('kpi-growing-sub').innerHTML = s && s.growing_label ? trendPctHtml(s.growing_pct) + ' vs 3 months ago' : 'Nothing trending up right now';
-        document.getElementById('kpi-declining').textContent = s && s.declining_label ? s.declining_label : '—';
+        document.getElementById('kpi-declining').textContent = s && s.declining_label ? s.declining_label : '-';
         document.getElementById('kpi-declining-sub').innerHTML = s && s.declining_label ? trendPctHtml(s.declining_pct) + ' vs 3 months ago' : 'Nothing trending down right now';
 
         const tbody = document.getElementById('insights-body');
@@ -230,13 +230,13 @@ function loadInsights() {
                 <td style="text-align:right;font-weight:bold;">${fmt(p.forecast)}</td>
                 <td style="text-align:right;">${fmt(p.on_hand)}</td>
                 <td><span class="status-badge status-${p.status}">${STATUS_LABEL[p.status]}</span></td>
-                <td style="text-align:right;font-weight:bold;color:${p.suggested_reorder > 0 ? '#8b0000' : '#888'};">${p.suggested_reorder > 0 ? fmt(p.suggested_reorder) : '—'}</td>`;
+                <td style="text-align:right;font-weight:bold;color:${p.suggested_reorder > 0 ? '#8b0000' : '#888'};">${p.suggested_reorder > 0 ? fmt(p.suggested_reorder) : '-'}</td>`;
             tbody.appendChild(tr);
         });
         setStatus('Ready');
     }).catch(() => {
         document.getElementById('insights-body').innerHTML =
-            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         setStatus('Ready');
     });
 }

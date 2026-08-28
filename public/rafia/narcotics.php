@@ -70,7 +70,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:110px; flex-shrink:0; te
     <div class="win-panel" style="padding:8px;">
         <div class="win-section-label" style="margin:-8px -8px 8px -8px;">
             <span>Log a Dispensing Entry</span>
-            <span style="font-weight:normal;color:#555;">Every field except Created By/On is optional — fill in whatever's available at the counter</span>
+            <span style="font-weight:normal;color:#555;">Every field except Created By/On is optional - fill in whatever's available at the counter</span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:6px;">
             <div class="field-cell" style="min-width:140px;"><label class="lbl">Ref #</label><input id="f-ref" type="text"></div>
@@ -94,7 +94,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:110px; flex-shrink:0; te
     <!-- Register list -->
     <div class="win-panel" style="flex:1;min-height:200px;display:flex;flex-direction:column;">
         <div class="win-section-label">
-            <span>Register Entries — newest first</span>
+            <span>Register Entries - newest first</span>
             <div style="display:flex;align-items:center;gap:6px;">
                 <label style="font-weight:normal;">Month</label>
                 <input id="f-month" type="month" onchange="loadEntries()">
@@ -144,7 +144,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -170,7 +170,7 @@ function loadEntries() {
         })
         .catch(() => {
             document.getElementById('results-body').innerHTML =
-                '<tr><td colspan="10" style="text-align:center;color:darkred;padding:10px;">Could not load register — check DB connection</td></tr>';
+                '<tr><td colspan="10" style="text-align:center;color:darkred;padding:10px;">Could not load register - check DB connection</td></tr>';
         });
 }
 
@@ -183,15 +183,15 @@ function renderRows(rows) {
     }
     tbody.innerHTML = rows.map(r => `
         <tr>
-            <td>${esc(r.ref_no) || '—'}</td>
-            <td>${esc(r.description) || '—'}</td>
-            <td>${esc(r.doctor_name) || '—'}</td>
-            <td>${esc(r.doctor_contact) || '—'}</td>
-            <td>${esc(r.patient_name) || '—'}</td>
-            <td>${esc(r.patient_age) || '—'}</td>
-            <td>${esc(r.patient_contact) || '—'}</td>
-            <td>${esc(r.remarks) || '—'}</td>
-            <td>${esc(r.created_by) || '—'}</td>
+            <td>${esc(r.ref_no) || '-'}</td>
+            <td>${esc(r.description) || '-'}</td>
+            <td>${esc(r.doctor_name) || '-'}</td>
+            <td>${esc(r.doctor_contact) || '-'}</td>
+            <td>${esc(r.patient_name) || '-'}</td>
+            <td>${esc(r.patient_age) || '-'}</td>
+            <td>${esc(r.patient_contact) || '-'}</td>
+            <td>${esc(r.remarks) || '-'}</td>
+            <td>${esc(r.created_by) || '-'}</td>
             <td>${esc(r.created_on)}</td>
         </tr>`).join('');
 }

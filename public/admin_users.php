@@ -208,13 +208,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -236,7 +236,7 @@ function loadUsers() {
         .catch(() => {
             toast('Network error loading users', 'err');
             document.getElementById('users-grid-body').innerHTML =
-                '<tr><td colspan="7" style="text-align:center;color:darkred;padding:8px;">Could not load users — check DB connection</td></tr>';
+                '<tr><td colspan="7" style="text-align:center;color:darkred;padding:8px;">Could not load users - check DB connection</td></tr>';
         });
 }
 
@@ -352,7 +352,7 @@ function saveUser() {
         .then(r => r.json())
         .then(res => {
             if (res.success) {
-                toast(res.mode === 'inserted' ? 'User added — ' + res.user_id : 'User updated', 'ok');
+                toast(res.mode === 'inserted' ? 'User added - ' + res.user_id : 'User updated', 'ok');
                 selectedUserId = res.user_id;
                 document.getElementById('user-id-field').readOnly = true;
                 document.getElementById('form-mode').textContent = 'Editing: ' + res.user_id;

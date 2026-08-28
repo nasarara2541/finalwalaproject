@@ -14,12 +14,12 @@ if (empty($SKIP_LOGIN_CHECK) && empty($_SESSION['emp_user_id'])) {
 }
 
 // Relative to this file (public/includes/db.php), not a hardcoded absolute
-// path — otherwise this breaks the moment the app is copied to a PC where
+// path - otherwise this breaks the moment the app is copied to a PC where
 // XAMPP isn't installed at this exact same drive/folder.
 $env = parse_ini_file(__DIR__ . '/../../.env');
 if ($env === false) {
     http_response_code(500);
-    echo json_encode(['error' => '.env file not found — expected one level above the public/ folder']);
+    echo json_encode(['error' => '.env file not found - expected one level above the public/ folder']);
     exit;
 }
 
@@ -40,6 +40,6 @@ $conn = sqlsrv_connect($env['DB_SERVER'], [
 ]);
 if ($conn === false) {
     http_response_code(500);
-    echo json_encode(['error' => sqlsrv_errors()[0]['message'] ?? 'Database connection failed — check DB_SERVER in .env and that SQL Server accepts remote connections']);
+    echo json_encode(['error' => sqlsrv_errors()[0]['message'] ?? 'Database connection failed - check DB_SERVER in .env and that SQL Server accepts remote connections']);
     exit;
 }

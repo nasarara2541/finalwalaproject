@@ -90,7 +90,7 @@ foreach (buildNavMenu() as $key => $cat) {
 </style>
 
 <div class="win-titlebar">
-    <span><i class="fa-solid fa-<?php echo htmlspecialchars($SCREEN_ICON, ENT_QUOTES); ?>"></i> AISellProduct &mdash; <span id="nav-screen-name"><?php echo htmlspecialchars($SCREEN_NAME); ?></span></span>
+    <span><i class="fa-solid fa-<?php echo htmlspecialchars($SCREEN_ICON, ENT_QUOTES); ?>"></i> AISellProduct - <span id="nav-screen-name"><?php echo htmlspecialchars($SCREEN_NAME); ?></span></span>
     <div style="display:flex;align-items:center;gap:12px;">
         <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
         <div class="nav-usermenu">
@@ -98,7 +98,7 @@ foreach (buildNavMenu() as $key => $cat) {
                   style="color:white;background:transparent;border-color:transparent;"
                   onclick="navToggleUserMenu(event)" onkeydown="navUserMenuKeydown(event)">
                 <i class="fa-solid fa-user"></i>
-                <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b>
+                <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '-'); ?></b>
                 <i class="fa-solid fa-caret-down"></i>
             </span>
             <div class="win-dropdown-menu" id="nav-user-dropdown" role="menu" style="left:auto;right:0;">

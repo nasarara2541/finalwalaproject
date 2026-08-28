@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 
-// db.php only confirms someone is logged in — creating/editing accounts and
+// db.php only confirms someone is logged in - creating/editing accounts and
 // granting Administrator rights requires the Administrator group specifically.
 if (empty($_SESSION['emp_is_admin'])) {
     http_response_code(403);
@@ -112,7 +112,7 @@ if ($isNew) {
         echo json_encode(['error' => sqlsrv_errors()[0]['message'] ?? 'Could not update user']);
         exit;
     }
-    // A blank password field means "keep the current password" — only
+    // A blank password field means "keep the current password" - only
     // touch User_password when the admin actually typed a new one.
     if ($password !== '') {
         sqlsrv_query($conn, "UPDATE Interface_User SET User_password=? WHERE User_id=?", [$password, $targetUserId]);
@@ -120,7 +120,7 @@ if ($isNew) {
 }
 
 // Replace this user's group membership rather than trying to patch it in
-// place — simplest correct way to let the role change to/from Admin.
+// place - simplest correct way to let the role change to/from Admin.
 sqlsrv_query($conn, "DELETE FROM Interface_GroupUser WHERE User_id = ?", [$targetUserId]);
 $stmtG = sqlsrv_query($conn,
     "INSERT INTO Interface_GroupUser (Group_id, User_id, Local_admin, Authorize_Status) VALUES (?,?,?,'Y')",

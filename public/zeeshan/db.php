@@ -22,7 +22,7 @@ $env = parse_ini_file(__DIR__ . '/../../.env');
 if ($env === false) {
     http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['error' => '.env file not found — expected one level above the public/ folder']);
+    echo json_encode(['error' => '.env file not found - expected one level above the public/ folder']);
     exit;
 }
 $serverName   = $env['DB_SERVER'] ?? '';

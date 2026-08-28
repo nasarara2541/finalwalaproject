@@ -56,7 +56,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
 .field-row { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
 label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; text-align:right; }
 
-/* Report results popup — same visual pattern used everywhere else in this app */
+/* Report results popup - same visual pattern used everywhere else in this app */
 #report-popup-overlay {
     display:none; position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.55); z-index:8000;
@@ -89,14 +89,14 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
     <!-- Top: date/time range + counter -->
     <div class="win-panel" style="padding:8px;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
-            <label style="display:flex;align-items:center;gap:4px;font-weight:bold;" title="Unchecked by default so a fresh search shows all-time-up-to-today instead of only today (which would hide almost everything, since this data is historical) — check this and pick a date to actually narrow it down">
+            <label style="display:flex;align-items:center;gap:4px;font-weight:bold;" title="Unchecked by default so a fresh search shows all-time-up-to-today instead of only today (which would hide almost everything, since this data is historical) - check this and pick a date to actually narrow it down">
                 <input id="chk-from" type="checkbox" style="width:auto;height:auto;"> From
             </label>
             <input id="f-date-from" type="date" style="width:140px;">
             <label style="font-weight:bold;">To</label>
             <input id="f-date-to" type="date" style="width:140px;">
 
-            <label style="display:flex;align-items:center;gap:4px;font-weight:bold;margin-left:20px;" title="Trans_date already stores a full timestamp — GETDATE() has always recorded real time-of-day for every sale made through the live app. Historical bulk-loaded bills just never had time data, so they'll all show 00:00:00.">
+            <label style="display:flex;align-items:center;gap:4px;font-weight:bold;margin-left:20px;" title="Trans_date already stores a full timestamp - GETDATE() has always recorded real time-of-day for every sale made through the live app. Historical bulk-loaded bills just never had time data, so they'll all show 00:00:00.">
                 <input id="chk-time" type="checkbox" style="width:auto;height:auto;"> Time From
             </label>
             <input id="f-time-from" type="time" value="07:00" style="width:110px;">
@@ -104,8 +104,8 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <input id="f-time-to" type="time" value="16:00" style="width:110px;">
         </div>
         <div class="field-row" style="max-width:340px;">
-            <label class="lbl" style="color:#888;" title="Closest real concept is Branch_code (always &quot;HQ&quot; today) — not wired up yet, noted for follow-up">Counter Name</label>
-            <select disabled title="Not wired up yet — noted for follow-up"><option>ALL</option></select>
+            <label class="lbl" style="color:#888;" title="Closest real concept is Branch_code (always &quot;HQ&quot; today) - not wired up yet, noted for follow-up">Counter Name</label>
+            <select disabled title="Not wired up yet - noted for follow-up"><option>ALL</option></select>
         </div>
     </div>
 
@@ -132,7 +132,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="field-row"><label class="lbl">Customer</label><input id="f-customer" type="text" list="customer-datalist" autocomplete="off"></div>
             <div class="field-row"><label class="lbl">Address</label><input id="f-address" type="text"></div>
             <div class="field-row">
-                <label class="lbl" title="Who gets sales credit — distinct from Created By (the cashier's login). Filters by name against the Employee table.">Sale Person</label>
+                <label class="lbl" title="Who gets sales credit - distinct from Created By (the cashier's login). Filters by name against the Employee table.">Sale Person</label>
                 <input id="f-sale-person" type="text" list="employee-datalist">
             </div>
             <div class="field-row"><label class="lbl">Ref #</label><input id="f-ref" type="text"></div>
@@ -140,16 +140,16 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="field-row"><label class="lbl">Remarks</label><input id="f-remarks" type="text"></div>
             <div class="field-row"><label class="lbl">Modify By</label><input id="f-modify-by" type="text"></div>
             <div class="field-row">
-                <label class="lbl" title="Matches via each line item's Item_Stock.SUPPLIER_CODE — a bill counts if ANY item on it came from this supplier. No real item has a supplier assigned yet, so this returns nothing until one does.">Supplier</label>
+                <label class="lbl" title="Matches via each line item's Item_Stock.SUPPLIER_CODE - a bill counts if ANY item on it came from this supplier. No real item has a supplier assigned yet, so this returns nothing until one does.">Supplier</label>
                 <input id="f-supplier" type="text" list="supplier-datalist" autocomplete="off">
             </div>
             <div class="field-row">
-                <label class="lbl" style="color:#888;" title="Same situation as Counter Name — needs a predefined list of shift codes/times, which is a business decision for your professor, not something to invent. Not wired up yet, noted for follow-up.">Shift</label>
-                <select disabled title="Not wired up yet — noted for follow-up"><option>T</option></select>
+                <label class="lbl" style="color:#888;" title="Same situation as Counter Name - needs a predefined list of shift codes/times, which is a business decision for your professor, not something to invent. Not wired up yet, noted for follow-up.">Shift</label>
+                <select disabled title="Not wired up yet - noted for follow-up"><option>T</option></select>
             </div>
 
             <div class="win-inset" style="margin-top:auto;">
-                <button class="win-btn report-btn" disabled title="No counter/register concept exists — not wired up yet, noted for follow-up">Counter Wise Cash</button>
+                <button class="win-btn report-btn" disabled title="No counter/register concept exists - not wired up yet, noted for follow-up">Counter Wise Cash</button>
                 <button class="win-btn report-btn" onclick="runReport('total_sale')">Total Sale</button>
                 <button class="win-btn report-btn" onclick="runReport('users_bill_count')">Users Bill(s) Count</button>
                 <button class="win-btn report-btn" onclick="runReport('day_wise_sale')">Day Wise Sale &amp; Return Summary</button>
@@ -166,11 +166,11 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="field-row"><label class="lbl">Manufacture</label><input id="f-manufacture" type="text" list="manufacture-datalist" autocomplete="off"></div>
             <div class="field-row"><label class="lbl">Company</label><input id="f-company" type="text" list="supplier-datalist" autocomplete="off"></div>
             <div class="field-row">
-                <label class="lbl" title="No product-category column exists — this database is entirely one category, shown here rather than offered as a real filter">Group</label>
+                <label class="lbl" title="No product-category column exists - this database is entirely one category, shown here rather than offered as a real filter">Group</label>
                 <input type="text" value="<?php echo htmlspecialchars($groupLabel); ?>" readonly tabindex="-1">
             </div>
             <div class="field-row">
-                <label class="lbl" title="Now written at sale time — FEFO already picks a specific batch per sale, save_transaction.php just records which one into trans_detail.Invoice_No. Only true going forward: every pre-existing historical sale still has no batch link.">Batch #</label>
+                <label class="lbl" title="Now written at sale time - FEFO already picks a specific batch per sale, save_transaction.php just records which one into trans_detail.Invoice_No. Only true going forward: every pre-existing historical sale still has no batch link.">Batch #</label>
                 <input id="f-batch" type="text">
             </div>
             <div class="field-row"><label class="lbl">Customer</label><input id="f-item-customer" type="text" list="customer-datalist" autocomplete="off"></div>
@@ -184,7 +184,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="win-inset" style="margin-top:auto;">
                 <button class="win-btn report-btn" onclick="runReport('item_group_summary')" title="Group is a hardcoded Water/Medicine constant (no real category column), so this always returns exactly one summary row">Item Group Summary</button>
                 <button class="win-btn report-btn" onclick="runReport('all_sold_items')">All Sold Items Detail</button>
-                <button class="win-btn report-btn" onclick="runReport('price_changed')" title="Only populated when an item's price actually changes via Stock Receiving — empty until that happens for an item">Price Changed Item(s)</button>
+                <button class="win-btn report-btn" onclick="runReport('price_changed')" title="Only populated when an item's price actually changes via Stock Receiving - empty until that happens for an item">Price Changed Item(s)</button>
             </div>
         </div>
         <datalist id="employee-datalist"></datalist>
@@ -245,7 +245,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -255,7 +255,7 @@ function setStatus(msg) { document.getElementById('status-msg').textContent = ms
 function runReport(report) {
     if (!document.getElementById('chk-from').checked) {
         // From/To always sent regardless, but this mirrors the reference's
-        // checkbox — unchecking it just means "no date restriction".
+        // checkbox - unchecking it just means "no date restriction".
     }
     const timeOn = document.getElementById('chk-time').checked;
     const itemsSide = (report==='all_sold_items'||report==='item_group_summary'||report==='price_changed');
@@ -292,40 +292,69 @@ function runReport(report) {
         });
 }
 
+// Rendering hundreds/thousands of rows at once is what actually made this
+// popup feel slow -- only the first page renders up front, the rest come in
+// 100 at a time on request, same idea Anoosha used on her own screen.
+const REPORT_PAGE_SIZE = 100;
+let currentReport = null;
+let reportVisibleRows = REPORT_PAGE_SIZE;
+
 function openReportPopup(res) {
+    currentReport = res;
+    reportVisibleRows = REPORT_PAGE_SIZE; // a brand new report always starts back at page 1
     document.getElementById('report-popup-title').textContent = res.title;
     document.getElementById('report-table-head').innerHTML =
         '<tr>' + res.columns.map(c => `<th>${c}</th>`).join('') + '</tr>';
+    renderReportRows();
+    document.getElementById('report-popup-overlay').classList.add('open');
+}
+
+function loadMoreReportRows() {
+    reportVisibleRows += REPORT_PAGE_SIZE;
+    renderReportRows();
+}
+
+function renderReportRows() {
+    const res = currentReport;
     const tbody = document.getElementById('report-table-body');
     tbody.innerHTML = '';
     if (!res.rows.length) {
         tbody.innerHTML = `<tr><td colspan="${res.columns.length}" style="text-align:center;padding:10px;color:#888;">No data for this filter/date range</td></tr>`;
     } else {
         // Rows come back from the API as arrays of already-formatted display
-        // strings (money pre-formatted to 2dp, counts as plain integers) —
+        // strings (money pre-formatted to 2dp, counts as plain integers) -
         // no type-guessing needed here, just print each cell right-aligned
         // if it's numeric-looking.
-        res.rows.forEach(row => {
+        res.rows.slice(0, reportVisibleRows).forEach(row => {
             const tr = document.createElement('tr');
             const cells = row.map(v => {
-                const display = (v === null || v === undefined || v === '') ? '—' : v;
+                const display = (v === null || v === undefined || v === '') ? '-' : v;
                 const isNumeric = typeof display === 'number' || (typeof display === 'string' && /^-?[\d,]+(\.\d+)?$/.test(display));
                 return `<td${isNumeric ? ' style="text-align:right;"' : ''}>${display}</td>`;
             }).join('');
             tr.innerHTML = cells;
             tbody.appendChild(tr);
         });
+        if (res.rows.length > reportVisibleRows) {
+            const remaining = res.rows.length - reportVisibleRows;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="${res.columns.length}" style="text-align:center;padding:8px;background:#ece9d8;">
+                <button class="win-btn win-btn-blue" onclick="loadMoreReportRows()">
+                    <i class="fa-solid fa-angles-down"></i> Load ${Math.min(REPORT_PAGE_SIZE, remaining)} More (${remaining} remaining)
+                </button>
+            </td>`;
+            tbody.appendChild(tr);
+        }
         // All Sold Items Detail is capped server-side at the most recent 2000
         // rows -- hitting that exactly almost certainly means there's more,
         // so say so rather than silently showing a partial result as if it
         // were everything.
-        if (res.rows.length === 2000) {
+        if (res.rows.length === 2000 && res.rows.length <= reportVisibleRows) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="${res.columns.length}" style="text-align:center;padding:8px;color:#b8860b;">Showing the most recent 2000 rows — narrow the date range or add a filter to see older ones</td>`;
+            tr.innerHTML = `<td colspan="${res.columns.length}" style="text-align:center;padding:8px;color:#b8860b;">Showing the most recent 2000 rows - narrow the date range or add a filter to see older ones</td>`;
             tbody.appendChild(tr);
         }
     }
-    document.getElementById('report-popup-overlay').classList.add('open');
 }
 
 function closeReportPopup() { document.getElementById('report-popup-overlay').classList.remove('open'); }

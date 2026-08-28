@@ -175,9 +175,9 @@ if ($report === 'total_sale' || $report === 'users_bill_count' || $report === 'd
         exit;
     }
 
-    // users_bill_count — User_id is also NULL on every real [Transaction]
+    // users_bill_count - User_id is also NULL on every real [Transaction]
     // row today (bulk-loaded historical data never recorded who created each
-    // bill), so this will honestly show a single "—" row with the full
+    // bill), so this will honestly show a single "-" row with the full
     // count until bills start being created by the live app going forward.
     $sql = "SELECT t.User_id, COUNT(*) AS bill_count, ISNULL(SUM(dt.line_total),0) AS total_sale
             FROM [Transaction] t $detailJoin $join";
@@ -186,7 +186,7 @@ if ($report === 'total_sale' || $report === 'users_bill_count' || $report === 'd
     $stmt = runQuery($conn, $sql, $params);
     $rows = [];
     while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $rows[] = [ $r['User_id'] ?? '—', (int)$r['bill_count'], money($r['total_sale']) ];
+        $rows[] = [ $r['User_id'] ?? '-', (int)$r['bill_count'], money($r['total_sale']) ];
     }
     echo json_encode(['title' => "Users Bill(s) Count", 'columns' => ['User','Bills','Total Sale'], 'rows' => $rows]);
     exit;
@@ -210,7 +210,7 @@ if ($report === 'cancelled_bills') {
     $stmt = runQuery($conn, $sql, $params);
     $rows = [];
     while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $rows[] = [ $r['Trans_no'], $r['Trans_date'], $r['Cust_name'] ?? 'Walk-in', money($r['bill_amount']), $r['Cancelled_Date'], $r['Cancelled_By'] ?? '—', $r['Cancel_Reason'] ?: '—' ];
+        $rows[] = [ $r['Trans_no'], $r['Trans_date'], $r['Cust_name'] ?? 'Walk-in', money($r['bill_amount']), $r['Cancelled_Date'], $r['Cancelled_By'] ?? '-', $r['Cancel_Reason'] ?: '-' ];
     }
     echo json_encode(['title' => 'Cancelled Bills', 'columns' => ['Bill#','Sale Date','Customer','Amount','Cancelled On','Cancelled By','Reason'], 'rows' => $rows]);
     exit;
@@ -265,16 +265,16 @@ if ($report === 'all_sold_items' || $report === 'item_group_summary') {
         while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             $rows[] = [
                 $r['Trans_no'], $r['Trans_date'], $r['STOCK_NUMBER'],
-                $r['BRAND_NAME'] ?? '—', $r['ITEM_NAME'] ?? '—',
+                $r['BRAND_NAME'] ?? '-', $r['ITEM_NAME'] ?? '-',
                 (int)$r['quantity'], money($r['Price_PerItem']), money($r['amount']),
-                $r['BATCH_NO'] ?? '—'
+                $r['BATCH_NO'] ?? '-'
             ];
         }
         echo json_encode(['title' => 'All Sold Items Detail', 'columns' => ['Bill#','Date','Stock#','Brand','Item','Qty','Price','Amount','Batch#'], 'rows' => $rows]);
         exit;
     }
 
-    // item_group_summary — "Group" has no real column anywhere in the
+    // item_group_summary - "Group" has no real column anywhere in the
     // schema (confirmed live) and is a constant for the whole active
     // database (Water or Medicine, same convention as stock_search.php), so
     // this always returns exactly one row rather than a real breakdown.
@@ -307,8 +307,8 @@ if ($report === 'price_changed') {
     while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $rows[] = [
             $r['STOCK_NUMBER'], ($r['BRAND_NAME']??'').' '.($r['ITEM_NAME']??''),
-            $r['Old_Price'] !== null ? money($r['Old_Price']) : '—', money($r['New_Price']),
-            $r['Changed_Date'], $r['Source'] ?? '—'
+            $r['Old_Price'] !== null ? money($r['Old_Price']) : '-', money($r['New_Price']),
+            $r['Changed_Date'], $r['Source'] ?? '-'
         ];
     }
     echo json_encode(['title' => 'Price Changed Item(s)', 'columns' => ['Stock#','Item','Old Price','New Price','Changed On','Source'], 'rows' => $rows]);

@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 
-// db.php only confirms someone is logged in — this endpoint exposes every
+// db.php only confirms someone is logged in - this endpoint exposes every
 // employee's contact details and role, so it additionally requires the
 // Administrator group specifically.
 if (empty($_SESSION['emp_is_admin'])) {

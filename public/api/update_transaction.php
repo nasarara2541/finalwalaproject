@@ -47,7 +47,7 @@ $net     = $gross - $discAmt;
 $balance = $paid - $net;
 
 if ($transType !== 'Credit' && $balance < 0) {
-    echo json_encode(['error' => 'Cash/Card sales cannot be saved with a negative balance — collect full payment or set Type to Credit']);
+    echo json_encode(['error' => 'Cash/Card sales cannot be saved with a negative balance - collect full payment or set Type to Credit']);
     exit;
 }
 
@@ -123,7 +123,7 @@ foreach ($items as $item) {
     $totalAvail = intval($availRow['total_avail'] ?? 0);
     if ($totalAvail < $qty) {
         sqlsrv_rollback($conn);
-        echo json_encode(['error' => 'Not enough stock in hand for ' . $stockNo . ' after reversing the original bill — edit cancelled']);
+        echo json_encode(['error' => 'Not enough stock in hand for ' . $stockNo . ' after reversing the original bill - edit cancelled']);
         exit;
     }
 

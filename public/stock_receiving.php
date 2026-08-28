@@ -163,7 +163,7 @@ label.lbl { font-weight:bold; white-space:nowrap; }
 <div id="invoice-list-popup" class="popup-overlay">
     <div class="popup-box" style="width:500px;">
         <div class="popup-titlebar" id="invoice-list-bar">
-            <span>&#x1F4CB; All Invoices — click a row to load</span>
+            <span>&#x1F4CB; All Invoices - click a row to load</span>
             <span class="close-x" onclick="closePopup('invoice-list-popup')">&#x2716;</span>
         </div>
         <div class="popup-body" style="padding:0;">
@@ -252,14 +252,14 @@ label.lbl { font-weight:bold; white-space:nowrap; }
             </div>
             <div class="field-row">
                 <label class="lbl">Received Date</label>
-                <input id="received-date" type="date" style="width:108px;" title="Date goods physically arrived — may differ from today">
+                <input id="received-date" type="date" style="width:108px;" title="Date goods physically arrived - may differ from today">
             </div>
             <div class="field-row">
                 <label class="lbl">Received By</label>
                 <input id="received-by" type="text" style="width:110px;" placeholder="Name">
             </div>
             <div class="field-row">
-                <label class="lbl" style="color:#8b6508;" title="Total printed on the supplier's paper invoice — compared against the computed Aggr. Amt to catch data-entry mistakes">Supplier Inv. Total</label>
+                <label class="lbl" style="color:#8b6508;" title="Total printed on the supplier's paper invoice - compared against the computed Aggr. Amt to catch data-entry mistakes">Supplier Inv. Total</label>
                 <input id="supplier-inv-total" type="number" min="0" step="0.01" style="width:80px;text-align:right;" placeholder="Optional">
             </div>
             <div class="field-row">
@@ -310,15 +310,15 @@ label.lbl { font-weight:bold; white-space:nowrap; }
                 <input id="item-qty-avail" type="text" readonly class="readonly-field" style="width:75px;text-align:right;" tabindex="-1">
             </div>
             <div style="display:flex;flex-direction:column;gap:1px;">
-                <label class="lbl" title="Bottles/pieces inside one box — fixed per item, loaded from the item master">Pcs Per Box</label>
+                <label class="lbl" title="Bottles/pieces inside one box - fixed per item, loaded from the item master">Pcs Per Box</label>
                 <input id="item-units-per" type="number" min="1" value="1" readonly class="readonly-field" tabindex="-1" style="width:52px;text-align:right;">
             </div>
             <div style="display:flex;flex-direction:column;gap:1px;">
-                <label class="lbl" style="color:darkred;" title="Sale price for the WHOLE box — divided by Pcs Per Box to get the per-bottle price charged in Sale">Sales Price/Box</label>
+                <label class="lbl" style="color:darkred;" title="Sale price for the WHOLE box - divided by Pcs Per Box to get the per-bottle price charged in Sale">Sales Price/Box</label>
                 <input id="item-sale-price" type="number" min="0" step="0.01" value="0" style="width:65px;text-align:right;" oninput="recalcItemAmount()">
             </div>
             <div style="display:flex;flex-direction:column;gap:1px;">
-                <label class="lbl" style="color:darkblue;" title="Purchase cost for the WHOLE box — loaded from the item master, not editable here">Purch. Price/Box</label>
+                <label class="lbl" style="color:darkblue;" title="Purchase cost for the WHOLE box - loaded from the item master, not editable here">Purch. Price/Box</label>
                 <input id="item-purch-price" type="number" min="0" step="0.01" value="0" readonly class="readonly-field" tabindex="-1" style="width:65px;text-align:right;">
             </div>
             <div style="display:flex;flex-direction:column;gap:1px;">
@@ -349,7 +349,7 @@ label.lbl { font-weight:bold; white-space:nowrap; }
     <!-- ROW 3: Received Items (this invoice only) + Expiry Info / Available Stock sidebar -->
     <div style="display:grid;grid-template-columns:1fr 300px;gap:4px;flex:1;min-height:0;">
 
-        <!-- LEFT: This invoice's own lines only — decluttered, no more system-wide merge -->
+        <!-- LEFT: This invoice's own lines only - decluttered, no more system-wide merge -->
         <div class="win-panel" style="display:flex;flex-direction:column;min-height:0;overflow:hidden;">
             <div class="win-section-label">
                 <span>Received Items</span>
@@ -390,7 +390,7 @@ label.lbl { font-weight:bold; white-space:nowrap; }
                         </tr>
                     </thead>
                     <tbody id="detail-body">
-                        <tr><td colspan="13" style="text-align:center;padding:10px;color:#888;">No items received yet — create a new invoice and add items above</td></tr>
+                        <tr><td colspan="13" style="text-align:center;padding:10px;color:#888;">No items received yet - create a new invoice and add items above</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -459,7 +459,7 @@ label.lbl { font-weight:bold; white-space:nowrap; }
             <input id="update-status-input" type="text" value="Y" style="width:40px;text-align:center;height:20px;background:#ffff99;">
             <button class="win-btn" onclick="updateReceiptStatus()" style="height:20px;font-size:11px;">Update</button>
         </span>
-        <span id="status-msg">Ready — Create a new invoice or load an existing one</span>
+        <span id="status-msg">Ready - Create a new invoice or load an existing one</span>
         <span>F2=Search &nbsp; F8=Save &nbsp; F9=Clear &nbsp; Esc=Close</span>
     </div>
 </div>
@@ -491,7 +491,7 @@ function unlockForm() { setFormLocked(false); }
 function newInvoice() {
     clearAll();
     unlockForm();
-    setStatus('New Invoice — entry unlocked');
+    setStatus('New Invoice - entry unlocked');
 }
 
 function clockTick() {
@@ -515,13 +515,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -614,7 +614,7 @@ function expiryTdClass(dateStr) {
 }
 
 function formatDate(d) {
-    if (!d) return '—';
+    if (!d) return '-';
     return new Date(d).toLocaleDateString('en-GB');
 }
 
@@ -625,7 +625,7 @@ function loadSuppliers() {
         renderSupplierTable(rows);
     }).catch(() => {
         document.getElementById('supplier-popup-body').innerHTML =
-            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;">Could not load suppliers — check DB connection</td></tr>';
+            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;">Could not load suppliers - check DB connection</td></tr>';
     });
 }
 
@@ -635,7 +635,7 @@ function renderSupplierTable(rows) {
     if (!rows.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:8px;color:#888;">No suppliers found</td></tr>'; return; }
     rows.forEach(s => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${s.SUPPLIER_CODE}</td><td>${s.SUPPLIER_NAME}</td><td>${s.CITY||'—'}</td><td>${s.TELEPHONE_NO||'—'}</td>`;
+        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${s.SUPPLIER_CODE}</td><td>${s.SUPPLIER_NAME}</td><td>${s.CITY||'-'}</td><td>${s.TELEPHONE_NO||'-'}</td>`;
         tr.onclick = () => {
             document.getElementById('supplier-code').value = s.SUPPLIER_CODE;
             closePopup('supplier-popup');
@@ -660,7 +660,7 @@ function loadStockItems() {
         renderStockPopup(rows);
     }).catch(() => {
         document.getElementById('stock-popup-body').innerHTML =
-            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:8px;">Could not load items — check DB connection</td></tr>';
+            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:8px;">Could not load items - check DB connection</td></tr>';
     });
 }
 
@@ -670,7 +670,7 @@ function renderStockPopup(rows) {
     if (!rows.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:8px;color:#888;">No items found</td></tr>'; return; }
     rows.forEach(s => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${s.STOCK_NUMBER}</td><td>${s.BRAND_NAME||'—'}</td><td>${s.ITEM_NAME||'—'}</td><td>${s.ITEM_TYPE||'—'}</td><td>${s.VOLUME_L||'—'}</td><td style="text-align:right;">${parseFloat(s.PRICE||0).toFixed(2)}</td><td style="text-align:right;">${s.QTY_INHAND}</td>`;
+        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${s.STOCK_NUMBER}</td><td>${s.BRAND_NAME||'-'}</td><td>${s.ITEM_NAME||'-'}</td><td>${s.ITEM_TYPE||'-'}</td><td>${s.VOLUME_L||'-'}</td><td style="text-align:right;">${parseFloat(s.PRICE||0).toFixed(2)}</td><td style="text-align:right;">${s.QTY_INHAND}</td>`;
         tr.onclick = () => { selectStockItem(s); closePopup('stock-popup'); };
         tbody.appendChild(tr);
     });
@@ -722,7 +722,7 @@ function liveItemSearch(q) {
 // every batch in the ledger, not just this one line's own batch.
 // ITEMS_AVAILABLE is already stored in pieces (save_stock_receipt.php converts
 // boxes x pcs/box once at receiving time, and save_transaction.php deducts sold
-// pieces from it directly) — do NOT multiply by UNITS_PERITEM again here.
+// pieces from it directly) - do NOT multiply by UNITS_PERITEM again here.
 function computeTotalAvailablePieces(stockNumber) {
     return globalLedger
         .filter(r => r.STOCK_NUMBER === stockNumber && (parseInt(r.ITEMS_AVAILABLE)||0) > 0)
@@ -738,14 +738,14 @@ function selectStockItem(s) {
     const defaultUnits = s.UNITS_PERITEM || 1;
     document.getElementById('item-units-per').value    = defaultUnits;
     // Item_Stock.PRICE/PURCHASE_PRICE are PER-BOTTLE; these fields are per-BOX,
-    // so reconstruct a box price from each (price/bottle x pcs/box) — dividing
+    // so reconstruct a box price from each (price/bottle x pcs/box) - dividing
     // back by units_per on save reproduces the same per-bottle price instead
     // of crushing it. Purch. Price/Box is read-only here (locked to the item
     // master), so this reconstructed value is final, not just a starting point.
     document.getElementById('item-sale-price').value      = (parseFloat(s.PRICE||0) * defaultUnits).toFixed(2);
     document.getElementById('item-purch-price').value     = (parseFloat(s.PURCHASE_PRICE||0) * defaultUnits).toFixed(2);
     document.getElementById('item-qty-received').value = 1;
-    document.getElementById('selected-item-label').textContent = (s.BRAND_NAME||'') + ' ' + (s.ITEM_NAME||'') + ' — ' + (s.VOLUME_L||'') + ' [' + s.STOCK_NUMBER + ']';
+    document.getElementById('selected-item-label').textContent = (s.BRAND_NAME||'') + ' ' + (s.ITEM_NAME||'') + ' - ' + (s.VOLUME_L||'') + ' [' + s.STOCK_NUMBER + ']';
     document.getElementById('selected-item-label').style.color = 'darkred';
     recalcItemAmount();
     document.getElementById('item-qty-received').focus();
@@ -828,7 +828,7 @@ function removeDetailLine(idx) {
     recalcTotal();
 }
 
-// Shows only THIS invoice's own lines (detailLines) — decluttered, no more
+// Shows only THIS invoice's own lines (detailLines) - decluttered, no more
 // merging in the system-wide ledger. Expiry/batch history for any item is
 // available separately via the Expiry Info panel (renderExpiryInfo()).
 function renderDetailTable() {
@@ -836,7 +836,7 @@ function renderDetailTable() {
     tbody.innerHTML = '';
     document.getElementById('detail-count').textContent = detailLines.length + ' item(s)';
     if (!detailLines.length) {
-        tbody.innerHTML='<tr><td colspan="13" style="text-align:center;padding:10px;color:#888;">No items received yet — create a new invoice and add items above</td></tr>';
+        tbody.innerHTML='<tr><td colspan="13" style="text-align:center;padding:10px;color:#888;">No items received yet - create a new invoice and add items above</td></tr>';
         return;
     }
     detailLines.forEach((d, idx) => {
@@ -848,11 +848,11 @@ function renderDetailTable() {
             : '';
         // qty_received is ALWAYS boxes now, whether pending or reloaded from
         // a saved line (loadInvoiceDetail() reconstructs boxes on load, see
-        // its comment) — so always multiply by pcs/box for display. Only
+        // its comment) - so always multiply by pcs/box for display. Only
         // qty_available differs by state: pending lines start as a raw copy
         // of the box count (needs the same conversion), but a saved line's
         // qty_available is ITEMS_AVAILABLE, real pieces tracked by actual
-        // sales history, not derivable from a box count — never convert it.
+        // sales history, not derivable from a box count - never convert it.
         const isSaved      = !!d._saved;
         const dispQtyRec   = d.qty_received * (d.units_peritem||1);
         const dispQtyAvail = isSaved ? d.qty_available : d.qty_available * (d.units_peritem||1);
@@ -860,15 +860,15 @@ function renderDetailTable() {
             <td style="font-weight:bold;color:#0a246a;overflow:hidden;text-overflow:ellipsis;">${d.stock_number}</td>
             <td style="text-align:right;font-weight:bold;">${dispQtyRec}</td>
             <td class="${tdClass}" style="font-weight:bold;">${formatDate(d.expiry_date)}</td>
-            <td style="overflow:hidden;text-overflow:ellipsis;">${d.batch_no||'—'}</td>
+            <td style="overflow:hidden;text-overflow:ellipsis;">${d.batch_no||'-'}</td>
             <td style="text-align:right;">${dispQtyAvail}</td>
             <td style="text-align:right;">${d.bonus_qty||0}</td>
             <td style="text-align:right;">${(d.gst_pct||0).toFixed(2)}</td>
             <td style="text-align:right;color:darkred;">${(d.price_perunit||0).toFixed(2)}</td>
             <td style="text-align:right;color:darkblue;">${(d.pprice_perunit||0).toFixed(2)}</td>
-            <td style="overflow:hidden;text-overflow:ellipsis;">${d.brand_name||'—'} ${d.item_name||''}</td>
+            <td style="overflow:hidden;text-overflow:ellipsis;">${d.brand_name||'-'} ${d.item_name||''}</td>
             <td style="text-align:right;font-weight:bold;">${(d.amount||0).toFixed(2)}</td>
-            <td style="text-align:right;color:#555;">${d.qty_inhand!=null ? d.qty_inhand : '—'}</td>
+            <td style="text-align:right;color:#555;">${d.qty_inhand!=null ? d.qty_inhand : '-'}</td>
             <td style="text-align:center;">${delCell}</td>`;
         tr.onclick = (e) => {
             if (e.target.tagName === 'BUTTON') return;
@@ -880,7 +880,7 @@ function renderDetailTable() {
     });
 }
 
-// Loaded once for computeTotalAvailablePieces() and the Expiry Info panel —
+// Loaded once for computeTotalAvailablePieces() and the Expiry Info panel -
 // no longer merged into the main Received Items table.
 function loadGlobalLedger() {
     fetch('api/get_stock_expiry_panel.php').then(r=>r.json()).then(rows=>{
@@ -889,14 +889,14 @@ function loadGlobalLedger() {
 }
 
 // Shows every batch (system-wide) of whichever item was last clicked/selected,
-// nearest expiry first — this is what used to be baked into the main table.
+// nearest expiry first - this is what used to be baked into the main table.
 function renderExpiryInfo(stockNumber) {
     const tbody = document.getElementById('expiry-info-body');
     const label = document.getElementById('expiry-info-label');
     tbody.innerHTML = '';
     const rows = globalLedger
         .filter(r => r.STOCK_NUMBER === stockNumber && (parseInt(r.ITEMS_AVAILABLE)||0) > 0)
-        .map(r => ({ batchInv: (r.BATCH_NO||'—') + ' / #' + r.Invoice_no, expiry: r.EXPIRY_DATE, qtyAvail: parseInt(r.ITEMS_AVAILABLE)||0 }))
+        .map(r => ({ batchInv: (r.BATCH_NO||'-') + ' / #' + r.Invoice_no, expiry: r.EXPIRY_DATE, qtyAvail: parseInt(r.ITEMS_AVAILABLE)||0 }))
         .sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
     label.textContent = 'Stock #' + stockNumber;
     if (!rows.length) {
@@ -917,7 +917,7 @@ function loadStockDirectory() {
         renderAvailableStock(rows);
     }).catch(() => {
         document.getElementById('stock-dir-body').innerHTML =
-            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;font-size:10px;">Could not load — check DB connection</td></tr>';
+            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;font-size:10px;">Could not load - check DB connection</td></tr>';
     });
 }
 
@@ -933,9 +933,9 @@ function renderAvailableStock(rows) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="font-weight:bold;color:#0a246a;font-size:11px;">${row.STOCK_NUMBER}</td>
-            <td style="font-size:11px;">${row.BRAND_NAME||'—'}</td>
-            <td style="font-size:11px;">${row.ITEM_TYPE||'—'}</td>
-            <td style="font-size:11px;text-align:right;">${row.QTY_INHAND!=null?row.QTY_INHAND:'—'}</td>`;
+            <td style="font-size:11px;">${row.BRAND_NAME||'-'}</td>
+            <td style="font-size:11px;">${row.ITEM_TYPE||'-'}</td>
+            <td style="font-size:11px;text-align:right;">${row.QTY_INHAND!=null?row.QTY_INHAND:'-'}</td>`;
         tr.onclick = () => {
             document.querySelectorAll('#stock-dir-body tr').forEach(r=>r.classList.remove('row-selected'));
             tr.classList.add('row-selected');
@@ -1018,7 +1018,7 @@ function clearAll() {
     renderDetailTable();
     document.getElementById('detail-total').value = '';
     unlockForm();
-    setStatus('Form cleared — ready for new stock receipt');
+    setStatus('Form cleared - ready for new stock receipt');
 }
 
 function saveStock() {
@@ -1038,7 +1038,7 @@ function saveStock() {
 
     // If the clerk entered the total printed on the supplier's paper invoice,
     // flag any mismatch against what the system computed from the line items
-    // — a real difference usually means a price/qty typo somewhere above.
+    // - a real difference usually means a price/qty typo somewhere above.
     const supplierTotalRaw = document.getElementById('supplier-inv-total').value;
     if (supplierTotalRaw !== '') {
         const supplierTotal = parseFloat(supplierTotalRaw) || 0;
@@ -1048,7 +1048,7 @@ function saveStock() {
                 'the computed Aggr. Amt (Rs. ' + aggrAmt.toFixed(2) + ').\n\n' +
                 'Save anyway?'
             );
-            if (!proceed) { toast('Save cancelled — review the line items','warn'); return; }
+            if (!proceed) { toast('Save cancelled - review the line items','warn'); return; }
         }
     }
 
@@ -1086,8 +1086,8 @@ function saveStock() {
                 currentInvoiceNo = res.invoice_no;
                 document.getElementById('inv-no').value = res.invoice_no;
                 document.getElementById('update-status-badge').textContent = 'Saved ✓';
-                toast('Stock receipt saved — Invoice #' + res.invoice_no,'ok');
-                setStatus('Saved — Invoice #' + res.invoice_no + ' (locked; click Modify to edit further)');
+                toast('Stock receipt saved - Invoice #' + res.invoice_no,'ok');
+                setStatus('Saved - Invoice #' + res.invoice_no + ' (locked; click Modify to edit further)');
                 lockForm();
                 loadGlobalLedger();
                             } else {
@@ -1101,7 +1101,7 @@ function modifyReceipt() {
     const no = document.getElementById('inv-no').value;
     if (!no) { toast('Load an invoice first','warn'); return; }
     unlockForm();
-    setStatus('Editing Invoice #' + no + ' — make changes and click Save-Stock');
+    setStatus('Editing Invoice #' + no + ' - make changes and click Save-Stock');
     toast('Invoice unlocked for editing','ok');
 }
 
@@ -1110,13 +1110,13 @@ function loadInvoiceList() {
         const tbody = document.getElementById('invoice-list-body');
         tbody.innerHTML = '';
         if (!rows.length) {
-            tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:10px;color:#888;">No invoices yet — click New Invoice to create one</td></tr>';
+            tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:10px;color:#888;">No invoices yet - click New Invoice to create one</td></tr>';
             return;
         }
         renderInvoiceListRows(rows, tbody);
     }).catch(() => {
         document.getElementById('invoice-list-body').innerHTML =
-            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:10px;">Could not load invoices — check DB connection</td></tr>';
+            '<tr><td colspan="7" style="text-align:center;color:darkred;padding:10px;">Could not load invoices - check DB connection</td></tr>';
     });
 }
 
@@ -1125,11 +1125,11 @@ function renderInvoiceListRows(rows, tbody) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="font-weight:bold;color:#0a246a;">${row.Invoice_no}</td>
-            <td>${row.SUPPLIER_CODE||'—'}</td>
-            <td>${row.INVOICE_DATE||'—'}</td>
-            <td>${row.RECEIVED_DATE||'—'}</td>
-            <td>${row.RECEIVED_BY||'—'}</td>
-            <td><span style="font-weight:bold;color:${row.STATUS==='Y'?'darkgreen':'#b8860b'};">${row.STATUS||'—'}</span></td>
+            <td>${row.SUPPLIER_CODE||'-'}</td>
+            <td>${row.INVOICE_DATE||'-'}</td>
+            <td>${row.RECEIVED_DATE||'-'}</td>
+            <td>${row.RECEIVED_BY||'-'}</td>
+            <td><span style="font-weight:bold;color:${row.STATUS==='Y'?'darkgreen':'#b8860b'};">${row.STATUS||'-'}</span></td>
             <td style="text-align:right;font-weight:bold;">${parseFloat(row.TOTAL_AMOUNT||0).toFixed(2)}</td>`;
         tr.onclick = () => {
             document.querySelectorAll('#invoice-list-body tr').forEach(r => r.classList.remove('row-selected'));
@@ -1216,7 +1216,7 @@ function loadInvoiceDetail(invoiceNo) {
         renderDetailTable();
         recalcTotal();
         lockForm();
-        setStatus('Viewing Invoice #' + invoiceNo + ' — click Modify to edit');
+        setStatus('Viewing Invoice #' + invoiceNo + ' - click Modify to edit');
         toast('Invoice #' + invoiceNo + ' loaded','ok');
     });
 }

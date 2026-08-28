@@ -82,22 +82,22 @@ select:focus { outline: 1px solid #0a246a; }
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <div class="stat-tile">
             <span class="stat-label" id="stat-month-label">Latest Month</span>
-            <span class="stat-value" id="stat-packs" style="color:#0a246a;">—</span>
+            <span class="stat-value" id="stat-packs" style="color:#0a246a;">-</span>
             <span class="stat-note">Packs Sold</span>
         </div>
         <div class="stat-tile">
             <span class="stat-label">&nbsp;</span>
-            <span class="stat-value" id="stat-sale" style="color:#003087;">—</span>
+            <span class="stat-value" id="stat-sale" style="color:#003087;">-</span>
             <span class="stat-note">Total Sale</span>
         </div>
         <div class="stat-tile">
             <span class="stat-label">&nbsp;</span>
-            <span class="stat-value" id="stat-cost" style="color:#b03030;">—</span>
+            <span class="stat-value" id="stat-cost" style="color:#b03030;">-</span>
             <span class="stat-note">Total Cost</span>
         </div>
         <div class="stat-tile">
             <span class="stat-label">&nbsp;</span>
-            <span class="stat-value" id="stat-profit" style="color:#1a7a1a;">—</span>
+            <span class="stat-value" id="stat-profit" style="color:#1a7a1a;">-</span>
             <span class="stat-note">Profit</span>
         </div>
     </div>
@@ -119,10 +119,10 @@ select:focus { outline: 1px solid #0a246a; }
             <input type="number" id="np-expenses" value="0" oninput="onNetProfitExpensesEdited()" style="width:110px;">
             <span id="np-source-note" style="font-size:10px;color:#999;"></span>
         </span>
-        <span style="font-size:11px;color:#555;">Total Profit: <b id="np-total-profit" style="font-size:13px;color:#1a7a1a;">—</b></span>
+        <span style="font-size:11px;color:#555;">Total Profit: <b id="np-total-profit" style="font-size:13px;color:#1a7a1a;">-</b></span>
         <span style="flex:1"></span>
         <span style="font-weight:bold;">Net Profit:</span>
-        <span id="np-net-profit" style="font-size:17px;font-weight:bold;">—</span>
+        <span id="np-net-profit" style="font-size:17px;font-weight:bold;">-</span>
     </div>
 
     <div style="display:flex;gap:8px;flex:1;min-height:260px;">
@@ -216,7 +216,7 @@ function setStatus(msg) { document.getElementById('status-msg').textContent = ms
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -250,9 +250,9 @@ function loadDashboard() {
         setStatus('Ready');
     }).catch(() => {
         document.getElementById('summary-body').innerHTML =
-            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         document.getElementById('item-body').innerHTML =
-            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         document.getElementById('chart-area').innerHTML =
             '<div class="empty-note" style="color:darkred;">Could not load chart data</div>';
     });
@@ -386,15 +386,15 @@ function onNetProfitMonthChange() {
         .then(r => r.json())
         .then(res => {
             if (document.getElementById('np-month-select').value !== key) return; // month changed again while waiting
-            if (res.error) { note.textContent = '(no saved entry — enter manually)'; renderNetProfit(); return; }
+            if (res.error) { note.textContent = '(no saved entry - enter manually)'; renderNetProfit(); return; }
             expenseData.push({ Yr: yr, Mo: mo, Total_Sales: res.Total_Sales, Total_Expenses: res.Total_Expenses });
             input.value = res.Total_Expenses;
-            note.textContent = res.created ? '(new row created — enter expenses)' : '(from database)';
+            note.textContent = res.created ? '(new row created - enter expenses)' : '(from database)';
             renderNetProfit();
         })
         .catch(() => {
             if (document.getElementById('np-month-select').value !== key) return;
-            note.textContent = '(no saved entry — enter manually)';
+            note.textContent = '(no saved entry - enter manually)';
             renderNetProfit();
         });
 }
@@ -412,7 +412,7 @@ function renderNetProfit() {
     const m = summaryData.find(r => monthKey(r) === key);
     const totalProfitEl = document.getElementById('np-total-profit');
     const netProfitEl = document.getElementById('np-net-profit');
-    if (!m) { totalProfitEl.textContent = '—'; netProfitEl.textContent = '—'; return; }
+    if (!m) { totalProfitEl.textContent = '-'; netProfitEl.textContent = '-'; return; }
     const totalProfit = m.Sale - m.Cost;
     const expenses = Number(document.getElementById('np-expenses').value) || 0;
     const netProfit = totalProfit - expenses;

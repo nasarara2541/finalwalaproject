@@ -24,7 +24,7 @@ if (!is_array($items) || !count($items)) {
     exit;
 }
 
-// Recompute the money authoritatively from the line items server-side —
+// Recompute the money authoritatively from the line items server-side -
 // never trust the client's pre-computed totals for what gets written to
 // the ledger, so a future client-side bug can't corrupt financial records.
 $gross = 0;
@@ -35,16 +35,16 @@ $discAmt = $gross * $discPct / 100;
 $net     = $gross - $discAmt;
 $balance = $paid - $net;
 
-// Cash/Card sales must be paid in full — only Credit may carry an
+// Cash/Card sales must be paid in full - only Credit may carry an
 // outstanding (negative) balance, since that's the whole point of credit.
 if ($transType !== 'Credit' && $balance < 0) {
-    echo json_encode(['error' => 'Cash/Card sales cannot be saved with a negative balance — collect full payment or set Type to Credit']);
+    echo json_encode(['error' => 'Cash/Card sales cannot be saved with a negative balance - collect full payment or set Type to Credit']);
     exit;
 }
 
 sqlsrv_begin_transaction($conn);
 
-// Trans_no is no longer an IDENTITY column in the current schema — the app
+// Trans_no is no longer an IDENTITY column in the current schema - the app
 // must supply it. TABLOCKX+HOLDLOCK for the rest of this transaction so two
 // concurrent sales can't both compute the same "next" number.
 $sqlNext  = "SELECT ISNULL(MAX(Trans_no), 0) + 1 AS next_no FROM [Transaction] WITH (TABLOCKX, HOLDLOCK)";
@@ -103,7 +103,7 @@ foreach ($items as $item) {
     $totalAvail = intval($availRow['total_avail'] ?? 0);
     if ($totalAvail < $qty) {
         sqlsrv_rollback($conn);
-        echo json_encode(['error' => 'Not enough stock in hand for ' . $stockNo . ' — sale cancelled']);
+        echo json_encode(['error' => 'Not enough stock in hand for ' . $stockNo . ' - sale cancelled']);
         exit;
     }
 

@@ -62,7 +62,7 @@ label.lbl { font-weight:bold; white-space:nowrap; padding-right:4px; }
             <label class="lbl">Search</label>
             <input id="f-search" type="text" placeholder="Item name or stock number" oninput="debouncedSearch()">
         </div>
-        <span style="color:#555;">Live snapshot of <code>QTY_INHAND</code> at this instant — not a point-in-time report; no stock-movement history table exists for that yet.</span>
+        <span style="color:#555;">Live snapshot of <code>QTY_INHAND</code> at this instant - not a point-in-time report; no stock-movement history table exists for that yet.</span>
     </div>
 
     <div class="win-panel" style="flex:1;min-height:0;display:flex;flex-direction:column;">
@@ -106,7 +106,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -149,7 +149,7 @@ function runSearch() {
         })
         .catch(() => {
             document.getElementById('results-body').innerHTML =
-                '<tr><td colspan="3" style="text-align:center;color:darkred;padding:10px;">Could not load stock — check DB connection</td></tr>';
+                '<tr><td colspan="3" style="text-align:center;color:darkred;padding:10px;">Could not load stock - check DB connection</td></tr>';
         });
 }
 

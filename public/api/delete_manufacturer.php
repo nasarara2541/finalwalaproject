@@ -11,7 +11,7 @@ $stmt = sqlsrv_query($conn, $sql, [$manufactureNo]);
 if (!$stmt) {
     $err = sqlsrv_errors()[0]['message'] ?? 'Delete failed';
     if (stripos($err, 'REFERENCE constraint') !== false) {
-        $err = 'Cannot remove this manufacturer — it is linked to existing stock items.';
+        $err = 'Cannot remove this manufacturer - it is linked to existing stock items.';
     }
     echo json_encode(['error' => $err]);
     exit;

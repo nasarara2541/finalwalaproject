@@ -228,13 +228,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -255,7 +255,7 @@ function loadManufacturers() {
         .catch(() => {
             toast('Network error loading manufacturers', 'err');
             document.getElementById('mfg-listbox').innerHTML =
-                '<div style="padding:6px;color:darkred;">Could not load — check DB connection</div>';
+                '<div style="padding:6px;color:darkred;">Could not load - check DB connection</div>';
         });
 }
 
@@ -329,7 +329,7 @@ function loadStockItems() {
         .catch(() => {
             toast('Network error loading items', 'err');
             document.getElementById('item-grid-body').innerHTML =
-                '<tr><td colspan="11" style="text-align:center;color:darkred;padding:8px;">Could not load items — check DB connection</td></tr>';
+                '<tr><td colspan="11" style="text-align:center;color:darkred;padding:8px;">Could not load items - check DB connection</td></tr>';
         });
 }
 
@@ -424,9 +424,9 @@ function findStockItem() {
                 selectStockItem(res.item);
                 toast('Item found', 'ok');
             } else {
-                // Stock Number is now auto-assigned by the database — typing
+                // Stock Number is now auto-assigned by the database - typing
                 // an unused number no longer reserves it for a new item.
-                toast('No item with that Stock Number. Click New to create a new item — Stock Number is auto-assigned.', 'warn');
+                toast('No item with that Stock Number. Click New to create a new item - Stock Number is auto-assigned.', 'warn');
                 stockNoField.value = '';
             }
             document.getElementById('item-brand-name').focus();
@@ -442,7 +442,7 @@ function saveStockItem() {
     if (!selectedManufactureNo) { toast('Select a Manufacturer from the list', 'warn'); return; }
     if (units < 1) { toast('Units Per Item must be greater than 0', 'warn'); document.getElementById('item-units-peritem').focus(); return; }
 
-    // selectedStockNumber (not the text field) drives insert-vs-update — it's
+    // selectedStockNumber (not the text field) drives insert-vs-update - it's
     // only set by loading an existing record via Find or the grid, so a fresh
     // "New" always inserts regardless of anything left typed in the field.
     const payload = {
@@ -465,7 +465,7 @@ function saveStockItem() {
         .then(r => r.json())
         .then(res => {
             if (res.success) {
-                toast(res.mode === 'inserted' ? 'Item added — Stock #' + res.stock_number : 'Item updated', 'ok');
+                toast(res.mode === 'inserted' ? 'Item added - Stock #' + res.stock_number : 'Item updated', 'ok');
                 selectedStockNumber = res.stock_number;
                 const stockNoField = document.getElementById('item-stock-number');
                 stockNoField.disabled  = false;
@@ -547,7 +547,7 @@ document.addEventListener('keydown', e => {
         e.preventDefault();
         // selectStockItem() re-renders the grid (to update the highlighted
         // row), which would destroy a focused <tr> and drop focus to <body>
-        // if we tried to focus-then-click it — so select directly and jump
+        // if we tried to focus-then-click it - so select directly and jump
         // straight to the next field instead of routing through the row.
         if (itemCurrentList.length) selectStockItem(itemCurrentList[0]);
         document.getElementById('item-brand-name').focus();

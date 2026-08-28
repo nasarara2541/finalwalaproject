@@ -22,13 +22,13 @@ if ($manuBy   !== '') { $where[] = "m.M_Name LIKE ?"; $params[] = '%'.$manuBy.'%
 if ($location !== '') { $where[] = "s.LOCATION LIKE ?"; $params[] = '%'.$location.'%'; }
 if ($generic  !== '') { $where[] = "s.ITEM_NAME LIKE ?"; $params[] = '%'.$generic.'%'; }
 
-// The 5 bottom filter buttons on the screen — mutually exclusive, "all" (All
+// The 5 bottom filter buttons on the screen - mutually exclusive, "all" (All
 // Record) applies no extra condition. "Inactive" also catches NULL since a
 // never-set status shouldn't silently count as Active. "Bonus" is a
 // semi-join against stock-receipt history since BONUS_QTY only ever existed
 // per receipt line, never as an item-level flag -- an item counts as
 // "Bonus QTY" if it has ever actually received bonus stock. "Narcotics"
-// naturally returns nothing on real water items (none have the flag set) —
+// naturally returns nothing on real water items (none have the flag set) -
 // same honest-empty-result pattern as Disc/Bonus, not disabled, since the
 // user confirmed this should just be a normal filter like the others.
 if ($view === 'inactive') {

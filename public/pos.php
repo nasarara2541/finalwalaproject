@@ -32,7 +32,7 @@ $NAV_CURRENT_VIEW = $defaultView;
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AISellProduct — Point of Sale</title>
+<title>AISellProduct - Point of Sale</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 * { font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; box-sizing: border-box; }
@@ -90,7 +90,7 @@ input:focus, select:focus { outline: 1px solid #0a246a; }
 .win-section-label { background: #d4d0c8; font-weight:bold; font-size:12px; padding: 3px 8px; border-bottom:1px solid #808080; display:flex; align-items:center; justify-content:space-between; }
 .win-scroll { overflow:auto; min-height:0; }
 
-/* Expiry Info panel — same convention as stock_receiving.php's version */
+/* Expiry Info panel - same convention as stock_receiving.php's version */
 .expiry-urgent { background:#ffe0e0 !important; }
 .expiry-soon   { background:#fff3cd !important; }
 .expiry-warn   { color:darkred;   font-weight:bold; }
@@ -103,7 +103,7 @@ input:focus, select:focus { outline: 1px solid #0a246a; }
 
 .fkey-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#0a246a; color:white; font-weight:bold; font-size:11px; }
 
-/* Calculator bar result fields (Total/Disc Amt/Net Total/Balance) — per
+/* Calculator bar result fields (Total/Disc Amt/Net Total/Balance) - per
    teacher instruction, made larger and switched to a black-background/
    red-text combination so they stand out clearly from the rest of the
    screen. Deliberately scoped to this class alone, not input[readonly]
@@ -162,7 +162,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
     background:#ece9d8;
 }
 
-/* Held bills popup — same visual pattern as the invoice popup */
+/* Held bills popup - same visual pattern as the invoice popup */
 #held-popup-overlay {
     display:none; position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.55); z-index:8000;
@@ -185,7 +185,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 #held-popup-body { overflow-y:auto; flex:1; padding:8px; }
 #held-popup-footer { padding:6px 8px; border-top:1px solid #ccc; display:flex; gap:6px; background:#ece9d8; }
 
-/* Customer Invoices popup — same visual pattern as the held bills popup */
+/* Customer Invoices popup - same visual pattern as the held bills popup */
 #custinv-popup-overlay {
     display:none; position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.55); z-index:8000;
@@ -232,7 +232,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 <div id="held-popup-overlay">
     <div id="held-popup-box">
         <div id="held-popup-titlebar">
-            <span><i class="fa-solid fa-pause"></i> Held Bills — click a row to resume</span>
+            <span><i class="fa-solid fa-pause"></i> Held Bills - click a row to resume</span>
             <span class="close-x" onclick="closeHeldPopup()"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <div id="held-popup-body">
@@ -274,7 +274,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                     <thead><tr><th>Stock No.</th><th>Brand</th><th>Item</th><th>Volume</th><th style="text-align:right;">Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Amount</th></tr></thead>
                     <tbody id="custinv-detail-body"></tbody>
                 </table>
-                <div style="font-size:10px;color:#888;margin-top:6px;">Click an item to load it into the entry fields above — review the quantity/price, then click "+ Add to Bill" yourself.</div>
+                <div style="font-size:10px;color:#888;margin-top:6px;">Click an item to load it into the entry fields above - review the quantity/price, then click "+ Add to Bill" yourself.</div>
             </div>
         </div>
         <div id="custinv-popup-footer">
@@ -293,10 +293,10 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
     <div class="win-panel" style="display:flex; align-items:center; gap:8px; padding:4px 8px; flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:3px;">
             <span style="font-weight:bold;background:#0a246a;color:white;padding:3px 10px;border:1px solid #000;">Bill#</span>
-            <input id="bill-no" type="text" readonly value="—" title="Preview of the next bill number until this sale is actually saved" style="width:90px;font-weight:bold;color:#0a246a;" class="readonly-field" tabindex="-1">
+            <input id="bill-no" type="text" readonly value="-" title="Preview of the next bill number until this sale is actually saved" style="width:90px;font-weight:bold;color:#0a246a;" class="readonly-field" tabindex="-1">
         </div>
         <div style="display:flex;align-items:center;gap:3px;">
-            <label style="font-weight:bold;" title="Human-editable reference number — separate from the internal Bill#, can be changed any time including after saving">Bill Ref</label>
+            <label style="font-weight:bold;" title="Human-editable reference number - separate from the internal Bill#, can be changed any time including after saving">Bill Ref</label>
             <input id="invoice-reference" type="text" placeholder="Optional ref#" style="width:90px;" onblur="onInvoiceReferenceBlur()">
         </div>
         <div style="display:flex;align-items:center;gap:3px;">
@@ -384,13 +384,13 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
     <div style="display:flex;gap:4px;flex:1;min-height:0;">
 
         <!-- LEFT: Bill Items (cart), with the info/lookup block and Calculator
-             now pushed up into this same column as a fixed-height footer —
+             now pushed up into this same column as a fixed-height footer -
              Bill Items shrinks to make room instead of this footer being a
              separate full-width bar below everything. Sits to the left of
              the Expiry Info panel in the next column, matching the
              MedPharma reference layout. Fields with no real backing data in
              our schema (Max. Disc per user, transaction Status, "Sale Mode")
-             stay static "—" labels rather than fabricated values — flagged
+             stay static "-" labels rather than fabricated values - flagged
              to the user, not silently invented; ask before wiring them to
              something real. -->
         <div class="win-panel" style="flex:1.5;display:flex;flex-direction:column;min-height:0;">
@@ -422,7 +422,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 
             <div style="border-top:1px solid #808080;padding:6px 10px;display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap;">
 
-                <!-- item lookup + info + action buttons — widened (min-width
+                <!-- item lookup + info + action buttons - widened (min-width
                      and internal gaps both increased) so it fills more of
                      the footer row instead of leaving a big empty gap before
                      the Calculator block, which stays right-anchored via
@@ -437,23 +437,23 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                     </div>
                     <div style="display:flex;gap:20px;font-size:11px;">
                         <span>User: <b><?php echo htmlspecialchars($_SESSION['emp_user_id'] ?? 'admin'); ?></b></span>
-                        <span title="No per-user discount limit tracked in the database yet">Max. Disc: <b style="color:#888;">—</b></span>
+                        <span title="No per-user discount limit tracked in the database yet">Max. Disc: <b style="color:#888;">-</b></span>
                         <!-- Not a visible field anymore (replaced by the "User:" label above), but
                              performSave() and the Enter-key tab order still read this exact id -- kept
                              as a hidden input so removing the old visible box doesn't break either. -->
                         <input type="hidden" id="user-id" value="<?php echo htmlspecialchars($_SESSION['emp_user_id'] ?? 'admin'); ?>">
                     </div>
                     <div style="display:flex;gap:20px;font-size:11px;">
-                        <span>Bill#: <b id="invno-display">—</b></span>
-                        <span title="No transaction-level Status column in the schema yet">Status: <b style="color:#888;">—</b></span>
+                        <span>Bill#: <b id="invno-display">-</b></span>
+                        <span title="No transaction-level Status column in the schema yet">Status: <b style="color:#888;">-</b></span>
                     </div>
                     <div style="font-size:11px;">
-                        <label style="display:inline-flex;align-items:center;gap:3px;color:#888;" title="Not wired to anything yet — no matching concept in the schema">
+                        <label style="display:inline-flex;align-items:center;gap:3px;color:#888;" title="Not wired to anything yet - no matching concept in the schema">
                             <input type="checkbox" disabled style="width:auto;height:auto;"> Sale Mode
                         </label>
                     </div>
                     <div style="font-size:11px;color:#0a246a;font-weight:bold;">
-                        StockQTY: <span id="sel-qty-inhand">—</span> &nbsp; ExpDate: <span id="sel-nearest-expiry">—</span>
+                        StockQTY: <span id="sel-qty-inhand">-</span> &nbsp; ExpDate: <span id="sel-nearest-expiry">-</span>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <button class="win-btn" style="height:22px;font-size:11px;" onclick="document.getElementById('expiry-info-label').scrollIntoView({behavior:'smooth',block:'center'});">Expiry Dates</button>
@@ -465,11 +465,11 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                 <!-- Calculator: Discount %age/Disc Amt stacked in their own
                      column on the left, Total/Net Total/Cash/Balance stacked
                      to their right (directly under the cart's Amount column)
-                     — matches the MedPharma reference layout instead of the
+                     - matches the MedPharma reference layout instead of the
                      old paired-column grid. margin-left:auto pushes the whole
                      block toward the right edge of the footer row, closer to
                      where the Amount column actually sits in the cart table
-                     above it — do not remove that, it's load-bearing for the
+                     above it - do not remove that, it's load-bearing for the
                      alignment. gap:32px between the two stacks below (was
                      16px) so there's visible breathing room between Discount
                      and Total instead of them crowding together. -->
@@ -510,7 +510,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
         </div>
 
         <!-- MIDDLE: Live Product List, Expiry Info stacked directly below it
-             (unchanged — same panel, same data source, still right below
+             (unchanged - same panel, same data source, still right below
              Available Products), and the Print row now appended at the very
              bottom, stacked horizontally, to the right of the info/calculator
              footer in the Bill Items column. Each panel scrolls internally
@@ -521,7 +521,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
             <div class="win-panel" style="flex:1.4;display:flex;flex-direction:column;min-height:0;">
                 <div class="win-section-label">
                     <span>Available Products</span>
-                    <span id="product-count" style="font-weight:normal;color:#555;">—</span>
+                    <span id="product-count" style="font-weight:normal;color:#555;">-</span>
                 </div>
                 <div class="win-scroll" style="flex:1;">
                     <table class="win-table">
@@ -540,7 +540,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                 </div>
             </div>
 
-            <!-- Expiry Info (same idea as the panel on stock_receiving.php) —
+            <!-- Expiry Info (same idea as the panel on stock_receiving.php) -
                  shows every batch of whichever item was last selected/clicked,
                  system-wide, nearest expiry first. Read-only reference, no
                  editing here. -->
@@ -565,10 +565,10 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                 </div>
             </div>
 
-            <!-- Print row — sits below Expiry Info, stacked horizontally. -->
+            <!-- Print row - sits below Expiry Info, stacked horizontally. -->
             <div class="win-panel" style="flex-shrink:0;padding:6px 8px;display:flex;align-items:center;justify-content:center;gap:10px;">
                 <button class="win-btn win-btn-blue" style="height:26px;" onclick="doPrint()"><i class="fa-solid fa-print"></i> Print</button>
-                <div style="font-size:10px;color:#888;" title="No printer-selection feature built yet — nothing here changes what Print actually does">
+                <div style="font-size:10px;color:#888;" title="No printer-selection feature built yet - nothing here changes what Print actually does">
                     Printer: <label><input type="radio" name="printer-choice" checked disabled style="width:auto;height:auto;"> None</label>
                 </div>
                 <button class="win-btn" style="height:22px;font-size:11px;" onclick="clearSelection()">Remove</button>
@@ -581,7 +581,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
     <div class="win-statusbar">
         <span id="status-msg">Ready &nbsp;|&nbsp; F2=Search &nbsp; F5=Cash &nbsp; F8=Print &nbsp; F9=New &nbsp; F10=Invoice &nbsp; Enter=Next Field</span>
         <span>AISellProduct v1.0</span>
-        <span>Margalla 3M Industries — Islamabad</span>
+        <span>Margalla 3M Industries - Islamabad</span>
     </div>
 </div>
 
@@ -627,7 +627,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
     </div>
     <div id="txn-detail-panel" style="display:none;" class="win-panel">
         <div class="win-section-label">
-            <span>Detail — <span id="txn-detail-header"></span></span>
+            <span>Detail - <span id="txn-detail-header"></span></span>
             <div style="display:flex;gap:5px;">
                 <button class="win-btn win-btn-blue" onclick="printDetailReceipt()" style="height:18px;font-size:11px;padding:0 8px;">Print Receipt</button>
                 <button class="win-btn" style="height:18px;font-size:11px;padding:0 8px;color:darkred;" onclick="document.getElementById('txn-detail-panel').style.display='none'">Close</button>
@@ -758,11 +758,11 @@ function loadCustomers() {
     });
 }
 
-// Fires on every keystroke — the datalist itself does the as-you-type
+// Fires on every keystroke - the datalist itself does the as-you-type
 // filtering natively; this just detects when the typed text exactly matches
 // a suggestion (i.e. the user picked one, or typed the full "ID - Name")
 // and auto-fills Name/Contact from that customer. Free-typed text that
-// doesn't match anything is left alone — that's a walk-in customer.
+// doesn't match anything is left alone - that's a walk-in customer.
 function onCustomerInput() {
     const val = document.getElementById('cust-select').value;
     const match = val.match(/^(\d+)\s*-\s*/);
@@ -778,7 +778,7 @@ function onCustomerInput() {
 
 // Regular-customer reorder flow: shows the selected customer's past
 // invoices (newest first), click one to see its items, click an item to
-// load it into the entry fields — never straight into the cart, and always
+// load it into the entry fields - never straight into the cart, and always
 // at today's live price, never the old invoice's price (prices change).
 function openCustomerInvoicesPopup() {
     if (!selectedCustomerId) { toast('Select a customer first', 'warn'); return; }
@@ -798,11 +798,11 @@ function openCustomerInvoicesPopup() {
                 const tr = document.createElement('tr');
                 tr.title = 'Click to view items on this invoice';
                 // Some older bulk-loaded historical rows genuinely have NULL
-                // Trans_type/Trans_amount (confirmed against the live DB) —
-                // shown as an honest "—" rather than a misleading "null" or
+                // Trans_type/Trans_amount (confirmed against the live DB) -
+                // shown as an honest "-" rather than a misleading "null" or
                 // a fabricated "0.00".
-                const type = row.Trans_type || '—';
-                const net  = (row.Trans_amount !== null && row.Trans_amount !== undefined) ? parseFloat(row.Trans_amount).toFixed(2) : '—';
+                const type = row.Trans_type || '-';
+                const net  = (row.Trans_amount !== null && row.Trans_amount !== undefined) ? parseFloat(row.Trans_amount).toFixed(2) : '-';
                 tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${row.Trans_no}</td><td>${row.Trans_date}</td><td>${type}</td><td style="text-align:right;font-weight:bold;color:darkgreen;">${net}</td>`;
                 tr.onclick = () => showCustomerInvoiceDetail(row.Trans_no);
                 tbody.appendChild(tr);
@@ -826,13 +826,13 @@ function showCustomerInvoiceDetail(transNo) {
         if (!res.header) { toast('Could not load that invoice', 'err'); return; }
         document.getElementById('custinv-list-view').style.display = 'none';
         document.getElementById('custinv-detail-view').style.display = 'block';
-        document.getElementById('custinv-popup-title').textContent = 'Bill #' + res.header.Trans_no + ' — ' + res.header.Trans_date;
+        document.getElementById('custinv-popup-title').textContent = 'Bill #' + res.header.Trans_no + ' - ' + res.header.Trans_date;
         const tbody = document.getElementById('custinv-detail-body');
         tbody.innerHTML = '';
         res.detail.forEach(d => {
             const tr = document.createElement('tr');
             tr.title = 'Click to load this item into the entry fields';
-            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${d.stock_number}</td><td style="font-weight:bold;">${d.BRAND_NAME||'—'}</td><td>${d.ITEM_NAME||'—'}</td><td>${d.VOLUME_L||'—'}</td><td style="text-align:right;font-weight:bold;">${d.quantity}</td><td style="text-align:right;">${parseFloat(d.Price_PerItem||0).toFixed(2)}</td><td style="text-align:right;font-weight:bold;color:darkgreen;">${parseFloat(d.amount||0).toFixed(2)}</td>`;
+            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${d.stock_number}</td><td style="font-weight:bold;">${d.BRAND_NAME||'-'}</td><td>${d.ITEM_NAME||'-'}</td><td>${d.VOLUME_L||'-'}</td><td style="text-align:right;font-weight:bold;">${d.quantity}</td><td style="text-align:right;">${parseFloat(d.Price_PerItem||0).toFixed(2)}</td><td style="text-align:right;font-weight:bold;color:darkgreen;">${parseFloat(d.amount||0).toFixed(2)}</td>`;
             tr.onclick = () => loadHistoricalItemIntoEntry(d);
             tbody.appendChild(tr);
         });
@@ -841,10 +841,10 @@ function showCustomerInvoiceDetail(transNo) {
 
 // Loads a past-invoice line item into the same entry fields "Available
 // Products" selection uses (selectItem), pre-filled with TODAY'S live
-// price/stock data — the historical Price_PerItem is shown for reference in
+// price/stock data - the historical Price_PerItem is shown for reference in
 // the popup but never used here, since prices can have changed since that
 // old sale. The historical quantity is carried over as a convenience
-// default. This never touches the cart directly — the cashier still has to
+// default. This never touches the cart directly - the cashier still has to
 // review and click "+ Add to Bill" themselves.
 function loadHistoricalItemIntoEntry(d) {
     const current = allProducts.find(p => p.STOCK_NUMBER === d.stock_number);
@@ -856,11 +856,11 @@ function loadHistoricalItemIntoEntry(d) {
     document.getElementById('sel-qty').value = d.quantity || 1;
     recalcLine();
     closeCustomerInvoicesPopup();
-    toast('Loaded from past invoice — review qty/price, then click "+ Add to Bill"', 'ok');
+    toast('Loaded from past invoice - review qty/price, then click "+ Add to Bill"', 'ok');
 }
 
 // Bill Ref (Invoice_reference) is editable any time, including after the
-// sale is already saved — unlike Bill# (Trans_no), it's not tied to any
+// sale is already saved - unlike Bill# (Trans_no), it's not tied to any
 // foreign key, so it's safe to patch on an already-saved transaction.
 function onInvoiceReferenceBlur() {
     const billNo = document.getElementById('bill-no').value;
@@ -954,7 +954,7 @@ function buildInvoiceHTML() {
             The items bought can not be refunded.
         </div>
         <div style="text-align:center;font-size:10px;color:#666;font-family:Arial,sans-serif;margin-top:2px;">
-            Please check all items before leaving.<br>Thank You &mdash; AISellProduct Software
+            Please check all items before leaving.<br>Thank You - AISellProduct Software
         </div>
         <hr style="border:none;border-top:1px solid #333;margin:6px 0;">
         <div style="text-align:center;font-size:10px;color:#666;font-family:Arial,sans-serif;">
@@ -1009,7 +1009,7 @@ document.getElementById('custinv-popup-overlay').addEventListener('click', funct
     if (e.target === this) closeCustomerInvoicesPopup();
 });
 
-// ---------- Postpone / Held Bills (browser-local only — nothing is written
+// ---------- Postpone / Held Bills (browser-local only - nothing is written
 // to the database until a held bill is recalled and actually saved) ----------
 // Scoped per active database so switching between Water and Med Stock data
 // never mixes held bills from one dataset into the other.
@@ -1037,7 +1037,7 @@ function postponeInvoice() {
     });
     persistHeldBills();
     resetForm();
-    toast('Bill postponed — resume it from Held ('+heldBills.length+')','ok');
+    toast('Bill postponed - resume it from Held ('+heldBills.length+')','ok');
 }
 
 function openHeldPopup() {
@@ -1087,7 +1087,7 @@ function recallHeldBill(idx) {
     persistHeldBills();
     closeHeldPopup();
     toast('Held bill resumed','ok');
-    setStatus('Resumed a postponed bill — review and Save');
+    setStatus('Resumed a postponed bill - review and Save');
 }
 
 function deleteHeldBill(idx, e) {
@@ -1197,7 +1197,7 @@ function loadProductList() {
         })
         .catch(() => {
             document.getElementById('product-list-body').innerHTML =
-                '<tr><td colspan="4" style="text-align:center;color:darkred;padding:10px;">Could not load products — check DB connection</td></tr>';
+                '<tr><td colspan="4" style="text-align:center;color:darkred;padding:10px;">Could not load products - check DB connection</td></tr>';
         });
 }
 
@@ -1214,9 +1214,9 @@ function renderProductList(data) {
         const tr = document.createElement('tr');
         tr.setAttribute('tabindex', '0');
         const outOfStock = (parseInt(item.QTY_INHAND) || 0) <= 0;
-        const nameCell = (item.BRAND_NAME||'—') + (outOfStock ? ' <span style="color:#8b0000;font-weight:bold;">(Out of Stock)</span>' : '');
+        const nameCell = (item.BRAND_NAME||'-') + (outOfStock ? ' <span style="color:#8b0000;font-weight:bold;">(Out of Stock)</span>' : '');
         if (outOfStock) tr.style.color = '#888';
-        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${item.STOCK_NUMBER}</td><td>${nameCell}</td><td>${item.SIZE_DESC||item.ITEM_NAME||'—'}</td><td style="text-align:right;">${parseFloat(item.PRICE||0).toFixed(2)}</td>`;
+        tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${item.STOCK_NUMBER}</td><td>${nameCell}</td><td>${item.SIZE_DESC||item.ITEM_NAME||'-'}</td><td style="text-align:right;">${parseFloat(item.PRICE||0).toFixed(2)}</td>`;
         tr.onclick = () => {
             document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
             tr.classList.add('row-selected');
@@ -1229,7 +1229,7 @@ function renderProductList(data) {
 let searchTimer = null;
 
 // Runs the search immediately (no debounce) and returns a promise that
-// resolves once the product table has actually been re-rendered — used by
+// resolves once the product table has actually been re-rendered - used by
 // the Enter-key handler so it never jumps into the table before the matching
 // results have arrived.
 function performSearch(q) {
@@ -1251,7 +1251,7 @@ function searchItems(q) {
 
 function selectItem(item) {
     selectedItem = item;
-    document.getElementById('item-search').value  = (item.BRAND_NAME||'') + ' — ' + (item.ITEM_NAME||'');
+    document.getElementById('item-search').value  = (item.BRAND_NAME||'') + ' - ' + (item.ITEM_NAME||'');
     document.getElementById('sel-stock').value    = item.STOCK_NUMBER;
     document.getElementById('sel-vol').value      = (item.VOLUME_L||'') + (item.SIZE_DESC ? ' / '+item.SIZE_DESC : '');
     document.getElementById('sel-type').value     = item.ITEM_TYPE||'';
@@ -1266,27 +1266,27 @@ function selectItem(item) {
     // hard block; this is just the immediate, upfront warning on selection
     // so the cashier finds out before typing a quantity, not after.
     if ((parseInt(item.QTY_INHAND) || 0) <= 0) {
-        toast('Out of stock — 0 in hand, cannot sell this item', 'err');
-        setStatus('Selected: ' + (item.BRAND_NAME||'') + ' — OUT OF STOCK');
+        toast('Out of stock - 0 in hand, cannot sell this item', 'err');
+        setStatus('Selected: ' + (item.BRAND_NAME||'') + ' - OUT OF STOCK');
     } else {
         setStatus('Item selected: ' + (item.BRAND_NAME||'') + ' ' + (item.ITEM_NAME||''));
     }
 }
 
-// Compact "StockQTY / ExpDate" line — the same two pieces of data already
+// Compact "StockQTY / ExpDate" line - the same two pieces of data already
 // shown elsewhere (In-Hand field, Expiry Info panel), just combined into one
 // line the way the reference layout does it. Nearest expiry = earliest date
 // among this item's batches with stock left, from the same globalLedger
 // already loaded for the Expiry Info panel -- no separate fetch needed.
 function updateStockExpirySummary(stockNumber, qtyInHand) {
-    document.getElementById('sel-qty-inhand').textContent = (qtyInHand != null) ? qtyInHand : '—';
+    document.getElementById('sel-qty-inhand').textContent = (qtyInHand != null) ? qtyInHand : '-';
     const batches = globalLedger.filter(r => r.STOCK_NUMBER === stockNumber && (parseInt(r.ITEMS_AVAILABLE)||0) > 0);
-    if (!batches.length) { document.getElementById('sel-nearest-expiry').textContent = '—'; return; }
+    if (!batches.length) { document.getElementById('sel-nearest-expiry').textContent = '-'; return; }
     const nearest = batches.reduce((a,b) => new Date(a.EXPIRY_DATE) < new Date(b.EXPIRY_DATE) ? a : b);
-    document.getElementById('sel-nearest-expiry').textContent = nearest.EXPIRY_DATE ? new Date(nearest.EXPIRY_DATE).toLocaleDateString('en-GB') : '—';
+    document.getElementById('sel-nearest-expiry').textContent = nearest.EXPIRY_DATE ? new Date(nearest.EXPIRY_DATE).toLocaleDateString('en-GB') : '-';
 }
 
-// Barcode field — reuses search_items.php, which now also matches BARCODE
+// Barcode field - reuses search_items.php, which now also matches BARCODE
 // exactly (see that file's comment). Auto-selects the first/only match,
 // same as pressing Enter in the main item-search box.
 function lookupBarcode() {
@@ -1300,7 +1300,7 @@ function lookupBarcode() {
     });
 }
 
-// "Remove" — clears the item currently loaded in the entry fields (search
+// "Remove" - clears the item currently loaded in the entry fields (search
 // result not yet added to the bill). Does not touch the cart -- cart rows
 // already have their own per-row Del button for that.
 function clearSelection() {
@@ -1313,13 +1313,13 @@ function clearSelection() {
     document.getElementById('sel-inhand').value = '';
     document.getElementById('sel-qty').value = 1;
     document.getElementById('sel-amount').value = '';
-    document.getElementById('sel-qty-inhand').textContent = '—';
-    document.getElementById('sel-nearest-expiry').textContent = '—';
+    document.getElementById('sel-qty-inhand').textContent = '-';
+    document.getElementById('sel-nearest-expiry').textContent = '-';
     document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
     setStatus('Selection cleared');
 }
 
-// Simple standalone calculator popup — pure UI utility, no data behind it,
+// Simple standalone calculator popup - pure UI utility, no data behind it,
 // matches the reference's "Calculator" button.
 function openCalculatorPopup() {
     let existing = document.getElementById('calc-popup-overlay');
@@ -1355,7 +1355,7 @@ function calcPress(k) {
     disp.value = calcExpr;
 }
 
-// Loaded once at startup — same system-wide batch ledger stock_receiving.php
+// Loaded once at startup - same system-wide batch ledger stock_receiving.php
 // uses for its Expiry Info panel, just reused here read-only.
 function loadGlobalLedger() {
     fetch('api/get_stock_expiry_panel.php').then(r=>r.json()).then(rows=>{
@@ -1380,14 +1380,14 @@ function expiryRowClass(dateStr) {
 }
 
 // Shows every batch (system-wide) of whichever item was last selected,
-// nearest expiry first — mirrors stock_receiving.php's Expiry Info panel.
+// nearest expiry first - mirrors stock_receiving.php's Expiry Info panel.
 function renderExpiryInfo(stockNumber) {
     const tbody = document.getElementById('expiry-info-body');
     const label = document.getElementById('expiry-info-label');
     tbody.innerHTML = '';
     const rows = globalLedger
         .filter(r => r.STOCK_NUMBER === stockNumber && (parseInt(r.ITEMS_AVAILABLE)||0) > 0)
-        .map(r => ({ batchInv: (r.BATCH_NO||'—') + ' / #' + r.Invoice_no, expiry: r.EXPIRY_DATE, qtyAvail: parseInt(r.ITEMS_AVAILABLE)||0 }))
+        .map(r => ({ batchInv: (r.BATCH_NO||'-') + ' / #' + r.Invoice_no, expiry: r.EXPIRY_DATE, qtyAvail: parseInt(r.ITEMS_AVAILABLE)||0 }))
         .sort((a,b) => new Date(a.expiry) - new Date(b.expiry));
     label.textContent = 'Stock #' + stockNumber;
     if (!rows.length) {
@@ -1398,7 +1398,7 @@ function renderExpiryInfo(stockNumber) {
         const tr = document.createElement('tr');
         tr.className = expiryRowClass(r.expiry);
         const tdClass = expiryTdClass(r.expiry);
-        tr.innerHTML = `<td>${r.batchInv}</td><td class="${tdClass}">${r.expiry ? new Date(r.expiry).toLocaleDateString('en-GB') : '—'}</td><td style="text-align:right;">${r.qtyAvail}</td>`;
+        tr.innerHTML = `<td>${r.batchInv}</td><td class="${tdClass}">${r.expiry ? new Date(r.expiry).toLocaleDateString('en-GB') : '-'}</td><td style="text-align:right;">${r.qtyAvail}</td>`;
         tbody.appendChild(tr);
     });
 }
@@ -1434,8 +1434,8 @@ function addItemToCart() {
     document.getElementById('sel-inhand').value = '';
     document.getElementById('sel-qty').value = 1;
     document.getElementById('sel-amount').value = '';
-    document.getElementById('sel-qty-inhand').textContent = '—';
-    document.getElementById('sel-nearest-expiry').textContent = '—';
+    document.getElementById('sel-qty-inhand').textContent = '-';
+    document.getElementById('sel-nearest-expiry').textContent = '-';
     document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
     setStatus('Item added to bill');
 }
@@ -1443,7 +1443,7 @@ function addItemToCart() {
 function removeFromCart(idx) { cart.splice(idx,1); renderCart(); recalcTotals(); }
 
 // Click a cart row to pull that line back into the entry fields above for
-// editing (adjust qty/price, then Add to Bill again to re-confirm it) —
+// editing (adjust qty/price, then Add to Bill again to re-confirm it) -
 // removes it from the cart in the meantime so it isn't double-counted.
 function editCartItem(idx) {
     const item = cart[idx];
@@ -1460,7 +1460,7 @@ function editCartItem(idx) {
     };
     cart.splice(idx, 1);
     renderCart(); recalcTotals();
-    document.getElementById('item-search').value = (item.brand||'') + ' — ' + (item.item||'');
+    document.getElementById('item-search').value = (item.brand||'') + ' - ' + (item.item||'');
     document.getElementById('sel-stock').value  = item.stock_number;
     document.getElementById('sel-vol').value    = item.volume || '';
     document.getElementById('sel-type').value   = item.type || '';
@@ -1470,7 +1470,7 @@ function editCartItem(idx) {
     recalcLine();
     renderExpiryInfo(item.stock_number);
     updateStockExpirySummary(item.stock_number, selectedItem.QTY_INHAND);
-    setStatus('Editing ' + (item.brand||'') + ' ' + (item.item||'') + ' — adjust and click Add to Bill');
+    setStatus('Editing ' + (item.brand||'') + ' ' + (item.item||'') + ' - adjust and click Add to Bill');
 }
 
 function renderCart() {
@@ -1486,10 +1486,10 @@ function renderCart() {
         tr.innerHTML = `
             <td>${i+1}</td>
             <td style="font-weight:bold;color:#0a246a;">${item.stock_number}</td>
-            <td style="font-weight:bold;">${item.brand||'—'}</td>
-            <td>${item.item||'—'}</td>
-            <td>${item.type||'—'}</td>
-            <td>${item.volume||'—'}</td>
+            <td style="font-weight:bold;">${item.brand||'-'}</td>
+            <td>${item.item||'-'}</td>
+            <td>${item.type||'-'}</td>
+            <td>${item.volume||'-'}</td>
             <td style="text-align:right;font-weight:bold;">${item.quantity}</td>
             <td style="text-align:right;">${item.price.toFixed(2)}</td>
             <td style="text-align:right;font-weight:bold;color:#0a246a;">${item.amount.toFixed(2)}</td>
@@ -1521,7 +1521,7 @@ function recalcBalance() {
     document.getElementById('balance-amt').style.color = bal < 0 ? 'darkred' : 'darkgreen';
 }
 
-// Shared save logic — used by the Save button (save only) and by Print
+// Shared save logic - used by the Save button (save only) and by Print
 // (save-first-if-needed, then print). Returns the fetch promise so callers
 // can chain their own success handling (toast/print) without duplicating
 // validation or the request itself.
@@ -1536,10 +1536,10 @@ function performSave() {
     const paid      = parseFloat(document.getElementById('cash-paid').value) || 0;
     const transType = document.getElementById('trans-type').value;
 
-    // Cash/Card sales must be paid in full — only Credit is allowed to carry
+    // Cash/Card sales must be paid in full - only Credit is allowed to carry
     // an outstanding (negative) balance, since that's the whole point of credit.
     if (transType !== 'Credit' && (paid - net) < 0) {
-        toast('Cash/Card sales cannot be saved with a negative balance — collect full payment or switch Type to Credit', 'warn');
+        toast('Cash/Card sales cannot be saved with a negative balance - collect full payment or switch Type to Credit', 'warn');
         document.getElementById('cash-paid').focus();
         return Promise.resolve(null);
     }
@@ -1566,12 +1566,12 @@ function buildReceiptText(header, detail) {
     let t = '';
     const companyName = (clientInfo.Client_name||'Margalla 3M Industries').toUpperCase();
     t += companyName.padStart(Math.floor((32+companyName.length)/2)).padEnd(32) + '\n';
-    t += '        AISellProduct — Islamabad\n';
+    t += '        AISellProduct - Islamabad\n';
     t += dline + '\n';
-    t += 'Bill #: ' + (header.Invoice_reference || header.Trans_no || '—') + '\n';
+    t += 'Bill #: ' + (header.Invoice_reference || header.Trans_no || '-') + '\n';
     t += 'Date  : ' + (header.Trans_date||new Date().toLocaleString('en-GB')) + '\n';
     t += 'Cust  : ' + (header.Cust_name||'Walk-in Customer') + '\n';
-    t += 'Contact: ' + (header.Cust_telno||'—') + '\n';
+    t += 'Contact: ' + (header.Cust_telno||'-') + '\n';
     t += 'Type  : ' + (header.Trans_type||'Cash') + '\n';
     t += line + '\n';
     t += 'Item              Qty   Price    Amt\n';
@@ -1605,7 +1605,7 @@ function printSavedInvoice(billNo) {
         .then(res => { if (res.header) triggerPrint(buildReceiptText(res.header, res.detail)); });
 }
 
-// Print always prints an actually-saved invoice — never a draft — so an
+// Print always prints an actually-saved invoice - never a draft - so an
 // "official" receipt is never handed out for a sale that was never recorded.
 // If the current bill isn't saved yet, this saves it first (same as clicking
 // Save), then prints once that succeeds.
@@ -1622,8 +1622,8 @@ function doPrint() {
             billNoEl.value = res.trans_no;
             billNoEl.classList.remove('bill-preview');
             document.getElementById('invno-display').textContent = res.trans_no;
-            toast('Sale saved — Bill #' + res.trans_no,'ok');
-            setStatus('Sale saved — Bill #' + res.trans_no);
+            toast('Sale saved - Bill #' + res.trans_no,'ok');
+            setStatus('Sale saved - Bill #' + res.trans_no);
             printSavedInvoice(res.trans_no);
         } else {
             toast('Error: '+(res.error||'Unknown'),'err'); setStatus('Save failed');
@@ -1655,11 +1655,11 @@ function resetForm() {
     document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
     document.getElementById('expiry-info-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:#888;font-size:10px;">Select an item to view expiry details.</td></tr>';
     document.getElementById('expiry-info-label').textContent = '';
-    // Recalc after the discount/cash fields above are already reset to 0 —
+    // Recalc after the discount/cash fields above are already reset to 0 -
     // doing this before them left Balance showing the previous bill's stale
     // cash-minus-net figure instead of 0.00.
     recalcTotals();
-    // Re-fetch stock so a New/Cancel bill always starts from live quantities —
+    // Re-fetch stock so a New/Cancel bill always starts from live quantities -
     // the last sale's deductions wouldn't otherwise show up until some other
     // action happened to reload the product list.
     loadProductList();
@@ -1677,7 +1677,7 @@ function loadTransactionsFull() {
         document.getElementById('txn-result-count').textContent = rows.length + ' record(s)';
     }).catch(() => {
         document.getElementById('txn-full-body').innerHTML =
-            '<tr><td colspan="11" style="text-align:center;color:darkred;padding:10px;">Could not load transactions — check DB connection</td></tr>';
+            '<tr><td colspan="11" style="text-align:center;color:darkred;padding:10px;">Could not load transactions - check DB connection</td></tr>';
     });
 }
 
@@ -1718,14 +1718,14 @@ function renderTxnRows(tbodyId, rows, limit, showMobile) {
         const tr = document.createElement('tr');
         const bal = parseFloat(row.Balance_amount||0);
         let cells = `<td style="font-weight:bold;color:#0a246a;">${row.Trans_no}</td><td>${row.Cust_name||'Walk-in'}</td>`;
-        if (showMobile) cells += `<td>${row.Cust_telno||'—'}</td>`;
+        if (showMobile) cells += `<td>${row.Cust_telno||'-'}</td>`;
         cells += `<td>${row.Trans_date}</td><td>${row.Trans_type}</td>
             <td style="text-align:right;">${parseFloat(row.Gross_amount||0).toFixed(2)}</td>
             <td style="text-align:right;">${row.Disc_percentage||0}%</td>
             <td style="text-align:right;font-weight:bold;color:darkgreen;">${parseFloat(row.Trans_amount||0).toFixed(2)}</td>
             <td style="text-align:right;">${parseFloat(row.Paid_amount||0).toFixed(2)}</td>
             <td style="text-align:right;font-weight:bold;color:${bal<0?'darkred':'darkgreen'};">${bal.toFixed(2)}</td>
-            <td>${row.User_id||'—'}</td>`;
+            <td>${row.User_id||'-'}</td>`;
         tr.innerHTML = cells;
         tr.onclick = () => loadTxnDetail(row.Trans_no);
         tbody.appendChild(tr);
@@ -1737,12 +1737,12 @@ function loadTxnDetail(id) {
         if (!res.header) return;
         currentDetailHeader = res.header;
         currentDetailRows   = res.detail;
-        document.getElementById('txn-detail-header').textContent = 'Bill #'+res.header.Trans_no+' — '+(res.header.Cust_name||'Walk-in')+' — '+res.header.Trans_date;
+        document.getElementById('txn-detail-header').textContent = 'Bill #'+res.header.Trans_no+' - '+(res.header.Cust_name||'Walk-in')+' - '+res.header.Trans_date;
         const tbody = document.getElementById('txn-detail-body');
         tbody.innerHTML = '';
         res.detail.forEach(d => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${d.stock_number}</td><td style="font-weight:bold;">${d.BRAND_NAME||'—'}</td><td>${d.ITEM_NAME||'—'}</td><td>${d.VOLUME_L||'—'}</td><td style="text-align:right;font-weight:bold;">${d.quantity}</td><td style="text-align:right;">${parseFloat(d.Price_PerItem||0).toFixed(2)}</td><td style="text-align:right;font-weight:bold;color:darkgreen;">${parseFloat(d.amount||0).toFixed(2)}</td>`;
+            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${d.stock_number}</td><td style="font-weight:bold;">${d.BRAND_NAME||'-'}</td><td>${d.ITEM_NAME||'-'}</td><td>${d.VOLUME_L||'-'}</td><td style="text-align:right;font-weight:bold;">${d.quantity}</td><td style="text-align:right;">${parseFloat(d.Price_PerItem||0).toFixed(2)}</td><td style="text-align:right;font-weight:bold;color:darkgreen;">${parseFloat(d.amount||0).toFixed(2)}</td>`;
             tbody.appendChild(tr);
         });
         document.getElementById('txn-receipt').textContent = buildReceiptText(res.header, res.detail);
@@ -1757,12 +1757,12 @@ function loadSuppliers() {
         if (!rows.length) { tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:8px;color:#888;">No suppliers found</td></tr>'; return; }
         rows.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${row.SUPPLIER_CODE}</td><td style="font-weight:bold;">${row.SUPPLIER_NAME}</td><td>${row.CONTACT_PERSON||'—'}</td><td>${row.CITY||'—'}</td><td>${row.TELEPHONE_NO||'—'}</td><td>${row.MOBILE_NO||'—'}</td><td>${row.EMAIL||'—'}</td><td>${row.REGION||'—'}</td>`;
+            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${row.SUPPLIER_CODE}</td><td style="font-weight:bold;">${row.SUPPLIER_NAME}</td><td>${row.CONTACT_PERSON||'-'}</td><td>${row.CITY||'-'}</td><td>${row.TELEPHONE_NO||'-'}</td><td>${row.MOBILE_NO||'-'}</td><td>${row.EMAIL||'-'}</td><td>${row.REGION||'-'}</td>`;
             tbody.appendChild(tr);
         });
     }).catch(() => {
         document.getElementById('sup-body').innerHTML =
-            '<tr><td colspan="8" style="text-align:center;color:darkred;padding:10px;">Could not load suppliers — check DB connection</td></tr>';
+            '<tr><td colspan="8" style="text-align:center;color:darkred;padding:10px;">Could not load suppliers - check DB connection</td></tr>';
     });
 }
 
@@ -1773,12 +1773,12 @@ function loadBookings() {
         if (!rows.length) { tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:8px;color:#888;">No bookings found</td></tr>'; return; }
         rows.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${row.ID}</td><td style="font-weight:bold;">${row.Item_name||'—'}</td><td style="text-align:right;font-weight:bold;">${row.Demand_qty||0}</td><td>${row.Booking_date||'—'}</td><td>${row.Demand_date||'—'}</td><td>${row.Supplier_code||'—'}</td><td>${row.Prod_Type||'—'}</td><td style="font-weight:bold;color:${row.Status==='Complete'?'darkgreen':row.Status==='Pending'?'darkorange':'#333'};">${row.Status||'—'}</td><td>${row.Comments||'—'}</td>`;
+            tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${row.ID}</td><td style="font-weight:bold;">${row.Item_name||'-'}</td><td style="text-align:right;font-weight:bold;">${row.Demand_qty||0}</td><td>${row.Booking_date||'-'}</td><td>${row.Demand_date||'-'}</td><td>${row.Supplier_code||'-'}</td><td>${row.Prod_Type||'-'}</td><td style="font-weight:bold;color:${row.Status==='Complete'?'darkgreen':row.Status==='Pending'?'darkorange':'#333'};">${row.Status||'-'}</td><td>${row.Comments||'-'}</td>`;
             tbody.appendChild(tr);
         });
     }).catch(() => {
         document.getElementById('book-body').innerHTML =
-            '<tr><td colspan="9" style="text-align:center;color:darkred;padding:10px;">Could not load bookings — check DB connection</td></tr>';
+            '<tr><td colspan="9" style="text-align:center;color:darkred;padding:10px;">Could not load bookings - check DB connection</td></tr>';
     });
 }
 
@@ -1794,7 +1794,7 @@ function loadReports() {
         });
     }).catch(() => {
         document.getElementById('report-body').innerHTML =
-            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:10px;">Could not load reports — check DB connection</td></tr>';
+            '<tr><td colspan="4" style="text-align:center;color:darkred;padding:10px;">Could not load reports - check DB connection</td></tr>';
     });
 }
 
@@ -1810,13 +1810,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };

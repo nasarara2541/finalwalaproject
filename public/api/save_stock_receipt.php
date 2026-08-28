@@ -54,13 +54,13 @@ foreach ($lines as $i => $l) {
 
 sqlsrv_begin_transaction($conn);
 
-// oldBatches[stock|batch] = ['received'=>int, 'available'=>int] — captured before
+// oldBatches[stock|batch] = ['received'=>int, 'available'=>int] - captured before
 // the old rows are deleted, so we can tell how much of each batch already sold
 // and carry that forward instead of resetting it back to "fully available".
 $oldBatches = [];
 
 if (!$invNo) {
-    // Invoice_no is no longer an IDENTITY column — the app must supply it.
+    // Invoice_no is no longer an IDENTITY column - the app must supply it.
     // TABLOCKX+HOLDLOCK for the rest of this transaction so two concurrent
     // saves can't compute the same "next" number.
     $sqlNext  = "SELECT ISNULL(MAX(Invoice_no), 0) + 1 AS next_no FROM ST_STOCKRECEIPT WITH (TABLOCKX, HOLDLOCK)";
@@ -146,13 +146,13 @@ foreach ($lines as $l) {
         $qtyAvail = $qtyRecPieces;
     }
 
-    // Always derive these server-side from the validated price/units — never
+    // Always derive these server-side from the validated price/units - never
     // trust the client's copy, which only recomputes them when the item is
     // first selected and goes stale the moment the price is edited afterward.
     // Sales/Purch Price entered on the form are PER BOX; dividing by units
     // gives the per-bottle price. PRICE_PERITEM/PPRICE_PERITEM store this
     // per-bottle value (matching Item_Stock.PRICE/PURCHASE_PRICE and the
-    // schema's own sample data), NOT the raw per-box price — ITEMS_RECEIVED
+    // schema's own sample data), NOT the raw per-box price - ITEMS_RECEIVED
     // is in pieces, so Amount everywhere must be pieces x per-bottle price.
     // Price_PerUnit/PPrice_PerUnit are a further per-item subdivision,
     // matching the same convention the sample data uses.
@@ -168,12 +168,12 @@ foreach ($lines as $l) {
                    $bonusQty,$discPct,$discAmount,$gstPct,$gstAmount]);
     if (!$stmtD) { sqlsrv_rollback($conn); $err = sqlsrv_errors(); echo json_encode(['error'=>$err[0]['message'] ?? 'Detail insert failed (this stock number may already exist on this invoice)']); exit; }
 
-    // POS charges Item_Stock.PRICE per bottle sold — must be the per-bottle
+    // POS charges Item_Stock.PRICE per bottle sold - must be the per-bottle
     // price, not the per-box price the receiving form was filled in with.
     // PURCHASE_PRICE is kept in sync the same way so save_transaction.php's
     // margin tracking (PPrice_amount) reflects the latest batch's cost.
     //
-    // Log to Item_Price_History only when the sale price actually changes —
+    // Log to Item_Price_History only when the sale price actually changes -
     // reading the old value first so a re-save at the same price (e.g.
     // Modify-with-no-changes) doesn't write a pointless "changed from X to
     // X" row.

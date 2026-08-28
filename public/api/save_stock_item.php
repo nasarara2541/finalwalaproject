@@ -26,7 +26,7 @@ if ($units < 1) { echo json_encode(['error' => 'Units Per Item must be greater t
 
 if ($stockNo) {
     // stock_number was supplied by the client (a record previously loaded via
-    // Find or the grid) — this is an update to that existing row. STOCK_NUMBER
+    // Find or the grid) - this is an update to that existing row. STOCK_NUMBER
     // itself is never written; it's an identity column and can't change.
     $checkStmt = sqlsrv_query($conn, "SELECT COUNT(*) AS cnt FROM Item_Stock WHERE STOCK_NUMBER = ?", [$stockNo]);
     $checkRow  = $checkStmt ? sqlsrv_fetch_array($checkStmt, SQLSRV_FETCH_ASSOC) : null;
@@ -52,7 +52,7 @@ if ($stockNo) {
     sqlsrv_close($conn);
     echo json_encode(['success' => true, 'stock_number' => $stockNo, 'mode' => 'updated']);
 } else {
-    // No stock_number supplied — a brand new item. STOCK_NUMBER is an identity
+    // No stock_number supplied - a brand new item. STOCK_NUMBER is an identity
     // column now (was manually-typed VARCHAR before), so it's left out of the
     // insert list entirely and read back via SCOPE_IDENTITY().
     $sql  = "INSERT INTO Item_Stock

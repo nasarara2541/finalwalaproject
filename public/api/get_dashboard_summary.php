@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 
-// Dashboard figures are sensitive (money/profit) — require the Administrator
+// Dashboard figures are sensitive (money/profit) - require the Administrator
 // group specifically, not just "logged in".
 if (empty($_SESSION['emp_is_admin'])) {
     http_response_code(403);
@@ -11,7 +11,7 @@ if (empty($_SESSION['emp_is_admin'])) {
 }
 
 // Total Sale trusts the stored trans_detail.amount directly (explicit
-// business decision) rather than recomputing quantity * Price_PerItem — a
+// business decision) rather than recomputing quantity * Price_PerItem - a
 // handful of historical rows have an amount that doesn't match qty*price
 // (data-entry typos from hand transcription), but the recorded amount is
 // kept as the source of truth rather than silently overridden.

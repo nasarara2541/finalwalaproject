@@ -105,7 +105,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:130px; flex-shrink:0; }
             <div class="field-row">
                 <label class="lbl">Sub-Units Per Unit</label>
                 <input id="detail-subunits" type="number" min="0" placeholder="e.g. 10 tablets" style="width:100px;flex:none;">
-                <span class="legend-text">For items sold as strips/sheets — tablets per strip etc.</span>
+                <span class="legend-text">For items sold as strips/sheets - tablets per strip etc.</span>
             </div>
 
             <div class="field-row">
@@ -121,7 +121,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:130px; flex-shrink:0; }
             <div style="border-top:1px solid #808080;margin:10px 0 8px;padding-top:6px;">
                 <div style="display:flex;gap:5px;align-items:center;">
                     <button class="win-btn win-btn-green" onclick="saveDetails()">Save</button>
-                    <span class="legend-text" style="font-style:italic;color:#888;">This screen is a layout preview — saving isn't wired up yet.</span>
+                    <span class="legend-text" style="font-style:italic;color:#888;">This screen is a layout preview - saving isn't wired up yet.</span>
                 </div>
             </div>
         </div>
@@ -161,13 +161,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -188,7 +188,7 @@ function loadItems() {
         .catch(() => {
             toast('Network error loading items', 'err');
             document.getElementById('item-list-body').innerHTML =
-                '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;">Could not load items — check DB connection</td></tr>';
+                '<tr><td colspan="4" style="text-align:center;color:darkred;padding:8px;">Could not load items - check DB connection</td></tr>';
         });
 }
 
@@ -225,9 +225,9 @@ function filterItems() {
 
 function selectItem(it) {
     selectedItem = it;
-    document.getElementById('detail-item-label').value = it.STOCK_NUMBER + ' — ' + (it.BRAND_NAME||'') + ' ' + (it.ITEM_NAME||'');
+    document.getElementById('detail-item-label').value = it.STOCK_NUMBER + ' - ' + (it.BRAND_NAME||'') + ' ' + (it.ITEM_NAME||'');
     // Pre-filled from the item's existing record so the layout doesn't look
-    // empty — Units Per Box / Unit Type already exist on Item_Stock. The
+    // empty - Units Per Box / Unit Type already exist on Item_Stock. The
     // other fields below are new and have nowhere to load from yet.
     document.getElementById('detail-units-perbox').value = it.UNITS_PERITEM ?? '';
     document.getElementById('detail-unit-type').value    = it.UNIT_TYPE || '';
@@ -240,7 +240,7 @@ function selectItem(it) {
 
 function saveDetails() {
     if (!selectedItem) { toast('Select an item from the list first', 'warn'); return; }
-    toast('Saving isn\'t implemented yet — layout only for now', 'warn');
+    toast('Saving isn\'t implemented yet - layout only for now', 'warn');
 }
 
 document.addEventListener('keydown', e => {

@@ -78,7 +78,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
         <div style="display:flex;flex-wrap:wrap;gap:8px 20px;">
             <div class="field-cell"><label class="lbl">Item Name</label><input id="f-item-name" type="text" oninput="debouncedSearch()"></div>
             <div class="field-cell">
-                <label class="lbl" title="No product-category column exists in the schema yet — this database is entirely one category, shown here rather than offered as a real filter">Group</label>
+                <label class="lbl" title="No product-category column exists in the schema yet - this database is entirely one category, shown here rather than offered as a real filter">Group</label>
                 <input type="text" value="<?php echo htmlspecialchars($groupLabel); ?>" readonly tabindex="-1">
             </div>
             <div class="field-cell"><label class="lbl">Manufacture By</label><input id="f-manufacture" type="text" list="manufacture-datalist" autocomplete="off" oninput="debouncedSearch()"></div>
@@ -109,7 +109,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="results-body"><tr><td colspan="11" style="text-align:center;padding:10px;color:#888;">Type a filter above, or pick a view below, to search — the full item list is too large to load by default.</td></tr></tbody>
+                <tbody id="results-body"><tr><td colspan="11" style="text-align:center;padding:10px;color:#888;">Type a filter above, or pick a view below, to search - the full item list is too large to load by default.</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -120,7 +120,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
         <button class="win-btn"               id="btn-inactive" onclick="setView('inactive')">All Inactive</button>
         <button class="win-btn"               id="btn-disc"     onclick="setView('disc')">Disc. Items</button>
         <button class="win-btn"               id="btn-bonus"    onclick="setView('bonus')">Bonus QTY</button>
-        <button class="win-btn"               id="btn-narcotics" onclick="setView('narcotics')" title="Filters to items with NARCOTICS_STATUS = 1 — naturally empty for real water items, none of them are narcotics">Anti Nar</button>
+        <button class="win-btn"               id="btn-narcotics" onclick="setView('narcotics')" title="Filters to items with NARCOTICS_STATUS = 1 - naturally empty for real water items, none of them are narcotics">Anti Nar</button>
     </div>
 
     <datalist id="company-datalist"></datalist>
@@ -155,7 +155,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -208,11 +208,30 @@ function runSearch() {
         })
         .catch(() => {
             document.getElementById('results-body').innerHTML =
-                '<tr><td colspan="11" style="text-align:center;color:darkred;padding:10px;">Could not load stock — check DB connection</td></tr>';
+                '<tr><td colspan="11" style="text-align:center;color:darkred;padding:10px;">Could not load stock - check DB connection</td></tr>';
         });
 }
 
+// Rendering hundreds of rows at once is what actually made this feel slow --
+// only the first page renders up front, the rest come in 100 at a time on
+// request, same idea Anoosha used on her own screen.
+const PAGE_SIZE = 100;
+let currentResults = [];
+let visibleResults = PAGE_SIZE;
+
 function renderResults(rows) {
+    currentResults = rows;
+    visibleResults = PAGE_SIZE; // a brand new search always starts back at page 1
+    renderVisibleResults();
+}
+
+function loadMoreResults() {
+    visibleResults += PAGE_SIZE;
+    renderVisibleResults();
+}
+
+function renderVisibleResults() {
+    const rows = currentResults;
     const tbody = document.getElementById('results-body');
     tbody.innerHTML = '';
     document.getElementById('result-count').textContent = rows.length + ' item(s)';
@@ -221,27 +240,27 @@ function renderResults(rows) {
         tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:10px;color:#888;">No items found</td></tr>';
         return;
     }
-    rows.forEach(row => {
+    rows.slice(0, visibleResults).forEach(row => {
         const tr = document.createElement('tr');
         tr.className = selectedStock === row.STOCK_NUMBER ? 'row-selected' : '';
-        const slDisplay = (row.SAFETY_LEVEL !== null && row.SAFETY_LEVEL !== undefined && row.SAFETY_LEVEL !== '') ? row.SAFETY_LEVEL : '—';
+        const slDisplay = (row.SAFETY_LEVEL !== null && row.SAFETY_LEVEL !== undefined && row.SAFETY_LEVEL !== '') ? row.SAFETY_LEVEL : '-';
         // Per the migration script's own comments: NARCOTICS_STATUS=1 -> "*"
         // suffix, DISC_STATUS=1 -> "**" suffix, appended to the item name.
         let nameSuffix = '';
         if (row.NARCOTICS_STATUS === '1') nameSuffix += ' *';
         if (row.DISC_STATUS === '1')      nameSuffix += ' **';
         tr.innerHTML = `
-            <td>${row.BARCODE || '—'}</td>
+            <td>${row.BARCODE || '-'}</td>
             <td style="font-weight:bold;">${(row.BRAND_NAME||'') + ' ' + (row.ITEM_NAME||'') + nameSuffix}</td>
-            <td>${row.ITEM_TYPE || '—'}</td>
-            <td>${row.COMPANY_NAME || '—'}</td>
-            <td>${row.MANUFACTURE_NAME || '—'}</td>
+            <td>${row.ITEM_TYPE || '-'}</td>
+            <td>${row.COMPANY_NAME || '-'}</td>
+            <td>${row.MANUFACTURE_NAME || '-'}</td>
             <td>${GROUP_LABEL}</td>
-            <td>${row.ITEM_NAME || '—'}</td>
-            <td>${row.LOCATION || '—'}</td>
-            <td style="text-align:right;">${row.UNITS_PERITEM ?? '—'}</td>
+            <td>${row.ITEM_NAME || '-'}</td>
+            <td>${row.LOCATION || '-'}</td>
+            <td style="text-align:right;">${row.UNITS_PERITEM ?? '-'}</td>
             <td style="text-align:right;">${slDisplay}</td>
-            <td>${row.AVAILABLE_STATUS || '—'}</td>`;
+            <td>${row.AVAILABLE_STATUS || '-'}</td>`;
         tr.onclick = () => {
             selectedStock = row.STOCK_NUMBER;
             document.querySelectorAll('#results-body tr').forEach(r => r.classList.remove('row-selected'));
@@ -249,6 +268,14 @@ function renderResults(rows) {
         };
         tbody.appendChild(tr);
     });
+    if (rows.length > visibleResults) {
+        const remaining = rows.length - visibleResults;
+        tbody.insertAdjacentHTML('beforeend', `<tr><td colspan="11" style="text-align:center;padding:8px;background:#ece9d8;">
+            <button class="win-btn win-btn-blue" onclick="loadMoreResults()">
+                <i class="fa-solid fa-angles-down"></i> Load ${Math.min(PAGE_SIZE, remaining)} More (${remaining} remaining)
+            </button>
+        </td></tr>`);
+    }
 }
 
 fetch('api/get_suppliers.php').then(r=>r.json()).then(rows => {

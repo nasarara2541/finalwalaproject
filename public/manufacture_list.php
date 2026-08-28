@@ -6,7 +6,7 @@ requireAccess('inventory');
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Manufacture List — AISellProduct</title>
+<title>Manufacture List - AISellProduct</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 * { font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; box-sizing: border-box; }
@@ -129,13 +129,13 @@ function toast(msg, type) {
 
 // Any fetch() call below now surfaces a network/server failure (DB
 // unreachable, wrong DB_SERVER in .env, connection dropped) as a toast
-// instead of leaving the screen silently stuck on "Loading…" forever — the
+// instead of leaving the screen silently stuck on "Loading…" forever - the
 // original rejection still propagates so each caller's existing .then()
 // chain behaves exactly as it did before.
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -153,7 +153,7 @@ function loadManufacturers() {
         .catch(() => {
             toast('Network error loading manufacturers', 'err');
             document.getElementById('mfg-listbox').innerHTML =
-                '<div style="padding:6px;color:darkred;">Could not load — check DB connection</div>';
+                '<div style="padding:6px;color:darkred;">Could not load - check DB connection</div>';
         });
 }
 

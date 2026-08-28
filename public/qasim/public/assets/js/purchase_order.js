@@ -289,7 +289,7 @@
         purchasePriceEl.value = '';
         groupEl.value = '';
         gstEl.value = '';
-        marginDisplay.textContent = '—';
+        marginDisplay.textContent = '-';
         btnAddItem.disabled = true;
         renderStockTable([]);
     }

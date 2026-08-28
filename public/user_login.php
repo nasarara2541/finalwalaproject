@@ -100,7 +100,7 @@ label.lbl { font-weight:bold; display:block; margin-bottom:3px; }
 <body class="flex flex-col h-screen">
 
 <div class="win-titlebar">
-    <span>&#x1F512; AISellProduct &mdash; Employee Login</span>
+    <span>&#x1F512; AISellProduct - Employee Login</span>
     <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
 </div>
 
@@ -143,7 +143,7 @@ label.lbl { font-weight:bold; display:block; margin-bottom:3px; }
 <div class="win-statusbar">
     <span>Ready</span>
     <span>AISellProduct v1.0</span>
-    <span>Margalla 3M Industries &mdash; Islamabad</span>
+    <span>Margalla 3M Industries - Islamabad</span>
 </div>
 
 <script>

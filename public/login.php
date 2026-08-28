@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-// Relative to this file, not a hardcoded absolute path — see includes/db.php.
+// Relative to this file, not a hardcoded absolute path - see includes/db.php.
 $env = parse_ini_file(__DIR__ . '/../.env');
 if ($env === false) {
     http_response_code(500);
@@ -78,7 +78,7 @@ body { background: #d4d0c8; overflow: hidden; }
 <body class="flex flex-col h-screen">
 
 <div class="win-titlebar">
-    <span>&#x1F4A7; AISellProduct &mdash; Choose Your Database</span>
+    <span>&#x1F4A7; AISellProduct - Choose Your Database</span>
     <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
 </div>
 
@@ -109,7 +109,7 @@ body { background: #d4d0c8; overflow: hidden; }
 <div class="win-statusbar">
     <span>Ready</span>
     <span>AISellProduct v1.0</span>
-    <span>Margalla 3M Industries &mdash; Islamabad</span>
+    <span>Margalla 3M Industries - Islamabad</span>
 </div>
 
 <script>

@@ -44,7 +44,7 @@
             <div class="field-cell" style="min-width:90px;"><label class="lbl" style="width:65px;">Price/Item</label><input type="number" id="sr-sale-price" min="0" step="0.01" style="width:70px;text-align:right;"></div>
             <div class="field-cell" style="min-width:90px;"><label class="lbl" style="width:70px;">PPrice/Item</label><input type="number" id="sr-purchase-price" style="width:70px;text-align:right;"></div>
             <div class="field-cell" style="min-width:90px;"><label class="lbl" style="width:50px;">Group</label><input type="text" id="sr-group" placeholder="Group" style="width:80px;"></div>
-            <div class="field-cell" style="min-width:80px;"><label class="lbl" style="width:55px;">Margin</label><div id="sr-margin-display" style="font-weight:bold;">—</div></div>
+            <div class="field-cell" style="min-width:80px;"><label class="lbl" style="width:55px;">Margin</label><div id="sr-margin-display" style="font-weight:bold;">-</div></div>
             <div class="field-cell" style="min-width:80px;"><label class="lbl" style="width:45px;">GST %</label><input type="number" id="sr-gst" step="0.01" placeholder="0.00" style="width:60px;text-align:right;"></div>
             <button id="sr-btn-add-item" type="button" disabled class="win-btn win-btn-blue"><i class="fa-solid fa-plus" style="font-size:10px;"></i> Save</button>
         </div>

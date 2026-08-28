@@ -73,10 +73,10 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
         <button class="win-btn toolbar-btn win-btn-green" onclick="saveBill()">Save</button>
         <button class="win-btn toolbar-btn" onclick="clearSaleForm()">Clear Sale</button>
         <button class="win-btn toolbar-btn" onclick="openEditPopup()">Edit</button>
-        <button class="win-btn toolbar-btn" disabled title="No returns/refunds concept exists anywhere in this app yet — you said this is coming as its own screen. Not wired up yet, noted for follow-up.">Return</button>
+        <button class="win-btn toolbar-btn" disabled title="No returns/refunds concept exists anywhere in this app yet - you said this is coming as its own screen. Not wired up yet, noted for follow-up.">Return</button>
         <button class="win-btn toolbar-btn win-btn-blue" onclick="printBill()">Print</button>
         <button class="win-btn toolbar-btn" onclick="holdBill()">Hold</button>
-        <button class="win-btn toolbar-btn" onclick="cancelCurrentBill()" title="Voids the currently loaded bill and reverses its stock — load one via Edit first">Cancellation</button>
+        <button class="win-btn toolbar-btn" onclick="cancelCurrentBill()" title="Voids the currently loaded bill and reverses its stock - load one via Edit first">Cancellation</button>
         <button class="win-btn toolbar-btn" style="color:darkred;" onclick="clearSaleForm()">Cancel</button>
     </div>
 
@@ -84,7 +84,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
     <div class="win-panel" style="display:flex;align-items:center;gap:10px;padding:5px 8px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:4px;">
             <label style="font-weight:bold;">Bill No</label>
-            <input id="bill-no" type="text" readonly value="—" style="width:80px;font-weight:bold;color:#0a246a;" tabindex="-1">
+            <input id="bill-no" type="text" readonly value="-" style="width:80px;font-weight:bold;color:#0a246a;" tabindex="-1">
         </div>
         <div style="display:flex;align-items:center;gap:4px;">
             <label style="font-weight:bold;">Date &amp; Time</label>
@@ -110,13 +110,13 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
         </div>
     </div>
 
-    <!-- Second info row — not shown in the reference crop, but these fields
+    <!-- Second info row - not shown in the reference crop, but these fields
          appear as real filters on Sale Reports (Sale Person/Description/
          Remarks), so they need somewhere to actually be entered or those
          filters would forever return nothing. -->
     <div class="win-panel" style="display:flex;align-items:center;gap:10px;padding:4px 8px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:4px;">
-            <label style="font-weight:bold;" title="Who gets sales credit for this bill — distinct from the logged-in cashier">Sale Person</label>
+            <label style="font-weight:bold;" title="Who gets sales credit for this bill - distinct from the logged-in cashier">Sale Person</label>
             <input id="sale-person" type="text" list="employee-datalist" placeholder="Optional" style="width:150px;" oninput="onSalePersonInput()" autocomplete="off">
             <datalist id="employee-datalist"></datalist>
         </div>
@@ -133,7 +133,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
     <!-- Main area: cart | entry + enriched results -->
     <div style="display:flex;gap:4px;flex:1;min-height:0;">
 
-        <!-- LEFT: Bill Items cart (same proven pattern as pos.php — not
+        <!-- LEFT: Bill Items cart (same proven pattern as pos.php - not
              visible in the reference crop, but a sale screen can't function
              without seeing what's actually in the bill before saving). -->
         <div class="win-panel" style="flex:1.2;display:flex;flex-direction:column;min-height:0;">
@@ -154,13 +154,13 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
                     <div style="display:flex;flex-direction:column;gap:1px;"><label style="font-weight:bold;">Code</label><input id="sel-stock" type="text" readonly style="width:75px;" tabindex="-1"></div>
                     <div style="display:flex;flex-direction:column;gap:1px;position:relative;min-width:200px;"><label style="font-weight:bold;">Name</label><input id="item-search" type="text" placeholder="Type to search…" oninput="searchItems(this.value)" autocomplete="off"></div>
                     <div style="display:flex;flex-direction:column;gap:1px;">
-                        <label style="font-weight:bold;color:#888;" title="No item-level bonus-on-sale column exists (BONUS_QTY only exists on the receiving side) — not wired up yet, noted for follow-up">Bonus</label>
-                        <input type="text" disabled style="width:55px;" title="Not wired up yet — noted for follow-up">
+                        <label style="font-weight:bold;color:#888;" title="No item-level bonus-on-sale column exists (BONUS_QTY only exists on the receiving side) - not wired up yet, noted for follow-up">Bonus</label>
+                        <input type="text" disabled style="width:55px;" title="Not wired up yet - noted for follow-up">
                     </div>
                     <div style="display:flex;flex-direction:column;gap:1px;"><label style="font-weight:bold;">Qty</label><input id="sel-qty" type="number" min="1" value="1" style="width:55px;" oninput="recalcLine()"></div>
                     <div style="display:flex;flex-direction:column;gap:1px;">
-                        <label style="font-weight:bold;color:#888;" title="No per-line discount column exists on trans_detail (only one overall bill-level discount is tracked, in the Calculator below) — not wired up yet, noted for follow-up">Disc %</label>
-                        <input type="text" disabled style="width:50px;" title="Not wired up yet — noted for follow-up">
+                        <label style="font-weight:bold;color:#888;" title="No per-line discount column exists on trans_detail (only one overall bill-level discount is tracked, in the Calculator below) - not wired up yet, noted for follow-up">Disc %</label>
+                        <input type="text" disabled style="width:50px;" title="Not wired up yet - noted for follow-up">
                     </div>
                     <div style="display:flex;flex-direction:column;gap:1px;"><label style="font-weight:bold;">U P</label><input id="sel-price" type="number" min="0" step="0.01" style="width:75px;" oninput="recalcLine()"></div>
                     <div style="display:flex;flex-direction:column;gap:1px;"><label style="font-weight:bold;">Amount</label><input id="sel-amount" type="text" readonly style="width:80px;font-weight:bold;" tabindex="-1"></div>
@@ -178,7 +178,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
                             <th>Type</th><th>Company</th><th>Manu</th>
                             <th style="text-align:right;">QTY</th><th style="text-align:right;">S Price</th>
                             <th style="text-align:right;">Pack</th>
-                            <th style="text-align:right;" title="Inferred as S Price × Pack — not a defined concept in the schema, flag if this should mean something else">Pack Rate</th>
+                            <th style="text-align:right;" title="Inferred as S Price × Pack - not a defined concept in the schema, flag if this should mean something else">Pack Rate</th>
                             <th>Location</th>
                         </tr></thead>
                         <tbody id="results-body"><tr><td colspan="11" style="text-align:center;color:#888;padding:10px;">Loading…</td></tr></tbody>
@@ -205,11 +205,11 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
     <span>AISellProduct v1.0</span>
 </div>
 
-<!-- Edit popup — search + pick a saved bill to load back into the form -->
+<!-- Edit popup - search + pick a saved bill to load back into the form -->
 <div id="edit-popup-overlay" class="popup-overlay">
     <div class="popup-box" id="edit-popup-box" style="width:560px;">
         <div class="popup-titlebar" id="edit-popup-titlebar">
-            <span>&#x270E; Edit — pick a bill to load</span>
+            <span>&#x270E; Edit - pick a bill to load</span>
             <span class="close-x" onclick="closeEditPopup()">&#x2716;</span>
         </div>
         <div class="popup-body">
@@ -223,11 +223,11 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
     </div>
 </div>
 
-<!-- Held bills popup — same pattern as pos.php -->
+<!-- Held bills popup - same pattern as pos.php -->
 <div id="held-popup-overlay" class="popup-overlay">
     <div class="popup-box" id="held-popup-box" style="width:520px;">
         <div class="popup-titlebar" id="held-popup-titlebar">
-            <span>&#x23F8; Held Bills — click a row to resume</span>
+            <span>&#x23F8; Held Bills - click a row to resume</span>
             <span class="close-x" onclick="closeHeldPopup()">&#x2716;</span>
         </div>
         <div class="popup-body">
@@ -256,7 +256,7 @@ function toast(msg, type) {
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -354,17 +354,17 @@ function renderResults(rows) {
         const packRate = pack * price;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${item.BARCODE || '—'}</td>
+            <td>${item.BARCODE || '-'}</td>
             <td style="font-weight:bold;">${(item.BRAND_NAME||'') + ' ' + (item.ITEM_NAME||'')}</td>
-            <td>${item.ITEM_NAME || '—'}</td>
-            <td>${item.ITEM_TYPE || '—'}</td>
-            <td>${item.COMPANY_NAME || '—'}</td>
-            <td>${item.MANUFACTURE_NAME || '—'}</td>
+            <td>${item.ITEM_NAME || '-'}</td>
+            <td>${item.ITEM_TYPE || '-'}</td>
+            <td>${item.COMPANY_NAME || '-'}</td>
+            <td>${item.MANUFACTURE_NAME || '-'}</td>
             <td style="text-align:right;">${item.QTY_INHAND ?? 0}</td>
             <td style="text-align:right;">${price.toFixed(2)}</td>
-            <td style="text-align:right;">${pack || '—'}</td>
-            <td style="text-align:right;">${packRate ? packRate.toFixed(2) : '—'}</td>
-            <td>${item.LOCATION || '—'}</td>`;
+            <td style="text-align:right;">${pack || '-'}</td>
+            <td style="text-align:right;">${packRate ? packRate.toFixed(2) : '-'}</td>
+            <td>${item.LOCATION || '-'}</td>`;
         tr.onclick = () => {
             document.querySelectorAll('#results-body tr').forEach(r => r.classList.remove('row-selected'));
             tr.classList.add('row-selected');
@@ -469,12 +469,12 @@ function buildPayload() {
 }
 
 function performSave() {
-    if (editingIsCancelled) { toast('This bill is cancelled — it cannot be saved/edited', 'warn'); return Promise.resolve(null); }
+    if (editingIsCancelled) { toast('This bill is cancelled - it cannot be saved/edited', 'warn'); return Promise.resolve(null); }
     if (!cart.length) { toast('Add items to the bill first', 'warn'); return Promise.resolve(null); }
     const payload = buildPayload();
     const transType = document.getElementById('trans-type').value;
     if (transType !== 'Credit' && (payload.paid_amount - payload.trans_amount) < 0) {
-        toast('Cash/Card sales cannot be saved with a negative balance — collect full payment or switch Type to Credit', 'warn');
+        toast('Cash/Card sales cannot be saved with a negative balance - collect full payment or switch Type to Credit', 'warn');
         return Promise.resolve(null);
     }
     setStatus('Saving…');
@@ -489,11 +489,11 @@ function saveBill() {
             editingTransNo = res.trans_no;
             document.getElementById('bill-no').value = res.trans_no;
             if (res.skipped_reversals && res.skipped_reversals.length) {
-                toast('Saved — but stock for item(s) ' + res.skipped_reversals.join(', ') + " couldn't be fully reversed (no batch left to restore into)", 'warn');
+                toast('Saved - but stock for item(s) ' + res.skipped_reversals.join(', ') + " couldn't be fully reversed (no batch left to restore into)", 'warn');
             } else {
                 toast('Bill #' + res.trans_no + ' saved', 'ok');
             }
-            setStatus('Saved — Bill #' + res.trans_no);
+            setStatus('Saved - Bill #' + res.trans_no);
             loadAllItems();
         } else {
             toast('Error: ' + (res.error||'Unknown'), 'err');
@@ -504,7 +504,7 @@ function saveBill() {
 
 // Voids the currently loaded bill (must be loaded via Edit first) and
 // reverses its stock effect server-side (same strategy as editing). Does
-// not delete the bill — it stays visible in Cancelled Bills for audit.
+// not delete the bill - it stays visible in Cancelled Bills for audit.
 function cancelCurrentBill() {
     if (!editingTransNo) { toast('Load a bill via Edit first, then click Cancellation', 'warn'); return; }
     if (editingIsCancelled) { toast('Bill #' + editingTransNo + ' is already cancelled', 'warn'); return; }
@@ -517,9 +517,9 @@ function cancelCurrentBill() {
     }).then(r=>r.json()).then(res => {
         if (!res.success) { toast('Error: ' + (res.error||'Unknown'), 'err'); setStatus('Cancel failed'); return; }
         if (res.skipped_reversals && res.skipped_reversals.length) {
-            toast('Bill #' + res.trans_no + ' cancelled — but stock for item(s) ' + res.skipped_reversals.join(', ') + " couldn't be fully reversed (no batch left to restore into)", 'warn');
+            toast('Bill #' + res.trans_no + ' cancelled - but stock for item(s) ' + res.skipped_reversals.join(', ') + " couldn't be fully reversed (no batch left to restore into)", 'warn');
         } else {
-            toast('Bill #' + res.trans_no + ' cancelled — stock reversed', 'ok');
+            toast('Bill #' + res.trans_no + ' cancelled - stock reversed', 'ok');
         }
         setStatus('Bill #' + res.trans_no + ' cancelled');
         clearSaleForm();
@@ -532,7 +532,7 @@ function printBill() {
         if (!res.success) { toast('Error: ' + (res.error||'Unknown'), 'err'); return; }
         editingTransNo = res.trans_no;
         document.getElementById('bill-no').value = res.trans_no;
-        toast('Bill #' + res.trans_no + ' saved — printing', 'ok');
+        toast('Bill #' + res.trans_no + ' saved - printing', 'ok');
         loadAllItems();
         const w = window.open('', '_blank', 'width=380,height=600');
         const custName = document.getElementById('cust-name').value || 'Walk-in';
@@ -560,7 +560,7 @@ function holdBill() {
         discPct: document.getElementById('disc-pct').value, cashPaid: document.getElementById('cash-paid').value });
     persistHeldBills();
     clearSaleForm();
-    toast('Bill held — resume from Held popup', 'ok');
+    toast('Bill held - resume from Held popup', 'ok');
 }
 function openHeldPopup() { renderHeldList(); document.getElementById('held-popup-overlay').classList.add('open'); }
 function closeHeldPopup() { document.getElementById('held-popup-overlay').classList.remove('open'); }
@@ -603,7 +603,7 @@ function clearSaleForm() {
     document.getElementById('bill-remarks').value = '';
     document.getElementById('disc-pct').value = '0';
     document.getElementById('cash-paid').value = '0';
-    document.getElementById('bill-no').value = '—';
+    document.getElementById('bill-no').value = '-';
     document.getElementById('item-search').value = '';
     document.getElementById('sel-stock').value = '';
     document.getElementById('sel-price').value = '';
@@ -660,10 +660,10 @@ function loadBillForEdit(transNo) {
         renderCart(); recalcTotals();
         closeEditPopup();
         if (editingIsCancelled) {
-            toast('Bill #' + transNo + ' is CANCELLED (' + (res.header.Cancel_Reason || 'no reason given') + ') — view only, Save is blocked', 'warn');
+            toast('Bill #' + transNo + ' is CANCELLED (' + (res.header.Cancel_Reason || 'no reason given') + ') - view only, Save is blocked', 'warn');
             setStatus('Viewing cancelled Bill #' + transNo);
         } else {
-            toast('Bill #' + transNo + ' loaded — edit items/amounts, then Save to update it', 'ok');
+            toast('Bill #' + transNo + ' loaded - edit items/amounts, then Save to update it', 'ok');
             setStatus('Editing Bill #' + transNo);
         }
     });

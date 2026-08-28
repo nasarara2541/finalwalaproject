@@ -126,7 +126,7 @@ select:focus, input[type=text]:focus, input[type=date]:focus { outline: 1px soli
             <div class="win-section-label" style="margin:-8px -8px 8px -8px;">
                 <span>Profit Report by Customer</span>
                 <span style="display:flex;align-items:center;gap:5px;">
-                    <input type="text" id="customer-filter" placeholder="Filter by name…" oninput="renderCustomerTable()" style="width:160px;">
+                    <input type="text" id="customer-filter" placeholder="Filter by name…" oninput="visibleCount.customer = PAGE_SIZE; renderCustomerTable();" style="width:160px;">
                     <label for="customer-month" style="font-weight:normal;font-size:11px;color:#555;">Month:</label>
                     <select id="customer-month" onchange="ensureCustomerLoaded()"></select>
                 </span>
@@ -170,7 +170,7 @@ function setStatus(msg) { document.getElementById('status-msg').textContent = ms
 const _nativeFetch = window.fetch;
 window.fetch = function(...args) {
     return _nativeFetch.apply(this, args).catch(err => {
-        toast('Network/Server error — check DB_SERVER in .env and that the database is reachable', 'err');
+        toast('Network/Server error - check DB_SERVER in .env and that the database is reachable', 'err');
         throw err;
     });
 };
@@ -181,6 +181,22 @@ const SIZES = ['0.5L','1.5L','6L','12L','19L'];
 let productData = [];
 let regionData = [];
 let customerData = [];
+
+// Rendering all of a big month's rows at once is what was actually slow --
+// each table starts at 100 rows and grows 100 at a time on request, same
+// idea Anoosha used on her own screen.
+const PAGE_SIZE = 100;
+let visibleCount = { product: PAGE_SIZE, region: PAGE_SIZE, customer: PAGE_SIZE };
+
+function loadMoreRow(key, totalRows, colspan, onClick) {
+    const remaining = totalRows - visibleCount[key];
+    if (remaining <= 0) return '';
+    return `<tr><td colspan="${colspan}" style="text-align:center;padding:8px;background:#ece9d8;">
+        <button class="win-btn win-btn-blue" onclick="${onClick}">
+            <i class="fa-solid fa-angles-down"></i> Load ${Math.min(PAGE_SIZE, remaining)} More (${remaining} remaining)
+        </button>
+    </td></tr>`;
+}
 // Which month's rows are currently sitting in each of the arrays above --
 // null until that tab's first load. Lets ensureXLoaded() skip re-fetching
 // when the month picked is already what's loaded, and lets switching tabs
@@ -246,7 +262,7 @@ function loadMonthList() {
         setStatus('Ready');
     }).catch(() => {
         document.getElementById('product-body').innerHTML =
-            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+            '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
     });
 }
 
@@ -262,12 +278,13 @@ function ensureProductLoaded() {
             if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
             productData = rows;
             loadedMonth.product = key;
+            visibleCount.product = PAGE_SIZE;
             renderProductTable();
             setStatus('Ready');
         })
         .catch(() => {
             document.getElementById('product-body').innerHTML =
-                '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+                '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         });
 }
 
@@ -283,12 +300,13 @@ function ensureRegionLoaded() {
             if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
             regionData = rows;
             loadedMonth.region = key;
+            visibleCount.region = PAGE_SIZE;
             renderRegionTable();
             setStatus('Ready');
         })
         .catch(() => {
             document.getElementById('region-body').innerHTML =
-                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         });
 }
 
@@ -304,12 +322,13 @@ function ensureCustomerLoaded() {
             if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
             customerData = rows;
             loadedMonth.customer = key;
+            visibleCount.customer = PAGE_SIZE;
             renderCustomerTable();
             setStatus('Ready');
         })
         .catch(() => {
             document.getElementById('customer-body').innerHTML =
-                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load - check DB connection</td></tr>';
         });
 }
 
@@ -320,10 +339,14 @@ function renderProductTable() {
     const rows = productData.filter(r => monthKey(r) === key);
     if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-note">No data for this month</td></tr>'; return; }
 
+    // Totals are always computed over every matching row for the month, not
+    // just the ones currently visible -- Load More should never change the
+    // Total line, only reveal more detail above it.
     let tPacks=0, tSale=0, tCost=0;
-    rows.forEach(r => {
+    rows.forEach(r => { tPacks += Number(r.Packs); tSale += Number(r.Sale); tCost += Number(r.Cost); });
+
+    rows.slice(0, visibleCount.product).forEach(r => {
         const profit = r.Sale - r.Cost;
-        tPacks += Number(r.Packs); tSale += Number(r.Sale); tCost += Number(r.Cost);
         const tr = document.createElement('tr');
         tr.innerHTML = `<td style="font-weight:bold;color:#0a246a;">${r.Item}</td>
             <td style="text-align:right;">${fmt(r.Packs)}</td>
@@ -332,6 +355,8 @@ function renderProductTable() {
             <td style="text-align:right;font-weight:bold;color:${profit>=0?'#1a7a1a':'#b03030'};">${fmt(profit)}</td>`;
         tbody.appendChild(tr);
     });
+    tbody.insertAdjacentHTML('beforeend', loadMoreRow('product', rows.length, 5, 'visibleCount.product += PAGE_SIZE; renderProductTable();'));
+
     const totalTr = document.createElement('tr');
     totalTr.className = 'grand-total';
     const tProfit = tSale - tCost;
@@ -380,20 +405,20 @@ function renderRegionTable() {
     const pivoted = pivotByRow(rows, 'Region', 'Region');
     const colTotals = {}; cols.forEach(c => colTotals[c] = 0);
     let grandTotal = 0;
+    pivoted.forEach(entry => { cols.forEach(c => { colTotals[c] += entry.sizeProfit[c] || 0; }); grandTotal += entry.total; });
 
-    pivoted.forEach(entry => {
+    pivoted.slice(0, visibleCount.region).forEach(entry => {
         const tr = document.createElement('tr');
         let html = `<td style="font-weight:bold;color:#0a246a;">${entry.label}</td>`;
         cols.forEach(c => {
             const v = entry.sizeProfit[c] || 0;
-            colTotals[c] += v;
             html += `<td style="text-align:right;color:${v>=0?'#1a7a1a':'#b03030'};">${fmt(v)}</td>`;
         });
-        grandTotal += entry.total;
         html += `<td style="text-align:right;font-weight:bold;color:${entry.total>=0?'#1a7a1a':'#b03030'};">${fmt(entry.total)}</td>`;
         tr.innerHTML = html;
         tbody.appendChild(tr);
     });
+    tbody.insertAdjacentHTML('beforeend', loadMoreRow('region', pivoted.length, cols.length+2, 'visibleCount.region += PAGE_SIZE; renderRegionTable();'));
 
     const totalTr = document.createElement('tr');
     totalTr.className = 'grand-total';
@@ -420,20 +445,20 @@ function renderCustomerTable() {
 
     const colTotals = {}; cols.forEach(c => colTotals[c] = 0);
     let grandTotal = 0;
+    pivoted.forEach(entry => { cols.forEach(c => { colTotals[c] += entry.sizeProfit[c] || 0; }); grandTotal += entry.total; });
 
-    pivoted.forEach(entry => {
+    pivoted.slice(0, visibleCount.customer).forEach(entry => {
         const tr = document.createElement('tr');
         let html = `<td style="font-weight:bold;color:#0a246a;">${entry.label}</td>`;
         cols.forEach(c => {
             const v = entry.sizeProfit[c] || 0;
-            colTotals[c] += v;
             html += `<td style="text-align:right;color:${v>=0?'#1a7a1a':'#b03030'};">${fmt(v)}</td>`;
         });
-        grandTotal += entry.total;
         html += `<td style="text-align:right;font-weight:bold;color:${entry.total>=0?'#1a7a1a':'#b03030'};">${fmt(entry.total)}</td>`;
         tr.innerHTML = html;
         tbody.appendChild(tr);
     });
+    tbody.insertAdjacentHTML('beforeend', loadMoreRow('customer', pivoted.length, cols.length+2, 'visibleCount.customer += PAGE_SIZE; renderCustomerTable();'));
 
     const totalTr = document.createElement('tr');
     totalTr.className = 'grand-total';
