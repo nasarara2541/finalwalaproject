@@ -53,25 +53,7 @@ label.lbl { font-weight:bold; white-space:nowrap; padding-right:4px; }
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4E6; AISellProduct &mdash; Stock In Hand</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='../pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Stock In Hand</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Stock In Hand'; $SCREEN_ICON = 'boxes-stacked'; require __DIR__ . '/../includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 
@@ -91,7 +73,7 @@ label.lbl { font-weight:bold; white-space:nowrap; padding-right:4px; }
         <div style="flex:1;overflow:auto;min-height:0;">
             <table class="win-table">
                 <thead><tr><th>Stock Number</th><th>Item Name</th><th style="text-align:right;">Qty In Hand</th></tr></thead>
-                <tbody id="results-body"><tr><td colspan="3" style="text-align:center;padding:10px;color:#888;">Loading…</td></tr></tbody>
+                <tbody id="results-body"><tr><td colspan="3" style="text-align:center;padding:10px;color:#888;">Type an item name or stock number above to search.</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -139,8 +121,19 @@ function debouncedSearch() {
 }
 
 function runSearch() {
+    const q = document.getElementById('f-search').value.trim();
+    if (!q) {
+        // The API treats a blank q as "match everything", which is exactly
+        // the full-table load this screen shouldn't do by default -- so
+        // just don't call it until there's something to actually search for.
+        document.getElementById('results-body').innerHTML =
+            '<tr><td colspan="3" style="text-align:center;padding:10px;color:#888;">Type an item name or stock number above to search.</td></tr>';
+        document.getElementById('result-count').textContent = '';
+        setStatus('Ready');
+        return;
+    }
     setStatus('Searching…');
-    const params = new URLSearchParams({ q: document.getElementById('f-search').value.trim() });
+    const params = new URLSearchParams({ q });
     fetch('api/stock_in_hand.php?' + params.toString())
         .then(r => r.json())
         .then(rows => {
@@ -175,7 +168,6 @@ function renderRows(rows) {
         </tr>`).join('');
 }
 
-runSearch();
 </script>
 </body>
 </html>

@@ -28,12 +28,22 @@ body { background: #d4d0c8; overflow: hidden; }
 .report-panel { display:none; }
 .report-panel.active { display:flex; flex-direction:column; flex:1; min-height:0; }
 
-select, input[type=text] {
+select, input[type=text], input[type=date] {
     border: 1px solid; border-color: #808080 #ffffff #ffffff #808080;
     background: #ffff99; padding: 2px 6px; height: 22px; font-size:12px;
     font-family: Tahoma, sans-serif;
 }
-select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
+select:focus, input[type=text]:focus, input[type=date]:focus { outline: 1px solid #0a246a; }
+
+.win-btn {
+    background: #d4d0c8; border: 1px solid; border-color: #ffffff #808080 #808080 #ffffff;
+    padding: 2px 10px; cursor:pointer; font-size:12px; height:23px;
+    font-family: Tahoma, sans-serif; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;
+}
+.win-btn:hover { background: #e8e4d8; }
+.win-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+.win-btn-blue { background:#003087; color:white; border-color:#5599cc #002266 #002266 #5599cc; }
+.win-btn-blue:hover { background:#0040ad; }
 
 .win-table { width:100%; border-collapse:collapse; font-size:11px; }
 .win-table thead th { border:1px solid #808080; padding:4px 6px; text-align:left; font-weight:bold; background:#d4d0c8; white-space:nowrap; position:sticky; top:0; z-index:1; }
@@ -53,23 +63,7 @@ select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4C8; AISellProduct &mdash; Profit Reports</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='../pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item nav-active">Profit Reports</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../item_details.php'">&#x1F4E6; Item Details</span>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Profit Reports'; $SCREEN_ICON = 'chart-line'; require __DIR__ . '/../includes/navbar.php'; ?>
 
 <div class="report-tabbar">
     <div class="report-tab active" id="tab-btn-product" onclick="switchReport('product')">By Product</div>
@@ -77,7 +71,14 @@ select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
     <div class="report-tab" id="tab-btn-customer" onclick="switchReport('customer')">By Customer</div>
 </div>
 
-<div style="flex:1;min-height:0;padding:8px;">
+<!-- display:flex is load-bearing here, not decorative -- .report-panel.active
+     below relies on flex:1/min-height:0 to size itself, which only takes
+     effect inside an actual flex container. Without it this div silently
+     falls back to display:block, the panel (and the table inside it) just
+     grows to fit its content instead of being capped to the viewport, and
+     the table's own overflow:auto never has anything to scroll -- rows past
+     what fits on screen were simply clipped, with no scrollbar anywhere. -->
+<div style="flex:1;min-height:0;padding:8px;display:flex;flex-direction:column;">
 
     <!-- By Product -->
     <div class="report-panel active" id="panel-product">
@@ -86,15 +87,15 @@ select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
                 <span>Profit Report by Product</span>
                 <span style="display:flex;align-items:center;gap:5px;">
                     <label for="product-month" style="font-weight:normal;font-size:11px;color:#555;">Month:</label>
-                    <select id="product-month" onchange="renderProductTable()"></select>
+                    <select id="product-month" onchange="ensureProductLoaded()"></select>
                 </span>
             </div>
-            <div style="flex:1;overflow:auto;min-height:0;">
+            <div style="flex:1;overflow:auto;min-height:0;" tabindex="0">
                 <table class="win-table">
                     <thead>
                         <tr><th>Product</th><th style="text-align:right;">Packs</th><th style="text-align:right;">Sale</th><th style="text-align:right;">Cost</th><th style="text-align:right;">Profit</th></tr>
                     </thead>
-                    <tbody id="product-body"><tr><td colspan="5" class="empty-note">Loading…</td></tr></tbody>
+                    <tbody id="product-body"><tr><td colspan="5" class="empty-note">Loading months…</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -107,13 +108,13 @@ select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
                 <span>Profit Report by Region</span>
                 <span style="display:flex;align-items:center;gap:5px;">
                     <label for="region-month" style="font-weight:normal;font-size:11px;color:#555;">Month:</label>
-                    <select id="region-month" onchange="renderRegionTable()"></select>
+                    <select id="region-month" onchange="ensureRegionLoaded()"></select>
                 </span>
             </div>
-            <div style="flex:1;overflow:auto;min-height:0;">
+            <div style="flex:1;overflow:auto;min-height:0;" tabindex="0">
                 <table class="win-table" id="region-table">
                     <thead><tr id="region-head"></tr></thead>
-                    <tbody id="region-body"><tr><td class="empty-note">Loading…</td></tr></tbody>
+                    <tbody id="region-body"><tr><td class="empty-note">Loading months…</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -127,13 +128,13 @@ select:focus, input[type=text]:focus { outline: 1px solid #0a246a; }
                 <span style="display:flex;align-items:center;gap:5px;">
                     <input type="text" id="customer-filter" placeholder="Filter by name…" oninput="renderCustomerTable()" style="width:160px;">
                     <label for="customer-month" style="font-weight:normal;font-size:11px;color:#555;">Month:</label>
-                    <select id="customer-month" onchange="renderCustomerTable()"></select>
+                    <select id="customer-month" onchange="ensureCustomerLoaded()"></select>
                 </span>
             </div>
-            <div style="flex:1;overflow:auto;min-height:0;">
+            <div style="flex:1;overflow:auto;min-height:0;" tabindex="0">
                 <table class="win-table" id="customer-table">
                     <thead><tr id="customer-head"></tr></thead>
-                    <tbody id="customer-body"><tr><td class="empty-note">Loading…</td></tr></tbody>
+                    <tbody id="customer-body"><tr><td class="empty-note">Loading months…</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -180,61 +181,136 @@ const SIZES = ['0.5L','1.5L','6L','12L','19L'];
 let productData = [];
 let regionData = [];
 let customerData = [];
+// Which month's rows are currently sitting in each of the arrays above --
+// null until that tab's first load. Lets ensureXLoaded() skip re-fetching
+// when the month picked is already what's loaded, and lets switching tabs
+// lazily fetch a tab's data only the first time you actually look at it.
+let loadedMonth = { product: null, region: null, customer: null };
+let availableMonths = [];
 
 function switchReport(name) {
     ['product','region','customer'].forEach(n => {
         document.getElementById('panel-'+n).classList.toggle('active', n===name);
         document.getElementById('tab-btn-'+n).classList.toggle('active', n===name);
     });
+    if (name === 'product')  ensureProductLoaded();
+    if (name === 'region')   ensureRegionLoaded();
+    if (name === 'customer') ensureCustomerLoaded();
 }
 
 function monthKey(row) { return row.Yr + '-' + String(row.Mo).padStart(2,'0'); }
 
-function populateMonthSelect(selectId, data) {
-    const sel = document.getElementById(selectId);
-    const seen = new Set();
-    sel.innerHTML = '';
-    data.forEach(m => {
-        const key = monthKey(m);
-        if (seen.has(key)) return;
-        seen.add(key);
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = m.Month;
-        sel.appendChild(opt);
+// First/last calendar day of a "YYYY-M" key, as YYYY-MM-DD, for the report
+// APIs' from/to params. Built from local parts, not Date#toISOString() --
+// that converts to UTC first, which silently shifts the date by a day in
+// any timezone ahead of UTC (e.g. PKT).
+function monthKeyToRange(key) {
+    const [y, m] = key.split('-').map(Number);
+    const pad = n => String(n).padStart(2, '0');
+    const lastDay = new Date(y, m, 0).getDate(); // day 0 of next month = last day of this one
+    return { from: `${y}-${pad(m)}-01`, to: `${y}-${pad(m)}-${pad(lastDay)}` };
+}
+
+function populateMonthSelects() {
+    ['product-month','region-month','customer-month'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '';
+        availableMonths.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = monthKey(m);
+            opt.textContent = m.Month;
+            sel.appendChild(opt);
+        });
     });
 }
 
-function loadReports() {
+// Loads the small "which months actually have sales" list (cheap -- one row
+// per month, not per sale) so all 3 Month dropdowns work immediately, same
+// as before. Only the selected month's actual report rows get fetched from
+// there, one tab at a time, so this screen still never pulls the whole
+// sales history at once.
+function loadMonthList() {
     setStatus('Loading…');
-    Promise.all([
-        fetch('../api/get_dashboard_by_item.php').then(r => r.json()),
-        fetch('api/get_report_by_region.php').then(r => r.json()),
-        fetch('api/get_report_by_customer.php').then(r => r.json())
-    ]).then(([product, region, customer]) => {
-        if (product && product.error) { toast('Error: ' + product.error, 'err'); return; }
-        if (region  && region.error)  { toast('Error: ' + region.error, 'err'); return; }
-        if (customer&& customer.error){ toast('Error: ' + customer.error, 'err'); return; }
-        productData = product;
-        regionData = region;
-        customerData = customer;
-
-        populateMonthSelect('product-month', productData);
-        populateMonthSelect('region-month', regionData);
-        populateMonthSelect('customer-month', customerData);
-
-        renderProductTable();
-        renderRegionTable();
-        renderCustomerTable();
+    fetch('api/get_report_months.php').then(r => r.json()).then(months => {
+        if (months && months.error) { toast('Error: ' + months.error, 'err'); return; }
+        availableMonths = months;
+        if (!months.length) {
+            ['product-body','region-body','customer-body'].forEach(id => {
+                document.getElementById(id).innerHTML = '<tr><td class="empty-note">No sales recorded yet</td></tr>';
+            });
+            setStatus('Ready');
+            return;
+        }
+        populateMonthSelects();
+        ensureProductLoaded(); // land on the most recent month for the tab that's open by default
         setStatus('Ready');
     }).catch(() => {
         document.getElementById('product-body').innerHTML =
             '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
-        document.getElementById('region-body').innerHTML =
-            '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
-        document.getElementById('customer-body').innerHTML =
-            '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
     });
+}
+
+function ensureProductLoaded() {
+    const key = document.getElementById('product-month').value;
+    if (!key) return;
+    if (loadedMonth.product === key) { renderProductTable(); return; }
+    setStatus('Loading…');
+    const { from, to } = monthKeyToRange(key);
+    fetch('../api/get_dashboard_by_item.php?' + new URLSearchParams({ from, to }))
+        .then(r => r.json())
+        .then(rows => {
+            if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
+            productData = rows;
+            loadedMonth.product = key;
+            renderProductTable();
+            setStatus('Ready');
+        })
+        .catch(() => {
+            document.getElementById('product-body').innerHTML =
+                '<tr><td colspan="5" style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+        });
+}
+
+function ensureRegionLoaded() {
+    const key = document.getElementById('region-month').value;
+    if (!key) return;
+    if (loadedMonth.region === key) { renderRegionTable(); return; }
+    setStatus('Loading…');
+    const { from, to } = monthKeyToRange(key);
+    fetch('api/get_report_by_region.php?' + new URLSearchParams({ from, to }))
+        .then(r => r.json())
+        .then(rows => {
+            if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
+            regionData = rows;
+            loadedMonth.region = key;
+            renderRegionTable();
+            setStatus('Ready');
+        })
+        .catch(() => {
+            document.getElementById('region-body').innerHTML =
+                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+        });
+}
+
+function ensureCustomerLoaded() {
+    const key = document.getElementById('customer-month').value;
+    if (!key) return;
+    if (loadedMonth.customer === key) { renderCustomerTable(); return; }
+    setStatus('Loading…');
+    const { from, to } = monthKeyToRange(key);
+    fetch('api/get_report_by_customer.php?' + new URLSearchParams({ from, to }))
+        .then(r => r.json())
+        .then(rows => {
+            if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
+            customerData = rows;
+            loadedMonth.customer = key;
+            renderCustomerTable();
+            setStatus('Ready');
+        })
+        .catch(() => {
+            document.getElementById('customer-body').innerHTML =
+                '<tr><td style="text-align:center;color:darkred;padding:10px;">Could not load — check DB connection</td></tr>';
+        });
 }
 
 function renderProductTable() {
@@ -368,7 +444,7 @@ function renderCustomerTable() {
     tbody.appendChild(totalTr);
 }
 
-loadReports();
+loadMonthList();
 </script>
 </body>
 </html>

@@ -19,6 +19,12 @@ if (empty($_SESSION['emp_user_id'])) {
 }
 
 $env = parse_ini_file(__DIR__ . '/../../.env');
+if ($env === false) {
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => '.env file not found — expected one level above the public/ folder']);
+    exit;
+}
 $serverName   = $env['DB_SERVER'] ?? '';
 $dbUser       = $env['DB_USER'] ?? '';
 $dbPass       = $env['DB_PASSWORD'] ?? '';

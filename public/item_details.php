@@ -62,23 +62,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:130px; flex-shrink:0; }
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4E6; AISellProduct &mdash; Item Packaging Details</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Item Packaging Details</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Item Packaging Details'; $SCREEN_ICON = 'box'; require __DIR__ . '/includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 
@@ -94,7 +78,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:130px; flex-shrink:0; }
                     <thead>
                         <tr><th>Stock#</th><th>Brand</th><th>Item Name</th><th>Size</th></tr>
                     </thead>
-                    <tbody id="item-list-body"><tr><td colspan="4" style="text-align:center;padding:8px;color:#888;">Loading…</td></tr></tbody>
+                    <tbody id="item-list-body"><tr><td colspan="4" style="text-align:center;padding:8px;color:#888;">Type a brand or item name above to search.</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -156,6 +140,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:130px; flex-shrink:0; }
 <script>
 let allItems = [];
 let itemCurrentList = [];
+let itemsLoaded = false;
 let selectedItem = null;
 
 function clockTick() {
@@ -196,9 +181,8 @@ function loadItems() {
         .then(rows => {
             if (rows && rows.error) { toast('Error: ' + rows.error, 'err'); return; }
             allItems = rows;
-            itemCurrentList = rows;
-            renderItemList();
-            document.getElementById('item-count').textContent = rows.length + ' item(s)';
+            itemsLoaded = true;
+            filterItems(); // apply whatever's already typed, in case the user kept typing while this was in flight
             setStatus('Ready');
         })
         .catch(() => {
@@ -227,9 +211,15 @@ function renderItemList() {
 
 function filterItems() {
     const q = document.getElementById('item-filter-text').value.trim().toLowerCase();
+    if (!itemsLoaded) {
+        if (!q) return; // nothing typed yet -- leave the "type to search" prompt showing, don't fetch anything
+        loadItems(); // first keystroke: fetch the item list once, then filter it client-side from here on
+        return;
+    }
     itemCurrentList = !q ? allItems : allItems.filter(it =>
         (it.BRAND_NAME || '').toLowerCase().includes(q) || (it.ITEM_NAME || '').toLowerCase().includes(q)
     );
+    document.getElementById('item-count').textContent = itemCurrentList.length + ' item(s)';
     renderItemList();
 }
 
@@ -269,7 +259,9 @@ document.addEventListener('keydown', e => {
     }
 });
 
-loadItems();
+// Not calling loadItems() here -- it's fetched lazily on the first keystroke
+// in the search box instead (see filterItems()), so this screen doesn't pull
+// the whole item table just for being opened.
 </script>
 </body>
 </html>

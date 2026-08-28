@@ -73,13 +73,3 @@ label { font-size:11px !important; color:#000 !important; display:block; margin-
 </style>
 </head>
 <body>
-<div class="win-titlebar">
-    <span>&#x1F4CB; AISellProduct &mdash; <?php echo htmlspecialchars($_SESSION['company_name'] ?? 'Margalla 3M Industries'); ?></span>
-    <span id="anoosha-live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-<script>
-(function(){
-    function tick(){ var el=document.getElementById('anoosha-live-clock'); if(el) el.textContent = new Date().toLocaleString('en-GB'); }
-    tick(); setInterval(tick, 1000);
-})();
-</script>

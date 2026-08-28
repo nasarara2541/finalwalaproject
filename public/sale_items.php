@@ -64,23 +64,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4A7; AISellProduct &mdash; Sale Items</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Sale Items</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='login.php'">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='logout.php'" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Sale Items'; require __DIR__ . '/includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 

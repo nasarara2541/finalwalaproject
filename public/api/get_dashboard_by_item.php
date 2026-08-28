@@ -22,6 +22,18 @@ $costExpr = $isWaterDb
             END"
     : "COALESCE(td.PPrice_amount, td.quantity * s.PURCHASE_PRICE, 0)";
 
+// A date range is required (see admin_reports.php) -- this report reads
+// every sale line in the range, so leaving it unbounded would mean pulling
+// the entire sales history on every screen open.
+$from = $_GET['from'] ?? '';
+$to   = $_GET['to']   ?? '';
+$dateWhere = '';
+$params = [];
+if ($from !== '' && $to !== '') {
+    $dateWhere = " WHERE t.Trans_date >= ? AND t.Trans_date < DATEADD(day, 1, ?)";
+    $params = [$from, $to];
+}
+
 $sql = "SELECT
             YEAR(t.Trans_date)                                                                   AS Yr,
             MONTH(t.Trans_date)                                                                  AS Mo,
@@ -34,6 +46,7 @@ $sql = "SELECT
         FROM trans_detail td
         JOIN [Transaction] t ON td.Trans_no     = t.Trans_no
         JOIN Item_Stock  s   ON td.stock_number = s.STOCK_NUMBER
+        $dateWhere
         GROUP BY
             YEAR(t.Trans_date), MONTH(t.Trans_date),
             FORMAT(t.Trans_date, 'MMM-yyyy', 'en-US'),
@@ -41,7 +54,7 @@ $sql = "SELECT
         ORDER BY
             Yr DESC, Mo DESC, Sale DESC";
 
-$stmt = sqlsrv_query($conn, $sql);
+$stmt = sqlsrv_query($conn, $sql, $params);
 $rows = [];
 if ($stmt) {
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {

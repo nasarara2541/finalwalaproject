@@ -63,25 +63,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F50D; AISellProduct &mdash; Stock Search</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Stock Search</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Stock Search'; $SCREEN_ICON = 'magnifying-glass'; require __DIR__ . '/includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 
@@ -90,7 +72,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
         <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:6px;">
             <div class="field-cell"><label class="lbl">Item Code</label><input id="f-item-code" type="text" oninput="debouncedSearch()"></div>
             <div class="field-cell"><label class="lbl">Type</label><input id="f-type" type="text" oninput="debouncedSearch()"></div>
-            <div class="field-cell"><label class="lbl">Company</label><input id="f-company" type="text" oninput="debouncedSearch()"></div>
+            <div class="field-cell"><label class="lbl">Company</label><input id="f-company" type="text" list="company-datalist" autocomplete="off" oninput="debouncedSearch()"></div>
             <div class="field-cell"><label class="lbl">Location</label><input id="f-location" type="text" oninput="debouncedSearch()"></div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:8px 20px;">
@@ -99,7 +81,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
                 <label class="lbl" title="No product-category column exists in the schema yet — this database is entirely one category, shown here rather than offered as a real filter">Group</label>
                 <input type="text" value="<?php echo htmlspecialchars($groupLabel); ?>" readonly tabindex="-1">
             </div>
-            <div class="field-cell"><label class="lbl">Manufacture By</label><input id="f-manufacture" type="text" oninput="debouncedSearch()"></div>
+            <div class="field-cell"><label class="lbl">Manufacture By</label><input id="f-manufacture" type="text" list="manufacture-datalist" autocomplete="off" oninput="debouncedSearch()"></div>
             <div class="field-cell"><label class="lbl">Generic</label><input id="f-generic" type="text" oninput="debouncedSearch()"></div>
         </div>
     </div>
@@ -127,7 +109,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="results-body"><tr><td colspan="11" style="text-align:center;padding:10px;color:#888;">Loading…</td></tr></tbody>
+                <tbody id="results-body"><tr><td colspan="11" style="text-align:center;padding:10px;color:#888;">Type a filter above, or pick a view below, to search — the full item list is too large to load by default.</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -140,6 +122,9 @@ label.lbl { font-weight:bold; white-space:nowrap; width:80px; flex-shrink:0; tex
         <button class="win-btn"               id="btn-bonus"    onclick="setView('bonus')">Bonus QTY</button>
         <button class="win-btn"               id="btn-narcotics" onclick="setView('narcotics')" title="Filters to items with NARCOTICS_STATUS = 1 — naturally empty for real water items, none of them are narcotics">Anti Nar</button>
     </div>
+
+    <datalist id="company-datalist"></datalist>
+    <datalist id="manufacture-datalist"></datalist>
 
 </div>
 
@@ -266,7 +251,23 @@ function renderResults(rows) {
     });
 }
 
-runSearch();
+fetch('api/get_suppliers.php').then(r=>r.json()).then(rows => {
+    const dl = document.getElementById('company-datalist');
+    rows.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.SUPPLIER_NAME;
+        dl.appendChild(opt);
+    });
+});
+
+fetch('api/get_manufacturers.php').then(r=>r.json()).then(rows => {
+    const dl = document.getElementById('manufacture-datalist');
+    rows.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.M_Name;
+        dl.appendChild(opt);
+    });
+});
 </script>
 </body>
 </html>

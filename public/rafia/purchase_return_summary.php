@@ -52,25 +52,7 @@ input[type=month] {
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F69A; AISellProduct &mdash; Purchased &amp; Return Invoice(s) Summary</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='../pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Purchase &amp; Returns</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Purchased & Return Invoice(s) Summary'; $SCREEN_ICON = 'truck'; require __DIR__ . '/../includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;overflow:auto;">
 

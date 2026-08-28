@@ -53,25 +53,7 @@ label.lbl { font-weight:bold; }
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4C8; AISellProduct &mdash; Sales Report</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='../../pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Sales Report</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../../admin_users.php'">&#x1F464; Manage Users</span>
-    <?php endif; ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../../admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='../../reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../../login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='../../logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Sales Report'; $SCREEN_ICON = 'chart-line'; require __DIR__ . '/../../includes/navbar.php'; ?>
 
 <main class="flex-1" style="min-height:0;overflow:auto;display:flex;flex-direction:column;">
     <?php require_once __DIR__ . '/../src/Views/Pages/Administration/sales_report.php'; ?>

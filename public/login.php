@@ -2,6 +2,13 @@
 if (session_status() === PHP_SESSION_NONE) session_start();
 // Relative to this file, not a hardcoded absolute path — see includes/db.php.
 $env = parse_ini_file(__DIR__ . '/../.env');
+if ($env === false) {
+    http_response_code(500);
+    die('<h2 style="font-family:sans-serif">.env file not found</h2>'
+        . '<p style="font-family:sans-serif">Copy <code>.env.example</code> (in the project root, '
+        . 'one level above <code>public/</code>) to <code>.env</code> and fill in your own '
+        . '<code>DB_SERVER</code>, then reload this page.</p>');
+}
 
 if (isset($_GET['select'])) {
     $choice = $_GET['select'];

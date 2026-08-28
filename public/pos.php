@@ -16,6 +16,16 @@ $canSale    = canAccess('sale');
 $canBooking = canAccess('booking');
 $canSuppliers = canAccess('suppliers');
 $defaultView = $canSale ? 'pos' : 'booking';
+// The categorized navbar links straight into a specific tab here (e.g.
+// pos.php?view=transactions) when you're navigating in from another screen
+// -- honor it if it's a real view this role is actually allowed to see.
+$viewAccess = ['pos' => 'sale', 'transactions' => 'sale', 'reports' => 'sale', 'suppliers' => 'suppliers', 'booking' => 'booking'];
+if (isset($_GET['view'], $viewAccess[$_GET['view']]) && canAccess($viewAccess[$_GET['view']])) {
+    $defaultView = $_GET['view'];
+}
+$viewLabels = ['pos' => 'Sale', 'transactions' => 'Transactions', 'suppliers' => 'Suppliers', 'booking' => 'Booking', 'reports' => 'Reports'];
+$SCREEN_NAME = $viewLabels[$defaultView] ?? 'Point of Sale';
+$NAV_CURRENT_VIEW = $defaultView;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -207,12 +217,12 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 <div id="invoice-popup-overlay">
     <div id="invoice-popup-box">
         <div id="invoice-popup-titlebar">
-            <span>&#x1F4CB; Invoice / Challan</span>
-            <span class="close-x" onclick="closeInvoicePopup()">&#x2716;</span>
+            <span><i class="fa-solid fa-file-invoice"></i> Invoice / Challan</span>
+            <span class="close-x" onclick="closeInvoicePopup()"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <div id="invoice-popup-body"></div>
         <div id="invoice-popup-footer">
-            <button class="win-btn win-btn-blue" onclick="printInvoicePopup()" style="height:22px;">&#x1F5A8; Print</button>
+            <button class="win-btn win-btn-blue" onclick="printInvoicePopup()" style="height:22px;"><i class="fa-solid fa-print"></i> Print</button>
             <button class="win-btn" onclick="closeInvoicePopup()" style="height:22px;color:darkred;">Close</button>
         </div>
     </div>
@@ -222,8 +232,8 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 <div id="held-popup-overlay">
     <div id="held-popup-box">
         <div id="held-popup-titlebar">
-            <span>&#x23F8; Held Bills — click a row to resume</span>
-            <span class="close-x" onclick="closeHeldPopup()">&#x2716;</span>
+            <span><i class="fa-solid fa-pause"></i> Held Bills — click a row to resume</span>
+            <span class="close-x" onclick="closeHeldPopup()"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <div id="held-popup-body">
             <table class="win-table">
@@ -246,8 +256,8 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 <div id="custinv-popup-overlay">
     <div id="custinv-popup-box">
         <div id="custinv-popup-titlebar">
-            <span id="custinv-popup-title">&#x1F4DC; Customer Invoices</span>
-            <span class="close-x" onclick="closeCustomerInvoicesPopup()">&#x2716;</span>
+            <span id="custinv-popup-title"><i class="fa-solid fa-receipt"></i> Customer Invoices</span>
+            <span class="close-x" onclick="closeCustomerInvoicesPopup()"><i class="fa-solid fa-xmark"></i></span>
         </div>
         <div id="custinv-popup-body">
             <div id="custinv-list-view">
@@ -274,60 +284,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 </div>
 
 
-<div class="win-titlebar">
-    <span>&#x1F4A7; AISellProduct — Water Distribution Point of Sale</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <?php if ($canSale): ?>
-    <span class="win-menu-item<?php echo $defaultView === 'pos' ? ' nav-active' : ''; ?>" id="nav-pos"          onclick="switchView('pos')">Sale</span>
-    <span class="win-menu-item"            id="nav-transactions"  onclick="switchView('transactions')">Transactions</span>
-    <?php endif; ?>
-    <?php if (canAccess('inventory')): ?>
-    <span class="win-menu-item"            onclick="window.location='stock_receiving.php'">Stock Receiving</span>
-    <span class="win-menu-item"            onclick="window.location='stock_search.php'">Stock Search</span>
-    <span class="win-menu-item"            onclick="window.location='manufacture.php'">Manufacture</span>
-    <span class="win-menu-item"            onclick="window.location='anoosha/purchase_report.php'">Purchase Report</span>
-    <span class="win-menu-item"            onclick="window.location='anoosha/short_items.php'">Short Items</span>
-    <span class="win-menu-item"            onclick="window.location='anoosha/search_items.php'">Search Items</span>
-    <span class="win-menu-item"            onclick="window.location='zeeshan/stock_search.php'">Group Wise Stock Search</span>
-    <span class="win-menu-item"            onclick="window.location='zeeshan/dead_items.php'">Dead Items</span>
-    <span class="win-menu-item"            onclick="window.location='qasim/public/purchase_order.php'">Purchase Order</span>
-    <span class="win-menu-item"            onclick="window.location='rafia/stock_in_hand.php'">Stock In Hand</span>
-    <span class="win-menu-item"            onclick="window.location='rafia/purchase_return_summary.php'">Purchase &amp; Returns</span>
-    <span class="win-menu-item"            onclick="window.location='rafia/narcotics.php'">Narcotics Register</span>
-    <?php endif; ?>
-    <?php if ($canSale): ?>
-    <span class="win-menu-item"            onclick="window.location='sale_reports.php'">Sale Reports</span>
-    <span class="win-menu-item"            onclick="window.location='sale_items.php'">Sale Items</span>
-    <?php endif; ?>
-    <?php if ($canBooking): ?>
-    <span class="win-menu-item<?php echo $defaultView === 'booking' ? ' nav-active' : ''; ?>" id="nav-booking"       onclick="switchView('booking')">Booking</span>
-    <?php endif; ?>
-    <?php if ($canSale): ?>
-    <span class="win-menu-item"            id="nav-reports"       onclick="switchView('reports')">Reports</span>
-    <?php endif; ?>
-    <?php if (canAccess('admin_area')): ?>
-    <span class="win-menu-item" style="position:relative;color:#5b3a8a;font-weight:bold;" onclick="toggleAdminMenu(event)" title="Admin/Management only">
-        Admin Options &#x25BE;
-        <div id="admin-dropdown" style="display:none;position:absolute;top:100%;left:0;z-index:50;min-width:170px;background:#d4d0c8;border:1px solid;border-color:#ffffff #808080 #808080 #ffffff;box-shadow:2px 2px 4px rgba(0,0,0,0.3);padding:2px;">
-            <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-            <span class="win-menu-item win-dropdown-item" onclick="window.location='zeeshan/manage_users.php'" title="Admin only -- creating/deleting staff">Manage Users</span>
-            <?php endif; ?>
-            <span class="win-menu-item win-dropdown-item" onclick="window.location='admin_dashboard.php'">Dashboard</span>
-            <span class="win-menu-item win-dropdown-item" onclick="window.location='reports/admin_reports.php'">Profit Reports</span>
-            <span class="win-menu-item win-dropdown-item" onclick="window.location='item_details.php'">Item Details</span>
-            <span class="win-menu-item win-dropdown-item" onclick="window.location='qasim/public/sales_report.php'">Sales Report (Qasim)</span>
-        </div>
-    </span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='login.php'" title="Pick a different database">Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='logout.php'" title="Sign out" style="color:darkred;">Logout</span>
-</div>
+<?php $SCREEN_ICON = 'droplet'; require __DIR__ . '/includes/navbar.php'; ?>
 
 <!-- ===================== POS VIEW ===================== -->
 <div id="view-pos" style="display:<?php echo $defaultView === 'pos' ? 'flex' : 'none'; ?>; flex-direction:column; flex:1; min-height:0; padding:5px; gap:4px;">
@@ -346,7 +303,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
             <label style="font-weight:bold;">Customer</label>
             <input id="cust-select" type="text" list="cust-datalist" placeholder="Walk-in / Type to search…" style="width:150px;" oninput="onCustomerInput()" autocomplete="off">
             <datalist id="cust-datalist"></datalist>
-            <button class="win-btn" style="height:22px;font-size:11px;" onclick="openCustomerInvoicesPopup()" title="View this customer's past invoices and quickly load an item from one">&#x1F4DC; Invoices</button>
+            <button class="win-btn" style="height:22px;font-size:11px;" onclick="openCustomerInvoicesPopup()" title="View this customer's past invoices and quickly load an item from one"><i class="fa-solid fa-receipt"></i> Invoices</button>
         </div>
         <div style="display:flex;align-items:center;gap:3px;">
             <label style="font-weight:bold;">Customer Name</label>
@@ -373,12 +330,10 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
             <input id="branch-code" type="text" value="HQ" style="width:42px;">
         </div>
         <div style="margin-left:auto;display:flex;gap:4px;">
-            <button class="win-btn win-btn-blue" onclick="resetForm()">&#x2B06; New</button>
-            <button class="win-btn win-btn-green" onclick="saveSale()">&#x2714; Save</button>
-            <button class="win-btn" onclick="postponeInvoice()" style="background:#b8860b;color:white;border-color:#d4a017 #8b6508 #8b6508 #d4a017;" title="Set this bill aside if the customer needs to grab more items">&#x23F8; Postpone</button>
-            <button class="win-btn" onclick="openHeldPopup()" title="Resume a postponed bill">&#x1F4C2; Held (<span id="held-count">0</span>)</button>
-            <button class="win-btn" onclick="openInvoicePopup()" style="background:#5b3a8a;color:white;border-color:#9966cc #3d1f6b #3d1f6b #9966cc;">&#x1F4CB; View Challan</button>
-            <button class="win-btn" onclick="resetForm()" style="color:darkred;">&#x2716; Cancel</button>
+            <button class="win-btn win-btn-blue" onclick="resetForm()"><i class="fa-solid fa-plus"></i> New</button>
+            <button class="win-btn" onclick="postponeInvoice()" style="background:#b8860b;color:white;border-color:#d4a017 #8b6508 #8b6508 #d4a017;" title="Set this bill aside if the customer needs to grab more items"><i class="fa-solid fa-pause"></i> Postpone</button>
+            <button class="win-btn" onclick="openHeldPopup()" title="Resume a postponed bill"><i class="fa-solid fa-folder-open"></i> Held (<span id="held-count">0</span>)</button>
+            <button class="win-btn" onclick="openInvoicePopup()" style="background:#5b3a8a;color:white;border-color:#9966cc #3d1f6b #3d1f6b #9966cc;"><i class="fa-solid fa-file-invoice"></i> View Challan</button>
         </div>
     </div>
 
@@ -484,7 +439,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                         <span>User: <b><?php echo htmlspecialchars($_SESSION['emp_user_id'] ?? 'admin'); ?></b></span>
                         <span title="No per-user discount limit tracked in the database yet">Max. Disc: <b style="color:#888;">—</b></span>
                         <!-- Not a visible field anymore (replaced by the "User:" label above), but
-                             saveSale() and the Enter-key tab order still read this exact id -- kept
+                             performSave() and the Enter-key tab order still read this exact id -- kept
                              as a hidden input so removing the old visible box doesn't break either. -->
                         <input type="hidden" id="user-id" value="<?php echo htmlspecialchars($_SESSION['emp_user_id'] ?? 'admin'); ?>">
                     </div>
@@ -591,7 +546,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                  editing here. -->
             <div class="win-panel" style="flex:1;display:flex;flex-direction:column;min-height:0;">
                 <div class="win-section-label">
-                    <span>&#x23F3; Expiry Info</span>
+                    <span><i class="fa-solid fa-hourglass-half"></i> Expiry Info</span>
                     <span id="expiry-info-label" style="font-weight:normal;color:#555;"></span>
                 </div>
                 <div class="win-scroll" style="flex:1;">
@@ -612,7 +567,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 
             <!-- Print row — sits below Expiry Info, stacked horizontally. -->
             <div class="win-panel" style="flex-shrink:0;padding:6px 8px;display:flex;align-items:center;justify-content:center;gap:10px;">
-                <button class="win-btn win-btn-blue" style="height:26px;" onclick="doPrint()">&#x1F5A8; Print</button>
+                <button class="win-btn win-btn-blue" style="height:26px;" onclick="doPrint()"><i class="fa-solid fa-print"></i> Print</button>
                 <div style="font-size:10px;color:#888;" title="No printer-selection feature built yet — nothing here changes what Print actually does">
                     Printer: <label><input type="radio" name="printer-choice" checked disabled style="width:auto;height:auto;"> None</label>
                 </div>
@@ -624,7 +579,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
 
     <!-- Status bar -->
     <div class="win-statusbar">
-        <span id="status-msg">Ready &nbsp;|&nbsp; F2=Search &nbsp; F5=Cash &nbsp; F8=Save &nbsp; F9=New &nbsp; F10=Invoice &nbsp; Enter=Next Field</span>
+        <span id="status-msg">Ready &nbsp;|&nbsp; F2=Search &nbsp; F5=Cash &nbsp; F8=Print &nbsp; F9=New &nbsp; F10=Invoice &nbsp; Enter=Next Field</span>
         <span>AISellProduct v1.0</span>
         <span>Margalla 3M Industries — Islamabad</span>
     </div>
@@ -750,22 +705,36 @@ let globalLedger = [];
 let clientInfo = { Client_name: 'Margalla 3M Industries' };
 let selectedCustomerId = null;
 let billSaved = false;
+let previewBillNo = null;
 
-// Shows what the NEXT bill's number will actually be (read-only preview,
-// styled distinctly with "(next)" so it's never mistaken for a saved Bill#)
-// instead of a bare, uninformative dash. Called on load and whenever the
-// form resets; overwritten with the real, confirmed number the moment a
-// sale actually saves (see saveSale()/doPrint()).
+function showBillPreview(no) {
+    previewBillNo = no;
+    const billNoEl = document.getElementById('bill-no');
+    billNoEl.value = no;
+    billNoEl.dataset.trans = no;
+    billNoEl.classList.add('bill-preview');
+    document.getElementById('invno-display').textContent = no;
+}
+
+// Only hits the database once, on initial page load (and again right after
+// a real save -- see doPrint() -- to resync with whatever Trans_no the save
+// actually got, in case another cashier saved one in between). Shows what
+// the NEXT bill's number will actually be if nothing else gets saved first
+// (read-only preview, italicized via .bill-preview so it still reads as
+// unconfirmed).
 function refreshBillPreview() {
     fetch('api/get_next_bill_no.php').then(r => r.json()).then(res => {
         if (billSaved) return; // a save landed while this was in flight -- don't clobber it
-        const billNoEl = document.getElementById('bill-no');
-        const nextNo = res.next_no || 1;
-        billNoEl.value = nextNo + ' (next)';
-        billNoEl.dataset.trans = nextNo;
-        billNoEl.classList.add('bill-preview');
-        document.getElementById('invno-display').textContent = nextNo + ' (next)';
+        showBillPreview(res.next_no || 1);
     }).catch(() => {}); // preview is a courtesy, not required -- silent no-op on failure
+}
+
+// New/F9 always moves the preview forward -- every click is "starting a new
+// bill" regardless of whether the one before it ever got saved, so it never
+// looks stuck. Purely local (no DB round-trip); doPrint() resyncs it to the
+// real Trans_no the instant an actual save happens.
+function bumpBillPreview() {
+    showBillPreview((previewBillNo || 0) + 1);
 }
 
 function loadClientInfo() {
@@ -903,22 +872,23 @@ function onInvoiceReferenceBlur() {
 }
 
 function clockTick() {
-    const now = new Date();
-    document.getElementById('live-clock').textContent = now.toLocaleString('en-GB');
-    document.getElementById('trans-date').value = now.toLocaleString('en-GB');
+    // #live-clock itself is now ticked by includes/navbar.php's own script --
+    // this just keeps the sale form's date field current.
+    document.getElementById('trans-date').value = new Date().toLocaleString('en-GB');
 }
 clockTick();
 setInterval(clockTick, 1000);
 
 const views = ['pos','transactions','suppliers','booking','reports'];
+const viewLabels = { pos:'Sale', transactions:'Transactions', suppliers:'Suppliers', booking:'Booking', reports:'Reports' };
 
 function switchView(v) {
     views.forEach(name => {
-        const el  = document.getElementById('view-' + name);
-        const btn = document.getElementById('nav-' + name);
+        const el = document.getElementById('view-' + name);
         el.style.display = name === v ? 'flex' : 'none';
-        if (btn) btn.classList.toggle('nav-active', name === v);
     });
+    const nameEl = document.getElementById('nav-screen-name');
+    if (nameEl && viewLabels[v]) nameEl.textContent = viewLabels[v];
     if (v === 'transactions') loadTransactionsFull();
     if (v === 'suppliers')    loadSuppliers();
     if (v === 'booking')      loadBookings();
@@ -1171,7 +1141,7 @@ function setupKeyboardNav() {
             }
             if (id === 'cash-paid') {
                 e.preventDefault();
-                saveSale();
+                doPrint();
                 return;
             }
             const idx = fieldOrder.indexOf(id);
@@ -1212,7 +1182,7 @@ function setupKeyboardNav() {
 
         if (e.key === 'F2')  { e.preventDefault(); document.getElementById('item-search').focus(); }
         if (e.key === 'F5')  { e.preventDefault(); document.getElementById('cash-paid').focus(); }
-        if (e.key === 'F8')  { e.preventDefault(); saveSale(); }
+        if (e.key === 'F8')  { e.preventDefault(); doPrint(); }
         if (e.key === 'F9')  { e.preventDefault(); resetForm(); }
         if (e.key === 'F10') { e.preventDefault(); openInvoicePopup(); }
     });
@@ -1359,7 +1329,7 @@ function openCalculatorPopup() {
     overlay.className = 'popup-overlay open';
     overlay.innerHTML = `
         <div class="popup-box" style="width:220px;">
-            <div class="popup-titlebar"><span>Calculator</span><span class="close-x" onclick="document.getElementById('calc-popup-overlay').remove()">&#x2716;</span></div>
+            <div class="popup-titlebar"><span>Calculator</span><span class="close-x" onclick="document.getElementById('calc-popup-overlay').remove()"><i class="fa-solid fa-xmark"></i></span></div>
             <div class="popup-body">
                 <input id="calc-display" type="text" readonly class="readonly-field" style="width:100%;text-align:right;font-size:18px;height:32px;margin-bottom:6px;" value="0">
                 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
@@ -1590,23 +1560,6 @@ function performSave() {
     return fetch('api/save_transaction.php', { method:'POST', body:JSON.stringify(payload) }).then(r=>r.json());
 }
 
-function saveSale() {
-    performSave().then(res => {
-        if (!res) return;
-        if (res.success) {
-            billSaved = true;
-            const billNoEl = document.getElementById('bill-no');
-            billNoEl.value = res.trans_no;
-            billNoEl.classList.remove('bill-preview');
-            document.getElementById('invno-display').textContent = res.trans_no;
-            toast('Sale saved — Bill #' + res.trans_no,'ok');
-            setStatus('Sale saved — Bill #' + res.trans_no);
-        } else {
-            toast('Error: '+(res.error||'Unknown'),'err'); setStatus('Save failed');
-        }
-    });
-}
-
 function buildReceiptText(header, detail) {
     const line  = '--------------------------------';
     const dline = '================================';
@@ -1664,6 +1617,7 @@ function doPrint() {
         if (!res) return;
         if (res.success) {
             billSaved = true;
+            previewBillNo = res.trans_no; // resync -- next New starts counting up from the real saved number
             const billNoEl = document.getElementById('bill-no');
             billNoEl.value = res.trans_no;
             billNoEl.classList.remove('bill-preview');
@@ -1696,7 +1650,7 @@ function resetForm() {
     document.getElementById('disc-pct').value='0';
     document.getElementById('cash-paid').value='0';
     billSaved = false;
-    refreshBillPreview();
+    bumpBillPreview();
     document.getElementById('item-search').value='';
     document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
     document.getElementById('expiry-info-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:#888;font-size:10px;">Select an item to view expiry details.</td></tr>';
@@ -1871,21 +1825,6 @@ document.addEventListener('click', e => {
     const dd = document.getElementById('search-dropdown');
     if (dd && !dd.contains(e.target) && e.target.id !== 'item-search') {
         dd.classList.add('hidden');
-    }
-});
-
-// Admin Options menu -- groups the admin-only screens (previously flat nav
-// items cluttering the bar) behind one dropdown, same pattern as the item
-// search dropdown above.
-function toggleAdminMenu(e) {
-    e.stopPropagation();
-    const dd = document.getElementById('admin-dropdown');
-    if (dd) dd.style.display = (dd.style.display === 'none' || !dd.style.display) ? 'block' : 'none';
-}
-document.addEventListener('click', e => {
-    const dd = document.getElementById('admin-dropdown');
-    if (dd && dd.style.display === 'block' && !dd.contains(e.target)) {
-        dd.style.display = 'none';
     }
 });
 

@@ -82,25 +82,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
 </head>
 <body class="flex flex-col h-screen">
 
-<div class="win-titlebar">
-    <span>&#x1F4CA; AISellProduct &mdash; Sale Reports</span>
-    <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
-</div>
-
-<div class="win-menubar">
-    <span class="win-menu-item" onclick="window.location='pos.php'">&#x2190; Back to Sale</span>
-    <span class="win-menu-item nav-active">Sale Reports</span>
-    <?php if (!empty($_SESSION['emp_is_admin'])): ?>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_users.php'">&#x1F464; Manage Users</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='admin_dashboard.php'">&#x1F4CA; Dashboard</span>
-    <span class="win-menu-item" style="color:#5b3a8a;font-weight:bold;" onclick="window.location='reports/admin_reports.php'">&#x1F4C8; Profit Reports</span>
-    <?php endif; ?>
-    <span style="flex:1"></span>
-    <span class="win-menu-item" style="color:#555;">Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? 'Water Distribution'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='login.php'" title="Pick a different database">&#x1F504; Switch Database</span>
-    <span class="win-menu-item" style="color:#555;">User: <b><?php echo htmlspecialchars($_SESSION['emp_user_name'] ?? '—'); ?></b></span>
-    <span class="win-menu-item" onclick="window.location='logout.php'" title="Sign out" style="color:darkred;">&#x1F6AA; Logout</span>
-</div>
+<?php $SCREEN_NAME = 'Sale Reports'; $SCREEN_ICON = 'chart-column'; require __DIR__ . '/includes/navbar.php'; ?>
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 
@@ -159,7 +141,7 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="field-row"><label class="lbl">Modify By</label><input id="f-modify-by" type="text"></div>
             <div class="field-row">
                 <label class="lbl" title="Matches via each line item's Item_Stock.SUPPLIER_CODE — a bill counts if ANY item on it came from this supplier. No real item has a supplier assigned yet, so this returns nothing until one does.">Supplier</label>
-                <input id="f-supplier" type="text">
+                <input id="f-supplier" type="text" list="supplier-datalist" autocomplete="off">
             </div>
             <div class="field-row">
                 <label class="lbl" style="color:#888;" title="Same situation as Counter Name — needs a predefined list of shift codes/times, which is a business decision for your professor, not something to invent. Not wired up yet, noted for follow-up.">Shift</label>
@@ -181,8 +163,8 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
             <div class="field-row"><label class="lbl">Code</label><input id="f-item-code" type="text"></div>
             <div class="field-row"><label class="lbl">Name</label><input id="f-item-name" type="text"></div>
             <div class="field-row"><label class="lbl">Type</label><input id="f-item-type" type="text"></div>
-            <div class="field-row"><label class="lbl">Manufacture</label><input id="f-manufacture" type="text"></div>
-            <div class="field-row"><label class="lbl">Company</label><input id="f-company" type="text"></div>
+            <div class="field-row"><label class="lbl">Manufacture</label><input id="f-manufacture" type="text" list="manufacture-datalist" autocomplete="off"></div>
+            <div class="field-row"><label class="lbl">Company</label><input id="f-company" type="text" list="supplier-datalist" autocomplete="off"></div>
             <div class="field-row">
                 <label class="lbl" title="No product-category column exists — this database is entirely one category, shown here rather than offered as a real filter">Group</label>
                 <input type="text" value="<?php echo htmlspecialchars($groupLabel); ?>" readonly tabindex="-1">
@@ -207,6 +189,8 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; te
         </div>
         <datalist id="employee-datalist"></datalist>
         <datalist id="customer-datalist"></datalist>
+        <datalist id="supplier-datalist"></datalist>
+        <datalist id="manufacture-datalist"></datalist>
 
     </div>
 
@@ -384,6 +368,24 @@ fetch('api/get_customers.php').then(r=>r.json()).then(rows => {
     rows.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.Cust_name;
+        dl.appendChild(opt);
+    });
+});
+
+fetch('api/get_suppliers.php').then(r=>r.json()).then(rows => {
+    const dl = document.getElementById('supplier-datalist');
+    rows.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.SUPPLIER_NAME;
+        dl.appendChild(opt);
+    });
+});
+
+fetch('api/get_manufacturers.php').then(r=>r.json()).then(rows => {
+    const dl = document.getElementById('manufacture-datalist');
+    rows.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.M_Name;
         dl.appendChild(opt);
     });
 });
