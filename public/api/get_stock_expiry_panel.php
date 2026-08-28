@@ -2,6 +2,11 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/../includes/db.php';
 
+// The OPTION hint at the end is the same query-resource cap Anoosha found
+// for her own item search -- keeps this fast without capping row count,
+// which would matter here: pos.php/stock_receiving.php both use every row
+// of this to look up a SPECIFIC item's nearest-expiry batch, so truncating
+// it could silently make some items' expiry info vanish.
 $sql = "SELECT
             d.Invoice_no,
             d.STOCK_NUMBER,
@@ -18,7 +23,8 @@ $sql = "SELECT
         JOIN Item_Stock s ON s.STOCK_NUMBER = d.STOCK_NUMBER
         WHERE d.ITEMS_AVAILABLE > 0
           AND d.EXPIRY_DATE IS NOT NULL
-        ORDER BY d.EXPIRY_DATE ASC";
+        ORDER BY d.EXPIRY_DATE ASC
+        OPTION (MAXDOP 1, MIN_GRANT_PERCENT = 0, MAX_GRANT_PERCENT = 1)";
 
 $stmt = sqlsrv_query($conn, $sql);
 $rows = [];

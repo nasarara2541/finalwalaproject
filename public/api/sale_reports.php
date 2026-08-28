@@ -250,11 +250,16 @@ if ($report === 'all_sold_items' || $report === 'item_group_summary') {
     }
 
     if ($report === 'all_sold_items') {
-        $sql = "SELECT t.Trans_no, CONVERT(VARCHAR(20), t.Trans_date, 103) AS Trans_date,
+        // Unlike every other report on this screen, this one returns one row
+        // per sold line item rather than an aggregate -- with no filters set
+        // that's every sale line ever made (tens of thousands on Med Stock).
+        // TOP caps it to the most recent 2000 so clicking it with a wide-open
+        // filter set doesn't try to hand the browser the entire sales history.
+        $sql = "SELECT TOP 2000 t.Trans_no, CONVERT(VARCHAR(20), t.Trans_date, 103) AS Trans_date,
                         s.STOCK_NUMBER, s.BRAND_NAME, s.ITEM_NAME, d.quantity, d.Price_PerItem, d.amount, bd.BATCH_NO
                  FROM trans_detail d $joins";
         if ($where) $sql .= " WHERE " . implode(' AND ', $where);
-        $sql .= " ORDER BY t.Trans_date DESC";
+        $sql .= " ORDER BY t.Trans_date DESC OPTION (MAXDOP 1, MIN_GRANT_PERCENT = 0, MAX_GRANT_PERCENT = 1)";
         $stmt = runQuery($conn, $sql, $params);
         $rows = [];
         while ($r = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {

@@ -13,7 +13,13 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     try {
-        $stmt = $conn->query("SELECT STOCK_NUMBER, BRAND_NAME, ITEM_NAME, ITEM_TYPE, STOCK_TYPE, VOLUME_L, SIZE_DESC, AVAILABLE_STATUS, MANUFACTURE_NO, SAFETY_LEVEL, PRICE_2, PRICE_3, WS_Price, RETAIL_PRICE, SALE_DISCOUNT, NARCOTICS_STATUS, AvgPrice, DISC_STATUS FROM Item_Stock ORDER BY STOCK_NUMBER ASC");
+        // The Brand/Type/Stock-Type filter dropdowns on this screen are
+        // populated client-side from whatever this returns, so it still has
+        // to be the full table (not a row-count cap, which would quietly make
+        // some items unfindable) -- OPTION here is the same query-resource
+        // cap Anoosha found for her own item search, to at least make the
+        // full-table scan itself faster.
+        $stmt = $conn->query("SELECT STOCK_NUMBER, BRAND_NAME, ITEM_NAME, ITEM_TYPE, STOCK_TYPE, VOLUME_L, SIZE_DESC, AVAILABLE_STATUS, MANUFACTURE_NO, SAFETY_LEVEL, PRICE_2, PRICE_3, WS_Price, RETAIL_PRICE, SALE_DISCOUNT, NARCOTICS_STATUS, AvgPrice, DISC_STATUS FROM Item_Stock ORDER BY STOCK_NUMBER ASC OPTION (MAXDOP 1, MIN_GRANT_PERCENT = 0, MAX_GRANT_PERCENT = 1)");
         $items = [];
         while ($row = $stmt->fetch()) {
             $items[] = [

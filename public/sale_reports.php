@@ -315,6 +315,15 @@ function openReportPopup(res) {
             tr.innerHTML = cells;
             tbody.appendChild(tr);
         });
+        // All Sold Items Detail is capped server-side at the most recent 2000
+        // rows -- hitting that exactly almost certainly means there's more,
+        // so say so rather than silently showing a partial result as if it
+        // were everything.
+        if (res.rows.length === 2000) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="${res.columns.length}" style="text-align:center;padding:8px;color:#b8860b;">Showing the most recent 2000 rows — narrow the date range or add a filter to see older ones</td>`;
+            tbody.appendChild(tr);
+        }
     }
     document.getElementById('report-popup-overlay').classList.add('open');
 }
