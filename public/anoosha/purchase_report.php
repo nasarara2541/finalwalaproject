@@ -7,7 +7,13 @@ include 'includes/navbar.php';
 ?>
 
 <div style="padding:3px; background:#d4d0c8; height:calc(100vh - 60px); overflow:hidden;">
-<div style="background:#d4d0c8; border:2px solid; border-color:#ffffff #808080 #808080 #ffffff; padding:10px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden;">
+<div style="background:#d4d0c8; border:2px solid; border-color:#ffffff #808080 #808080 #ffffff; padding:10px; height:100%; display:flex; flex-direction:column; align-items:center; overflow-y:auto; overflow-x:hidden;">
+
+    <!-- Vertically auto-centers when everything fits (bigger screens) without
+         the scroll-clipping bug justify-content:center + overflow:auto has --
+         on shorter screens this wrapper just sits at the top and the panel
+         above scrolls normally. -->
+    <div style="margin:auto 0; width:100%; display:flex; flex-direction:column; align-items:center;">
 
     <!-- Brand strip -->
     <div style="padding:1px 4px; align-self:flex-start; flex-shrink:0; width:min(760px, 92vw);">
@@ -83,6 +89,8 @@ include 'includes/navbar.php';
             <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Cancelled Invoice</button>
                         <button onclick="prResetFields()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; font-size:14px;">Reset</button>
         </div>
+    </div>
+
     </div>
 
     </div>
