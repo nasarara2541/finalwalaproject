@@ -40,4 +40,17 @@ if ($stmt) {
     }
 }
 sqlsrv_close($conn);
+
+// ITEM_TYPE itself is unreliable as a "what kind of item is this" label --
+// on Water it's always literally 'Water', but on Med Stock it's NULL for
+// ~97% of rows and inconsistent packaging/dosage text (not a real category)
+// for the rest. TYPE_LABEL is a separate, honest field: which of the two
+// databases this item lives in, same Water/Medicine convention
+// stock_search.php and sale_reports.php's Group column already use -- not
+// invented per-item data, just the one thing about "type" that's actually
+// always true.
+$typeLabel = (($_SESSION['active_db_label'] ?? 'Water Distribution') === 'Water Distribution') ? 'Water' : 'Medicine';
+foreach ($rows as &$r) { $r['TYPE_LABEL'] = $typeLabel; }
+unset($r);
+
 echo json_encode($rows);

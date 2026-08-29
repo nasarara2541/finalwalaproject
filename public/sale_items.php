@@ -104,7 +104,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
             <datalist id="cust-datalist"></datalist>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-left:auto;">
-            <span class="win-menu-item" style="border:1px solid #808080;" onclick="openHeldPopup()" title="View/resume bills set aside with Hold">&#x1F4C2; Held (<span id="held-count">0</span>)</span>
+            <span class="win-menu-item" style="border:1px solid #808080;" onclick="openHeldPopup()" title="View/resume bills set aside with Hold"><i class="fa-solid fa-folder-open"></i> Held (<span id="held-count">0</span>)</span>
             <span id="cart-item-badge" style="background:#0a246a;color:white;font-weight:bold;font-size:20px;padding:2px 14px;border:1px solid #000;">0</span>
             <span style="font-weight:bold;">Items:</span>
         </div>

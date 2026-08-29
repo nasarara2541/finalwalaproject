@@ -163,7 +163,7 @@ label.lbl { font-weight:bold; white-space:nowrap; }
 <div id="invoice-list-popup" class="popup-overlay">
     <div class="popup-box" style="width:500px;">
         <div class="popup-titlebar" id="invoice-list-bar">
-            <span>&#x1F4CB; All Invoices - click a row to load</span>
+            <span><i class="fa-solid fa-clipboard-list"></i> All Invoices - click a row to load</span>
             <span class="close-x" onclick="closePopup('invoice-list-popup')">&#x2716;</span>
         </div>
         <div class="popup-body" style="padding:0;">
@@ -1085,7 +1085,7 @@ function saveStock() {
             if (res.success) {
                 currentInvoiceNo = res.invoice_no;
                 document.getElementById('inv-no').value = res.invoice_no;
-                document.getElementById('update-status-badge').textContent = 'Saved ✓';
+                document.getElementById('update-status-badge').innerHTML = '<i class="fa-solid fa-check"></i> Saved';
                 toast('Stock receipt saved - Invoice #' + res.invoice_no,'ok');
                 setStatus('Saved - Invoice #' + res.invoice_no + ' (locked; click Modify to edit further)');
                 lockForm();

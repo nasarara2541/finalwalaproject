@@ -64,6 +64,7 @@ sqlsrv_close($conn);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AISellProduct, Employee Login</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 * { font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
@@ -100,14 +101,14 @@ label.lbl { font-weight:bold; display:block; margin-bottom:3px; }
 <body class="flex flex-col h-screen">
 
 <div class="win-titlebar">
-    <span>&#x1F512; AISellProduct - Employee Login</span>
+    <span><i class="fa-solid fa-lock"></i> AISellProduct - Employee Login</span>
     <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
 </div>
 
 <div class="center-wrap">
 <div class="win-panel" style="padding:24px 32px;width:360px;">
     <div style="text-align:center;margin-bottom:18px;">
-        <div style="font-size:32px;line-height:1;">&#x1F464;</div>
+        <div style="font-size:32px;line-height:1;color:#0a246a;"><i class="fa-solid fa-user"></i></div>
         <div style="font-size:14px;font-weight:bold;color:#0a246a;margin-top:6px;">Sign In</div>
         <div style="font-size:11px;color:#555;margin-top:2px;">
             Database: <b><?php echo htmlspecialchars($_SESSION['active_db_label'] ?? ''); ?></b>
@@ -131,7 +132,7 @@ label.lbl { font-weight:bold; display:block; margin-bottom:3px; }
             <input type="checkbox" id="show-pw" style="width:auto;height:auto;">
             <label for="show-pw" style="font-size:11px;color:#444;cursor:pointer;">Show password</label>
         </div>
-        <button type="submit" class="win-btn win-btn-blue" style="width:100%;">&#x1F512; Login</button>
+        <button type="submit" class="win-btn win-btn-blue" style="width:100%;"><i class="fa-solid fa-lock"></i> Login</button>
     </form>
 
     <div style="text-align:center;margin-top:14px;">

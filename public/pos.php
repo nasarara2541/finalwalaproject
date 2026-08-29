@@ -237,8 +237,8 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
         </div>
         <div id="held-popup-body">
             <table class="win-table">
-                <thead><tr><th>Held At</th><th>Customer</th><th style="text-align:right;">Items</th><th style="text-align:right;">Amount</th><th></th></tr></thead>
-                <tbody id="held-bills-body"><tr><td colspan="5" style="text-align:center;padding:10px;color:#888;">No held bills</td></tr></tbody>
+                <thead><tr><th>Bill#</th><th>Held At</th><th>Customer</th><th style="text-align:right;">Items</th><th style="text-align:right;">Amount</th><th></th></tr></thead>
+                <tbody id="held-bills-body"><tr><td colspan="6" style="text-align:center;padding:10px;color:#888;">No held bills</td></tr></tbody>
             </table>
         </div>
         <div id="held-popup-footer">
@@ -458,7 +458,7 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <button class="win-btn" style="height:22px;font-size:11px;" onclick="document.getElementById('expiry-info-label').scrollIntoView({behavior:'smooth',block:'center'});">Expiry Dates</button>
                         <button class="win-btn" style="height:22px;font-size:11px;" onclick="openCalculatorPopup()">Calculator</button>
-                        <button class="win-btn" style="height:22px;font-size:11px;color:darkred;" onclick="resetForm()">Cancel</button>
+                        <button class="win-btn" style="height:22px;font-size:11px;color:darkred;" onclick="cancelBill()">Cancel</button>
                     </div>
                 </div>
 
@@ -478,29 +478,29 @@ input.calc-highlight { background:#000 !important; color:#ff3333 !important; fon
                     <div style="display:flex;gap:32px;align-items:flex-start;">
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:70px;">Disc %age:</label>
+                                <label class="total-label" style="width:88px;">Disc %age:</label>
                                 <input id="disc-pct" type="number" min="0" max="100" value="0" style="width:52px;height:30px;font-size:16px;text-align:center;" oninput="recalcTotals()">
                             </div>
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:70px;">Disc Amt:</label>
+                                <label class="total-label" style="width:88px;">Disc Amt:</label>
                                 <input id="disc-amt" type="text" readonly value="0.00" class="readonly-field amt-field calc-highlight" style="width:85px;" tabindex="-1">
                             </div>
                         </div>
                         <div style="display:flex;flex-direction:column;gap:6px;">
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:64px;">Total:</label>
+                                <label class="total-label" style="width:82px;">Total:</label>
                                 <input id="gross-total" type="text" readonly value="0.00" class="readonly-field amt-field calc-highlight" style="width:95px;font-weight:bold;" tabindex="-1">
                             </div>
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:64px;">Net Total:</label>
+                                <label class="total-label" style="width:82px;">Net Total:</label>
                                 <input id="net-total" type="text" readonly value="0.00" class="readonly-field amt-field calc-highlight" style="width:115px;font-weight:bold;" tabindex="-1">
                             </div>
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:64px;">Cash:</label>
+                                <label class="total-label" style="width:82px;">Cash:</label>
                                 <input id="cash-paid" type="number" min="0" value="0" class="field-yellow amt-field" style="width:90px;height:30px;font-size:16px;font-weight:bold;" oninput="recalcBalance()">
                             </div>
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <label class="total-label" style="width:64px;">Balance:</label>
+                                <label class="total-label" style="width:82px;">Balance:</label>
                                 <input id="balance-amt" type="text" readonly value="0.00" class="readonly-field amt-field calc-highlight" style="width:115px;font-weight:bold;" tabindex="-1">
                             </div>
                         </div>
@@ -716,25 +716,20 @@ function showBillPreview(no) {
     document.getElementById('invno-display').textContent = no;
 }
 
-// Only hits the database once, on initial page load (and again right after
-// a real save -- see doPrint() -- to resync with whatever Trans_no the save
-// actually got, in case another cashier saved one in between). Shows what
-// the NEXT bill's number will actually be if nothing else gets saved first
-// (read-only preview, italicized via .bill-preview so it still reads as
-// unconfirmed).
+// Hits the database fresh every time it's called: on initial page load,
+// after New/Cancel discards an unsaved draft, right after a real save (to
+// resync with whatever Trans_no that save actually got), and when a held
+// bill is recalled. Shows what the NEXT bill's number will actually be if
+// nothing else gets saved first (read-only preview, italicized via
+// .bill-preview so it still reads as unconfirmed). Since discarding a draft
+// never saves anything, this correctly shows the exact same number again
+// when nothing else has been saved in the meantime -- there's no reason to
+// skip past a number nobody ever actually used.
 function refreshBillPreview() {
     fetch('api/get_next_bill_no.php').then(r => r.json()).then(res => {
         if (billSaved) return; // a save landed while this was in flight -- don't clobber it
         showBillPreview(res.next_no || 1);
     }).catch(() => {}); // preview is a courtesy, not required -- silent no-op on failure
-}
-
-// New/F9 always moves the preview forward -- every click is "starting a new
-// bill" regardless of whether the one before it ever got saved, so it never
-// looks stuck. Purely local (no DB round-trip); doPrint() resyncs it to the
-// real Trans_no the instant an actual save happens.
-function bumpBillPreview() {
-    showBillPreview((previewBillNo || 0) + 1);
 }
 
 function loadClientInfo() {
@@ -1025,6 +1020,7 @@ function postponeInvoice() {
     if (!cart.length) { toast('Add items to the bill first','warn'); return; }
     heldBills.push({
         heldAt: new Date().toLocaleString('en-GB'),
+        billNo: previewBillNo, // just for reference in the Held list below -- resuming re-fetches the real current number, not this
         cart: cart,
         custName: document.getElementById('cust-name').value,
         custTel:  document.getElementById('cust-tel').value,
@@ -1058,6 +1054,7 @@ function renderHeldBillsList() {
         const tr = document.createElement('tr');
         tr.style.cursor = 'pointer';
         tr.innerHTML = `
+            <td style="font-weight:bold;color:#0a246a;">${h.billNo ?? '-'}</td>
             <td>${h.heldAt}</td>
             <td>${h.custName || 'Walk-in'}</td>
             <td style="text-align:right;">${h.cart.length}</td>
@@ -1072,6 +1069,11 @@ function recallHeldBill(idx) {
     const h = heldBills[idx];
     if (!h) return;
     if (cart.length && !confirm('This will replace the current unsaved bill. Continue?')) return;
+    billSaved = false;
+    // Re-fetch the real current next number rather than restoring whatever
+    // this was held under -- other bills may well have been saved for real
+    // while this one sat on hold, which would make the old number stale.
+    refreshBillPreview();
     cart = h.cart;
     document.getElementById('cust-name').value = h.custName || '';
     document.getElementById('cust-tel').value  = h.custTel  || '';
@@ -1201,7 +1203,27 @@ function loadProductList() {
         });
 }
 
+// Rendering hundreds of rows at once (this list can be up to 500) is what
+// actually made the screen feel slow, separately from the fetch itself --
+// only the first 100 render up front, the rest come in 100 at a time on
+// request, same idea Anoosha used on her own screen.
+const PRODUCT_PAGE_SIZE = 100;
+let currentProductList = [];
+let visibleProductCount = PRODUCT_PAGE_SIZE;
+
 function renderProductList(data) {
+    currentProductList = data;
+    visibleProductCount = PRODUCT_PAGE_SIZE; // a fresh list (new search or full reload) always starts back at page 1
+    renderVisibleProducts();
+}
+
+function loadMoreProducts() {
+    visibleProductCount += PRODUCT_PAGE_SIZE;
+    renderVisibleProducts();
+}
+
+function renderVisibleProducts() {
+    const data = currentProductList;
     const tbody = document.getElementById('product-list-body');
     const countEl = document.getElementById('product-count');
     tbody.innerHTML = '';
@@ -1210,7 +1232,7 @@ function renderProductList(data) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;padding:10px;">No products found</td></tr>';
         return;
     }
-    data.forEach(item => {
+    data.slice(0, visibleProductCount).forEach(item => {
         const tr = document.createElement('tr');
         tr.setAttribute('tabindex', '0');
         const outOfStock = (parseInt(item.QTY_INHAND) || 0) <= 0;
@@ -1224,6 +1246,16 @@ function renderProductList(data) {
         };
         tbody.appendChild(tr);
     });
+    if (data.length > visibleProductCount) {
+        const remaining = data.length - visibleProductCount;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="4" style="text-align:center;padding:6px;background:#ece9d8;">
+            <button class="win-btn win-btn-blue" style="height:22px;font-size:11px;" onclick="loadMoreProducts()">
+                <i class="fa-solid fa-angles-down"></i> Load ${Math.min(PRODUCT_PAGE_SIZE, remaining)} More (${remaining} remaining)
+            </button>
+        </td>`;
+        tbody.appendChild(tr);
+    }
 }
 
 let searchTimer = null;
@@ -1238,7 +1270,29 @@ function performSearch(q) {
     if (!q.trim()) { renderProductList(allProducts); return Promise.resolve(); }
     return fetch('api/search_items.php?q=' + encodeURIComponent(q))
         .then(r => r.json())
-        .then(data => renderProductList(data));
+        .then(data => { renderProductList(data); renderSearchDropdown(data); });
+}
+
+// Quick-pick list right under the search box -- the Available Products
+// table on the right shows the same results already, but this saves
+// hunting through it when you already know roughly what you typed. Capped
+// at 12 so it stays a dropdown, not another full table.
+function renderSearchDropdown(data) {
+    const dd = document.getElementById('search-dropdown');
+    if (!data.length) { dd.classList.add('hidden'); return; }
+    dd.innerHTML = '';
+    data.slice(0, 12).forEach(item => {
+        const row = document.createElement('div');
+        const outOfStock = (parseInt(item.QTY_INHAND) || 0) <= 0;
+        row.innerHTML = `<b>${item.BRAND_NAME||''}</b> ${item.ITEM_NAME||''}`
+            + `<span style="float:right;${outOfStock?'color:#8b0000;':''}">${outOfStock ? 'Out of stock' : 'Rs. '+parseFloat(item.PRICE||0).toFixed(2)}</span>`;
+        row.onclick = () => {
+            selectItem(item);
+            dd.classList.add('hidden');
+        };
+        dd.appendChild(row);
+    });
+    dd.classList.remove('hidden');
 }
 
 function searchItems(q) {
@@ -1254,7 +1308,7 @@ function selectItem(item) {
     document.getElementById('item-search').value  = (item.BRAND_NAME||'') + ' - ' + (item.ITEM_NAME||'');
     document.getElementById('sel-stock').value    = item.STOCK_NUMBER;
     document.getElementById('sel-vol').value      = (item.VOLUME_L||'') + (item.SIZE_DESC ? ' / '+item.SIZE_DESC : '');
-    document.getElementById('sel-type').value     = item.ITEM_TYPE||'';
+    document.getElementById('sel-type').value     = item.TYPE_LABEL || item.ITEM_TYPE || '';
     document.getElementById('sel-price').value    = parseFloat(item.PRICE||0).toFixed(2);
     document.getElementById('sel-inhand').value   = item.QTY_INHAND;
     document.getElementById('sel-qty').value      = 1;
@@ -1423,7 +1477,7 @@ function addItemToCart() {
         return;
     }
     if (existing) { existing.quantity += qty; existing.amount = existing.quantity * existing.price; }
-    else cart.push({ stock_number:selectedItem.STOCK_NUMBER, brand:selectedItem.BRAND_NAME, item:selectedItem.ITEM_NAME, type:selectedItem.ITEM_TYPE, volume:selectedItem.VOLUME_L, quantity:qty, price:price, amount:qty*price });
+    else cart.push({ stock_number:selectedItem.STOCK_NUMBER, brand:selectedItem.BRAND_NAME, item:selectedItem.ITEM_NAME, type:(selectedItem.TYPE_LABEL || selectedItem.ITEM_TYPE), volume:selectedItem.VOLUME_L, quantity:qty, price:price, amount:qty*price });
     renderCart(); recalcTotals();
     selectedItem = null;
     document.getElementById('item-search').value = '';
@@ -1529,7 +1583,7 @@ function recalcBalance() {
 // callers should treat null as "stop silently"), otherwise resolves to the
 // server's JSON response.
 function performSave() {
-    if (!cart.length) { toast('Add items to the bill first','warn'); return Promise.resolve(null); }
+    if (!cart.length) { toast('Cannot save an empty bill - add items first','err'); setStatus('Nothing to save'); return Promise.resolve(null); }
     const gross     = cart.reduce((s,c)=>s+c.amount,0);
     const discPct   = parseFloat(document.getElementById('disc-pct').value) || 0;
     const net       = gross - (gross * discPct / 100);
@@ -1599,19 +1653,27 @@ function buildReceiptText(header, detail) {
     return t;
 }
 
-function printSavedInvoice(billNo) {
+// afterPrint is optional and only ever passed from doPrint() below -- the
+// OTHER caller of this (printDetailReceipt, reprinting some past bill from
+// history) must never trigger it, since that has nothing to do with
+// whatever's currently sitting in the active sale form.
+function printSavedInvoice(billNo, afterPrint) {
     fetch('api/get_transaction_detail.php?id=' + billNo)
         .then(r=>r.json())
-        .then(res => { if (res.header) triggerPrint(buildReceiptText(res.header, res.detail)); });
+        .then(res => { if (res.header) triggerPrint(buildReceiptText(res.header, res.detail), afterPrint); });
 }
 
 // Print always prints an actually-saved invoice - never a draft - so an
 // "official" receipt is never handed out for a sale that was never recorded.
 // If the current bill isn't saved yet, this saves it first (same as clicking
-// Save), then prints once that succeeds.
+// Save), then prints once that succeeds. Either way, the sale is already
+// final in the database by the time the print dialog even opens, so once it
+// closes (printed or cancelled - window.print() doesn't distinguish, and it
+// doesn't need to: the sale itself doesn't depend on what happens with the
+// paper) the register resets to a fresh bill, ready for the next customer.
 function doPrint() {
     const billNo = document.getElementById('bill-no').value;
-    if (billSaved) { printSavedInvoice(billNo); return; }
+    if (billSaved) { printSavedInvoice(billNo, resetForm); return; }
 
     performSave().then(res => {
         if (!res) return;
@@ -1624,20 +1686,31 @@ function doPrint() {
             document.getElementById('invno-display').textContent = res.trans_no;
             toast('Sale saved - Bill #' + res.trans_no,'ok');
             setStatus('Sale saved - Bill #' + res.trans_no);
-            printSavedInvoice(res.trans_no);
+            printSavedInvoice(res.trans_no, resetForm);
         } else {
             toast('Error: '+(res.error||'Unknown'),'err'); setStatus('Save failed');
         }
     });
 }
 
-function triggerPrint(text) {
+function triggerPrint(text, afterPrint) {
     document.getElementById('print-area').innerHTML = '<pre style="font-family:Courier New,monospace;font-size:11px;">'+text+'</pre>';
     window.print();
+    if (afterPrint) afterPrint();
 }
 
 function printDetailReceipt() {
     if (currentDetailHeader) triggerPrint(buildReceiptText(currentDetailHeader, currentDetailRows));
+}
+
+// Cancel is a hard discard, not "start the next bill" -- unlike New, it must
+// never advance the bill-number preview (that's the whole difference between
+// the two buttons). A full reload is the simplest way to guarantee that: it
+// re-fetches the real next number from the database instead of bumping the
+// local guess, and every other field/list goes back to exactly what's
+// actually on record, not just what resetForm() happens to clear by hand.
+function cancelBill() {
+    location.reload();
 }
 
 function resetForm() {
@@ -1650,7 +1723,7 @@ function resetForm() {
     document.getElementById('disc-pct').value='0';
     document.getElementById('cash-paid').value='0';
     billSaved = false;
-    bumpBillPreview();
+    refreshBillPreview();
     document.getElementById('item-search').value='';
     document.querySelectorAll('#product-list-body tr').forEach(r => r.classList.remove('row-selected'));
     document.getElementById('expiry-info-body').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:#888;font-size:10px;">Select an item to view expiry details.</td></tr>';

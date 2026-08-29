@@ -56,8 +56,8 @@ requireAccess('inventory');
     <div class="win-panel" style="padding:6px 8px;display:flex;align-items:center;gap:10px;">
         <span style="color:#555;">Items with no sales in the last 60 days</span>
         <span style="flex:1"></span>
-        <button id="btn-run" class="win-btn win-btn-green">&#x1F504; Generate</button>
-        <button id="btn-export" class="win-btn">&#x1F4C4; Download PDF</button>
+        <button id="btn-run" class="win-btn win-btn-green"><i class="fa-solid fa-rotate"></i> Generate</button>
+        <button id="btn-export" class="win-btn"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
     </div>
 
     <div class="win-panel" style="flex:1;min-height:0;display:flex;flex-direction:column;">

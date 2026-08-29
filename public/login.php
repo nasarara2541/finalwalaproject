@@ -35,6 +35,7 @@ if (isset($_GET['select'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AISellProduct, Choose Your Database</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 * { font-family: Tahoma, 'Segoe UI', sans-serif; font-size: 12px; box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
@@ -78,7 +79,7 @@ body { background: #d4d0c8; overflow: hidden; }
 <body class="flex flex-col h-screen">
 
 <div class="win-titlebar">
-    <span>&#x1F4A7; AISellProduct - Choose Your Database</span>
+    <span><i class="fa-solid fa-database"></i> AISellProduct - Choose Your Database</span>
     <span id="live-clock" style="font-weight:normal;font-size:11px;"></span>
 </div>
 
@@ -91,13 +92,13 @@ body { background: #d4d0c8; overflow: hidden; }
 
     <div style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;">
         <a class="db-card win-inset" href="login.php?select=water">
-            <div class="db-emoji">&#x1F4A7;</div>
+            <div class="db-emoji"><i class="fa-solid fa-droplet" style="color:#3a6ea5;"></i></div>
             <p class="db-name">Water Distribution</p>
             <p class="db-desc">The live Margalla 3M Industries data. Use this for real sales and stock work.</p>
             <span class="win-btn win-btn-blue">Continue &#x2192;</span>
         </a>
         <a class="db-card win-inset" href="login.php?select=medstock">
-            <div class="db-emoji">&#x1F48A;</div>
+            <div class="db-emoji"><i class="fa-solid fa-briefcase-medical" style="color:#0a246a;"></i></div>
             <p class="db-name">Med Stock Testing</p>
             <p class="db-desc">A separate sample dataset with pharmacy style test data. Use this for testing and demos.</p>
             <span class="win-btn win-btn-blue">Continue &#x2192;</span>

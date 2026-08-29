@@ -123,7 +123,7 @@ require_once __DIR__ . '/../includes/require_admin.php';
 
             <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:6px;">
                 <button type="button" class="win-btn" onclick="closeUserModal()">Cancel</button>
-                <button type="submit" class="win-btn win-btn-green">&#x1F4BE; Save</button>
+                <button type="submit" class="win-btn win-btn-green"><i class="fa-solid fa-floppy-disk"></i> Save</button>
             </div>
         </form>
     </div>
