@@ -108,8 +108,12 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; }
             </div>
 
             <div class="field-row">
-                <label class="lbl">Volume / ML</label>
-                <input id="item-volume-ml" type="text" placeholder="e.g. 500ML" style="width:80px;flex:none;">
+                <label class="lbl">Volume</label>
+                <input id="item-volume-num" type="number" min="0" step="any" placeholder="e.g. 500" style="width:70px;flex:none;">
+                <select id="item-volume-unit" style="width:55px;flex:none;">
+                    <option value="ML">ML</option>
+                    <option value="L">L</option>
+                </select>
                 <label class="lbl" style="width:auto;margin-left:10px;">Units Per Item <span class="required-star">*</span></label>
                 <input id="item-units-peritem" type="number" min="1" value="1" style="width:55px;flex:none;">
             </div>
@@ -160,7 +164,8 @@ label.lbl { font-weight:bold; white-space:nowrap; width:100px; flex-shrink:0; }
 
             <div class="field-row">
                 <label class="lbl">Location:</label>
-                <input id="item-location" type="text" placeholder="e.g. Shelf A / Warehouse 1" style="flex:1;">
+                <input id="item-location" type="text" list="location-datalist" autocomplete="off" placeholder="e.g. Shelf A / Warehouse 1" style="flex:1;">
+                <datalist id="location-datalist"></datalist>
             </div>
 
             <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;">
@@ -261,6 +266,18 @@ function loadManufacturers() {
 
 window.refreshManufacturersFromChild = function() { loadManufacturers(); };
 
+// Fill the Location autocomplete with locations already used on stock items.
+function loadLocations() {
+    return fetch('api/get_locations.php')
+        .then(r => r.json())
+        .then(list => {
+            if (!Array.isArray(list)) return;
+            document.getElementById('location-datalist').innerHTML =
+                list.map(loc => `<option value="${(loc || '').replace(/"/g, '&quot;')}"></option>`).join('');
+        })
+        .catch(() => {}); // non-critical - box still works as free text
+}
+
 function renderMfgList() {
     const box = document.getElementById('mfg-listbox');
     box.innerHTML = '';
@@ -301,6 +318,30 @@ function setManufacturerSelection(no, name) {
 }
 
 /* ---------- Item Stock Type toggle ---------- */
+
+/* ---------- Volume (number + unit) ---------- */
+
+// Parse whatever is stored in VOLUME_L ("500 ML", "19 L", "500ML", legacy
+// "L" or "500" or "") into { num, unit } for the two form fields.
+function parseVolume(raw) {
+    const s = (raw || '').toString().trim();
+    const m = s.match(/([\d.]+)\s*(ml|l)?/i);
+    if (!m) return { num: '', unit: 'ML' };
+    return { num: m[1], unit: (m[2] || 'ML').toUpperCase() };
+}
+
+// Build the canonical stored string from the two fields. Empty number -> "".
+function buildVolume() {
+    const num  = document.getElementById('item-volume-num').value.trim();
+    const unit = document.getElementById('item-volume-unit').value;
+    return num === '' ? '' : num + ' ' + unit;
+}
+
+function setVolumeFields(raw) {
+    const v = parseVolume(raw);
+    document.getElementById('item-volume-num').value  = v.num;
+    document.getElementById('item-volume-unit').value = v.unit;
+}
 
 function toggleStockType() {
     const el = document.getElementById('item-stock-type');
@@ -375,7 +416,7 @@ function selectStockItem(it) {
     document.getElementById('item-item-name').value      = it.ITEM_NAME || '';
     document.getElementById('item-item-type').value      = it.ITEM_TYPE || '';
     document.getElementById('item-stock-type').value     = it.STOCK_TYPE || '01';
-    document.getElementById('item-volume-ml').value      = it.VOLUME_L || '';
+    setVolumeFields(it.VOLUME_L);
     document.getElementById('item-units-peritem').value  = (it.UNITS_PERITEM ?? 1);
     document.getElementById('item-barcode').value        = it.BARCODE || '';
     document.getElementById('item-size-desc').value       = it.SIZE_DESC || '';
@@ -399,7 +440,8 @@ function newStockItem() {
     document.getElementById('item-item-name').value = '';
     document.getElementById('item-item-type').value = '';
     document.getElementById('item-stock-type').value = '01';
-    document.getElementById('item-volume-ml').value = '';
+    document.getElementById('item-volume-num').value = '';
+    document.getElementById('item-volume-unit').value = 'ML';
     document.getElementById('item-units-peritem').value = 1;
     document.getElementById('item-barcode').value = '';
     document.getElementById('item-size-desc').value = '';
@@ -451,7 +493,7 @@ function saveStockItem() {
         item_name:        document.getElementById('item-item-name').value.trim(),
         item_type:        document.getElementById('item-item-type').value.trim(),
         stock_type:       document.getElementById('item-stock-type').value.trim(),
-        volume_ml:        document.getElementById('item-volume-ml').value.trim(),
+        volume_ml:        buildVolume(),
         units_peritem:    units,
         barcode:          document.getElementById('item-barcode').value.trim(),
         size_desc:        document.getElementById('item-size-desc').value.trim(),
@@ -472,6 +514,7 @@ function saveStockItem() {
                 stockNoField.value     = res.stock_number;
                 document.getElementById('form-mode').textContent = 'Editing Record';
                 loadStockItems();
+                loadLocations(); // pick up a newly-typed location
             } else {
                 toast('Error: ' + (res.error || 'Save failed'), 'err');
             }
@@ -501,7 +544,7 @@ function removeStockItem() {
 // Enter moves top-to-bottom through the main form, jumps into the
 // Manufacturer list once you've typed a search, and confirming a manufacturer
 // (or a row in either table) advances to the next logical field.
-const itemFieldOrder = ['item-brand-name','item-item-name','item-item-type','item-volume-ml',
+const itemFieldOrder = ['item-brand-name','item-item-name','item-item-type','item-volume-num',
     'item-units-peritem','item-barcode','item-size-desc','item-unit-type'];
 
 document.addEventListener('keydown', e => {
@@ -572,6 +615,7 @@ window.addEventListener('focus', () => loadManufacturers());
 
 loadManufacturers();
 loadStockItems();
+loadLocations();
 </script>
 </body>
 </html>

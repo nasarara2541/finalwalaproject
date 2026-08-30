@@ -90,14 +90,6 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
             <label style="font-weight:bold;">Date &amp; Time</label>
             <input id="bill-datetime" type="text" readonly style="width:190px;background:#0a246a !important;color:white !important;font-weight:bold;text-align:center;" tabindex="-1">
         </div>
-        <div style="display:flex;align-items:center;gap:4px;">
-            <label style="font-weight:bold;">Payment Type</label>
-            <select id="trans-type" style="width:80px;">
-                <option value="Cash">Cash</option>
-                <option value="Credit">Credit</option>
-                <option value="Card">Card</option>
-            </select>
-        </div>
         <div style="display:flex;align-items:center;gap:4px;flex:1;min-width:200px;">
             <label style="font-weight:bold;">Client Name</label>
             <input id="cust-name" type="text" list="cust-datalist" placeholder="Walk-in / Type to search…" style="flex:1;" oninput="onClientInput()" autocomplete="off">
@@ -194,6 +186,7 @@ input[readonly], input[disabled], select[disabled] { background: #d4d0c8 !import
         <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Disc %:</label><input id="disc-pct" type="number" min="0" max="100" value="0" style="width:55px;" oninput="recalcTotals()"></div>
         <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Disc Amt:</label><input id="disc-amt" type="text" readonly value="0.00" style="width:85px;" tabindex="-1"></div>
         <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Net Total:</label><input id="net-total" type="text" readonly value="0.00" style="width:110px;font-weight:bold;" tabindex="-1"></div>
+        <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Payment Type:</label><select id="trans-type" style="width:80px;" onchange="recalcBalance()"><option value="Cash">Cash</option><option value="Credit">Credit</option><option value="Card">Card</option></select></div>
         <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Cash:</label><input id="cash-paid" type="number" min="0" value="0" style="width:90px;font-weight:bold;" oninput="recalcBalance()"></div>
         <div style="display:flex;align-items:center;gap:4px;"><label style="font-weight:bold;">Balance:</label><input id="balance-amt" type="text" readonly value="0.00" style="width:110px;font-weight:bold;" tabindex="-1"></div>
     </div>
