@@ -55,7 +55,7 @@ label.lbl { font-weight:bold; }
 
 <?php $SCREEN_NAME = 'Sales Report'; $SCREEN_ICON = 'chart-line'; require __DIR__ . '/../../includes/navbar.php'; ?>
 
-<main class="flex-1" style="min-height:0;overflow:auto;display:flex;flex-direction:column;">
+<main class="flex-1" style="min-height:0;overflow:hidden;display:flex;flex-direction:column;">
     <?php require_once __DIR__ . '/../src/Views/Pages/Administration/sales_report.php'; ?>
 </main>
 

@@ -14,10 +14,11 @@ class SalesReportModel
         ";
     }
 
-    public static function getProfitSummary($startDate, $endDate)
+    public static function getProfitSummary($startDate, $endDate, $offset = 0, $limit = 100)
     {
         $conn = getDbConnection();
         $costExpr = self::costExpr();
+        $offset = max(0, (int)$offset);
 
         $sql = "
             SELECT
@@ -43,6 +44,7 @@ class SalesReportModel
             WHERE CAST(t.Trans_date AS DATE) BETWEEN ? AND ?
             GROUP BY YEAR(t.Trans_date), MONTH(t.Trans_date), FORMAT(t.Trans_date, 'MMM-yyyy', 'EN-US')
             ORDER BY YEAR(t.Trans_date) DESC, MONTH(t.Trans_date) DESC
+            OFFSET $offset ROWS FETCH NEXT " . ($limit + 1) . " ROWS ONLY
         ";
         $stmt = sqlsrv_query($conn, $sql, [$startDate, $endDate]);
         if ($stmt === false) return ['success' => false, 'error' => self::errStr()];
@@ -55,6 +57,8 @@ class SalesReportModel
             $rows[] = $row;
         }
         sqlsrv_free_stmt($stmt);
+        $hasMore = count($rows) > $limit;
+        if ($hasMore) { array_pop($rows); }
 
         $totalsSql = "
             SELECT
@@ -86,6 +90,7 @@ class SalesReportModel
         return [
             'success' => true,
             'data' => $rows,
+            'hasMore' => $hasMore,
             'totals' => [
                 'totalSale'   => (float)($totalsRow['totalSale'] ?? 0),
                 'totalCost'   => (float)($totalsRow['totalCost'] ?? 0),
@@ -94,10 +99,11 @@ class SalesReportModel
         ];
     }
 
-    public static function getProfitPerTransaction($startDate, $endDate)
+    public static function getProfitPerTransaction($startDate, $endDate, $offset = 0, $limit = 100)
     {
         $conn = getDbConnection();
         $costExpr = self::costExpr();
+        $offset = max(0, (int)$offset);
 
         $sql = "
             SELECT
@@ -125,6 +131,7 @@ class SalesReportModel
             WHERE CAST(t.Trans_date AS DATE) BETWEEN ? AND ?
             GROUP BY t.Trans_no, t.Trans_date, t.Disc_percentage, t.Gross_amount, t.Trans_amount
             ORDER BY t.Trans_date DESC, t.Trans_no DESC
+            OFFSET $offset ROWS FETCH NEXT " . ($limit + 1) . " ROWS ONLY
         ";
         $stmt = sqlsrv_query($conn, $sql, [$startDate, $endDate]);
         if ($stmt === false) return ['success' => false, 'error' => self::errStr()];
@@ -139,6 +146,8 @@ class SalesReportModel
             $rows[] = $row;
         }
         sqlsrv_free_stmt($stmt);
+        $hasMore = count($rows) > $limit;
+        if ($hasMore) { array_pop($rows); }
 
         $totalsSql = "
             SELECT
@@ -171,6 +180,7 @@ class SalesReportModel
         return [
             'success' => true,
             'data' => $rows,
+            'hasMore' => $hasMore,
             'totals' => [
                 'gross'  => (float)($totalsRow['gross'] ?? 0),
                 'disc'   => (float)($totalsRow['disc'] ?? 0),
@@ -180,10 +190,11 @@ class SalesReportModel
         ];
     }
 
-    public static function getDaywiseReport($startDate, $endDate)
+    public static function getDaywiseReport($startDate, $endDate, $offset = 0, $limit = 100)
     {
         $conn = getDbConnection();
         $costExpr = self::costExpr();
+        $offset = max(0, (int)$offset);
 
         $sql = "
             SELECT
@@ -209,6 +220,7 @@ class SalesReportModel
             WHERE CAST(t.Trans_date AS DATE) BETWEEN ? AND ?
             GROUP BY CAST(t.Trans_date AS DATE)
             ORDER BY Day
+            OFFSET $offset ROWS FETCH NEXT " . ($limit + 1) . " ROWS ONLY
         ";
         $stmt = sqlsrv_query($conn, $sql, [$startDate, $endDate]);
         if ($stmt === false) return ['success' => false, 'error' => self::errStr()];
@@ -231,8 +243,10 @@ class SalesReportModel
             ];
         }
         sqlsrv_free_stmt($stmt);
+        $hasMore = count($rows) > $limit;
+        if ($hasMore) { array_pop($rows); }
         sqlsrv_close($conn);
-        return ['success' => true, 'data' => $rows];
+        return ['success' => true, 'data' => $rows, 'hasMore' => $hasMore];
     }
 
     private static function errStr()

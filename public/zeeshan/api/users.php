@@ -15,19 +15,64 @@ if (empty($_SESSION['emp_is_admin'])) {
 $method = $_SERVER['REQUEST_METHOD'];
 
 try {
+    if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'get_roles') {
+        // Distinct roles currently in use, for the filter checkbox list
+        $stmt = $conn->query("SELECT DISTINCT User_desc FROM Interface_User WHERE User_desc IS NOT NULL AND LTRIM(RTRIM(User_desc)) <> '' ORDER BY User_desc ASC");
+        $roles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        echo json_encode($roles);
+        exit;
+    }
+
     if ($method === 'GET') {
-        // GET USERS
+        // GET USERS - supports name search, ID search, role filter, and paging
+        $nameQ  = trim($_GET['name'] ?? '');
+        $idQ    = trim($_GET['id'] ?? '');
+        $roles  = isset($_GET['roles']) ? explode(',', $_GET['roles']) : [];
+        $offset = isset($_GET['offset']) ? max(0, (int)$_GET['offset']) : 0;
+        $limit  = 100;
+
+        // Sentinel from the frontend meaning "no roles checked" - should
+        // return zero rows, not "no role filter applied at all".
+        if ($roles === ['__none__']) {
+            echo json_encode(['results' => [], 'hasMore' => false]);
+            exit;
+        }
+
+        $where  = [];
+        $params = [];
+
+        if ($nameQ !== '') {
+            $where[] = "u.User_name LIKE ?";
+            $params[] = "%$nameQ%";
+        }
+        if ($idQ !== '') {
+            $where[] = "CAST(u.User_id AS VARCHAR(50)) LIKE ?";
+            $params[] = "%$idQ%";
+        }
+        if (count($roles) > 0) {
+            $rolePlaceholders = implode(',', array_fill(0, count($roles), '?'));
+            $where[] = "u.User_desc IN ($rolePlaceholders)";
+            foreach ($roles as $r) { $params[] = $r; }
+        }
+
+        $whereSql = count($where) > 0 ? 'WHERE ' . implode(' AND ', $where) : '';
+
         $stmt = $conn->prepare("
-            SELECT 
+            SELECT
                 u.User_id,
                 u.User_name,
                 u.User_desc,
                 u.Login_status
             FROM Interface_User u
+            $whereSql
             ORDER BY u.User_id ASC
+            OFFSET $offset ROWS FETCH NEXT " . ($limit + 1) . " ROWS ONLY
         ");
-        $stmt->execute();
+        $stmt->execute($params);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $hasMore = count($users) > $limit;
+        if ($hasMore) { array_pop($users); }
 
         $results = [];
         foreach ($users as $user) {
@@ -38,7 +83,7 @@ try {
                 'status' => ($user['Login_status'] === 'Y') ? 'Active' : 'Disabled'
             ];
         }
-        echo json_encode($results);
+        echo json_encode(['results' => $results, 'hasMore' => $hasMore]);
         exit;
 
     } elseif ($method === 'POST') {

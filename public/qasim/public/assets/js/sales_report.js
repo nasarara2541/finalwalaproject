@@ -51,6 +51,9 @@
     };
 
     let lastMode = null, lastStart = null, lastEnd = null;
+    let currentOffset = 0, hasMoreRows = false, isLoadingMore = false;
+    const scrollBox = document.getElementById('report-scrollbox');
+    const loadMoreRow = document.getElementById('report-load-more');
 
     function fmt(val, isNumeric, key) {
         if (val === null || val === undefined || val === '') return '-';
@@ -60,41 +63,81 @@
         return Number(n).toFixed(2);
     }
 
+    function renderRows(rows, def, append) {
+        const html = rows.map(r => '<tr>' + def.cols.map(c =>
+            '<td class="px-3 py-1.5' + (c[2] ? ' text-right' : '') + '">' + fmt(r[c[1]], c[2], c[1]) + '</td>'
+        ).join('') + '</tr>').join('');
+        if (append) {
+            tbodyEl.insertAdjacentHTML('beforeend', html);
+        } else {
+            tbodyEl.innerHTML = html;
+        }
+    }
+
+    async function fetchPage(mode, startDate, endDate, offset, append) {
+        const def = MODES[mode];
+        const res = await fetch('api/sales_report_get.php?mode=' + encodeURIComponent(mode) +
+            '&start_date=' + encodeURIComponent(startDate) + '&end_date=' + encodeURIComponent(endDate) +
+            '&offset=' + offset);
+        const data = await res.json();
+        if (!data.success) {
+            if (!append) tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-red-500">' + (data.error || 'Failed to load report') + '</td></tr>';
+            return;
+        }
+        const rows = data.data || [];
+        hasMoreRows = !!data.hasMore;
+        if (!append && !rows.length) {
+            tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-slate-400">No data found</td></tr>';
+        } else {
+            renderRows(rows, def, append);
+        }
+        loadMoreRow.style.display = hasMoreRows ? 'block' : 'none';
+        if (!append && data.totals) {
+            totalsEl.innerHTML = Object.entries(data.totals).map(([k, v]) =>
+                '<span><b>' + k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()) + ':</b> ' + Number(v).toFixed(2) + '</span>'
+            ).join('');
+        }
+    }
+
     async function runReport(mode, startDate, endDate) {
         lastMode = mode; lastStart = startDate; lastEnd = endDate;
+        currentOffset = 0; hasMoreRows = false;
         const def = MODES[mode];
         titleEl.textContent = def.title + ' (' + startDate + ' to ' + endDate + ')';
         theadEl.innerHTML = '<tr>' + def.cols.map(c => '<th class="px-3 py-2 text-left font-semibold border-b border-slate-300">' + c[0] + '</th>').join('') + '</tr>';
         tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-slate-400">Loading...</td></tr>';
         totalsEl.innerHTML = '';
+        loadMoreRow.style.display = 'none';
         resultsBox.classList.remove('hidden');
+        scrollBox.scrollTop = 0;
 
         try {
-            const res = await fetch('api/sales_report_get.php?mode=' + encodeURIComponent(mode) +
-                '&start_date=' + encodeURIComponent(startDate) + '&end_date=' + encodeURIComponent(endDate));
-            const data = await res.json();
-            if (!data.success) {
-                tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-red-500">' + (data.error || 'Failed to load report') + '</td></tr>';
-                return;
-            }
-            const rows = data.data || [];
-            if (!rows.length) {
-                tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-slate-400">No data found</td></tr>';
-            } else {
-                tbodyEl.innerHTML = rows.map(r => '<tr>' + def.cols.map(c =>
-                    '<td class="px-3 py-1.5' + (c[2] ? ' text-right' : '') + '">' + fmt(r[c[1]], c[2], c[1]) + '</td>'
-                ).join('') + '</tr>').join('');
-            }
-            if (data.totals) {
-                totalsEl.innerHTML = Object.entries(data.totals).map(([k, v]) =>
-                    '<span><b>' + k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()) + ':</b> ' + Number(v).toFixed(2) + '</span>'
-                ).join('');
-            }
+            await fetchPage(mode, startDate, endDate, 0, false);
         } catch (e) {
             console.error(e);
             tbodyEl.innerHTML = '<tr><td colspan="' + def.cols.length + '" class="px-3 py-6 text-center text-red-500">Network error</td></tr>';
         }
     }
+
+    async function loadMore() {
+        if (!hasMoreRows || isLoadingMore || !lastMode) return;
+        isLoadingMore = true;
+        currentOffset += 100;
+        try {
+            await fetchPage(lastMode, lastStart, lastEnd, currentOffset, true);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            isLoadingMore = false;
+        }
+    }
+
+    loadMoreRow.addEventListener('click', loadMore);
+    scrollBox.addEventListener('scroll', function () {
+        if (hasMoreRows && !isLoadingMore && (scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 40)) {
+            loadMore();
+        }
+    });
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();

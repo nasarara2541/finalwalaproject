@@ -21,14 +21,14 @@ include 'includes/navbar.php';
             <label>Item Name</label>
             <input id="siqSearch" oninput="searchItemsFull()" autocomplete="off" class="bg-yellow-100 nav-el" style="width:100%;" placeholder="Type to search...">
         </div>
-        <div style="font-size:11px; color:#333; padding-bottom:6px; margin-left:auto;">
+                <div style="font-size:11px; color:#333; padding-bottom:6px; margin-left:auto;">
             Results: <span id="siqCount" style="font-weight:bold;">0</span>
         </div>
     </div>
 
     <!-- GRID -->
     <div class="win-white-panel" style="flex:1; display:flex; flex-direction:column; min-height:0;">
-        <div style="flex:1; overflow:auto;">
+        <div id="siqScrollBox" style="flex:1; overflow:auto;" onscroll="siqOnScroll()">
             <table>
                 <thead>
                     <tr>
@@ -62,8 +62,9 @@ include 'includes/navbar.php';
                         <th>Suppliers List</th>
                     </tr>
                 </thead>
-                <tbody id="siqBody"></tbody>
+                                <tbody id="siqBody"></tbody>
             </table>
+            <div id="siqLoadMoreRow" style="display:none; text-align:center; padding:8px; font-size:13px; font-weight:bold; color:#0a246a; background:#f0f0f0; cursor:pointer;" onclick="siqLoadMore()">Load more...</div>
         </div>
     </div>
 
@@ -72,25 +73,58 @@ include 'includes/navbar.php';
 
 <script>
 let siqTimer = null;
+let siqQuery = '';
+let siqOffset = 0;
+let siqHasMore = false;
+let siqLoading = false;
+let siqTotalCount = 0;
+
 function searchItemsFull() {
     let q = document.getElementById('siqSearch').value.trim();
     clearTimeout(siqTimer);
     if (!q) {
         document.getElementById('siqBody').innerHTML = '';
         document.getElementById('siqCount').textContent = '0';
+        document.getElementById('siqLoadMoreRow').style.display = 'none';
         return;
     }
     siqTimer = setTimeout(() => {
-        fetch('api/search_items_full.php?q=' + encodeURIComponent(q)).then(r => r.json()).then(list => {
-            if (!Array.isArray(list)) { alert('Error loading results'); return; }
-            renderSiqResults(list);
-        }).catch(err => alert('Network error: ' + err));
+        siqQuery = q;
+        siqOffset = 0;
+        siqFetchPage(true);
     }, 200);
 }
 
-function renderSiqResults(list) {
+function siqFetchPage(replace) {
+    if (siqLoading) return;
+    siqLoading = true;
+    fetch('api/search_items_full.php?q=' + encodeURIComponent(siqQuery) + '&offset=' + siqOffset)
+        .then(r => r.json())
+        .then(data => {
+                        siqLoading = false;
+            if (!data || !Array.isArray(data.results)) { alert('Error loading results'); return; }
+            siqHasMore = !!data.hasMore;
+            siqTotalCount = data.totalCount || 0;
+            renderSiqResults(data.results, replace);
+        })
+        .catch(err => { siqLoading = false; alert('Network error: ' + err); });
+}
+
+function siqLoadMore() {
+    siqOffset += 100;
+    siqFetchPage(false);
+}
+
+function siqOnScroll() {
+    const box = document.getElementById('siqScrollBox');
+    if (siqHasMore && !siqLoading && (box.scrollTop + box.clientHeight >= box.scrollHeight - 40)) {
+        siqLoadMore();
+    }
+}
+
+function renderSiqResults(list, replace) {
     const body = document.getElementById('siqBody');
-    body.innerHTML = '';
+    if (replace) body.innerHTML = '';
     list.forEach(it => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -124,7 +158,7 @@ function renderSiqResults(list) {
             <td>${it.SUPPLIERS_LIST}</td>`;
         body.appendChild(tr);
     });
-    document.getElementById('siqCount').textContent = list.length;
+        document.getElementById('siqCount').textContent = body.children.length + '/' + siqTotalCount;
+    document.getElementById('siqLoadMoreRow').style.display = siqHasMore ? 'block' : 'none';
 }
-
 </script>

@@ -13,13 +13,14 @@ if (!canAccess('admin_area')) {
 $mode = $_GET['mode'] ?? 'summary';
 $start = $_GET['start_date'] ?? date('Y-m-d');
 $end = $_GET['end_date'] ?? date('Y-m-d');
+$offset = isset($_GET['offset']) ? max(0, (int)$_GET['offset']) : 0;
 
 if ($mode === 'summary') {
-    $result = SalesReportModel::getProfitSummary($start, $end);
+    $result = SalesReportModel::getProfitSummary($start, $end, $offset);
 } elseif ($mode === 'per_transaction') {
-    $result = SalesReportModel::getProfitPerTransaction($start, $end);
+    $result = SalesReportModel::getProfitPerTransaction($start, $end, $offset);
 } elseif ($mode === 'daywise') {
-    $result = SalesReportModel::getDaywiseReport($start, $end);
+    $result = SalesReportModel::getDaywiseReport($start, $end, $offset);
 } else {
     $result = ['success' => false, 'error' => 'Invalid mode.'];
 }

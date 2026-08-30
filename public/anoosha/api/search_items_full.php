@@ -4,7 +4,18 @@ require_once __DIR__ . '/../../includes/access.php';
 header('Content-Type: application/json');
 if (!canAccess('inventory')) { http_response_code(403); echo json_encode(['error' => 'Access denied']); exit; }
 
-$q = isset($_GET['q']) ? $_GET['q'] : '';
+$q      = isset($_GET['q']) ? $_GET['q'] : '';
+$offset = isset($_GET['offset']) ? max(0, (int)$_GET['offset']) : 0;
+$limit  = 100;
+
+$countSql = "SELECT COUNT(*) AS TOTAL FROM Item_Stock i WHERE i.ITEM_NAME LIKE ?";
+$countStmt = sqlsrv_query($conn, $countSql, ["%$q%"]);
+$totalCount = 0;
+if ($countStmt !== false) {
+    $countRow = sqlsrv_fetch_array($countStmt, SQLSRV_FETCH_ASSOC);
+    $totalCount = $countRow ? (int)$countRow['TOTAL'] : 0;
+    sqlsrv_free_stmt($countStmt);
+}
 
 $sql = "SELECT
             i.STOCK_NUMBER,
@@ -41,10 +52,11 @@ $sql = "SELECT
         FROM Item_Stock i
         LEFT JOIN Manufacture m ON m.Manufacture_no = i.MANUFACTURE_NO
         LEFT JOIN ST_Supplier s ON s.SUPPLIER_CODE = i.SUPPLIER_CODE
-        WHERE i.ITEM_NAME LIKE ?
+                WHERE i.ITEM_NAME LIKE ?
         ORDER BY TRY_CAST(i.STOCK_NUMBER AS INT), i.STOCK_NUMBER
+        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
         OPTION (MAXDOP 1, MIN_GRANT_PERCENT = 0, MAX_GRANT_PERCENT = 1)";
-$params = ["%$q%"];
+$params = ["%$q%", $offset, $limit + 1];
 $stmt = sqlsrv_query($conn, $sql, $params);
 if ($stmt === false) {
     echo json_encode(["success" => false, "message" => "Query failed", "errors" => sqlsrv_errors()]);
@@ -54,6 +66,8 @@ $results = [];
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
     $results[] = $row;
 }
-$json = json_encode($results, JSON_INVALID_UTF8_SUBSTITUTE);
+$hasMore = count($results) > $limit;
+if ($hasMore) { array_pop($results); }
+$json = json_encode(['results' => $results, 'hasMore' => $hasMore, 'totalCount' => $totalCount], JSON_INVALID_UTF8_SUBSTITUTE);
 echo $json !== false ? $json : json_encode(["success" => false, "message" => json_last_error_msg()]);
 ?>

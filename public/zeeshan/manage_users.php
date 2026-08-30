@@ -59,14 +59,26 @@ require_once __DIR__ . '/../includes/require_admin.php';
 
 <div style="display:flex;flex-direction:column;flex:1;padding:5px;gap:4px;min-height:0;">
 
-    <div class="win-panel" style="padding:6px 8px;display:flex;align-items:center;">
+    <div class="win-panel" style="padding:6px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
         <span style="font-weight:bold;">Employee &amp; Login Accounts</span>
         <span style="flex:1"></span>
+        <input id="search-name" type="text" class="xp-input" placeholder="Search by name" style="width:180px;" oninput="debouncedUserSearch()">
+        <input id="search-id" type="text" class="xp-input" placeholder="Search by ID" style="width:140px;" oninput="debouncedUserSearch()">
+        <div style="position:relative;">
+            <button id="btn-role-filter" class="win-btn" onclick="toggleRoleFilter()"><i class="fa-solid fa-filter"></i> Filter Roles</button>
+            <div id="role-filter-dropdown" class="win-panel hidden" style="position:absolute; right:0; top:26px; width:200px; max-height:220px; overflow-y:auto; z-index:30; padding:6px;">
+                <div id="role-filter-list"></div>
+                <div style="border-top:1px solid #808080; margin-top:6px; padding-top:6px; display:flex; justify-content:space-between;">
+                    <button type="button" class="win-btn" style="font-size:11px;" onclick="setAllRoles(true)">Select All</button>
+                    <button type="button" class="win-btn" style="font-size:11px;" onclick="setAllRoles(false)">Clear All</button>
+                </div>
+            </div>
+        </div>
         <button id="btn-new-user" class="win-btn win-btn-green">&#x2795; New User</button>
     </div>
 
     <div class="win-panel" style="flex:1;min-height:0;display:flex;flex-direction:column;">
-        <div style="flex:1;overflow:auto;min-height:0;">
+        <div id="users-scrollbox" style="flex:1;overflow:auto;min-height:0;" onscroll="onUsersScroll()">
             <table class="win-table">
                 <thead>
                     <tr><th>User Name</th><th>Role / Description</th><th>Status</th><th style="text-align:right;">Actions</th></tr>
@@ -75,6 +87,7 @@ require_once __DIR__ . '/../includes/require_admin.php';
                     <tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Loading users…</td></tr>
                 </tbody>
             </table>
+            <div id="users-load-more" style="display:none; text-align:center; padding:8px; font-size:13px; font-weight:bold; color:#0a246a; background:#f0f0f0; cursor:pointer;" onclick="loadMoreUsers()">Load more...</div>
         </div>
     </div>
 

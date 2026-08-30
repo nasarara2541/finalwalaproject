@@ -80,13 +80,13 @@ include 'includes/navbar.php';
          <!-- Buttons grid -->
     <div style="display:flex; gap:10px; font-size:14px;">
         <div style="flex:1; display:flex; flex-direction:column; gap:min(1.4vh,10px);">
-            <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Day/s Wise Purchase</button>
-            <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Group Wise Purchase</button>
-            <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Un-Posted Invoice(s)</button>
+            <button onclick="prOpenReport('daywise')" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Day/s Wise Purchase</button>
+            <button onclick="prOpenReport('groupwise')" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Group Wise Purchase</button>
+            <button onclick="prOpenReport('unposted')" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Un-Posted Invoice(s)</button>
         </div>
         <div style="flex:1; display:flex; flex-direction:column; gap:min(1.4vh,10px);">
-            <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Purchase Summary</button>
-            <button onclick="prNotImplemented()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Cancelled Invoice</button>
+            <button onclick="prOpenReport('summary')" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Purchase Summary</button>
+            <button onclick="prOpenReport('cancelled')" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; padding:0 12px; font-size:14px;">Cancelled Invoice</button>
                         <button onclick="prResetFields()" style="height:min(6vh,46px); display:flex; align-items:center; justify-content:center; font-size:14px;">Reset</button>
         </div>
     </div>
@@ -103,6 +103,22 @@ function prNotImplemented() {
     alert('This report is not wired up yet - coming soon.');
 }
 
+function prOpenReport(type) {
+    const dataToDate = document.getElementById('prDataToDate').checked;
+    const params = new URLSearchParams();
+    params.set('type', type);
+    params.set('from', document.getElementById('prFrom').value);
+    // "Data To Date" checked = always report up through today, ignoring whatever's in the To box
+    params.set('to', dataToDate ? new Date().toISOString().slice(0, 10) : document.getElementById('prTo').value);
+    params.set('supplier', document.getElementById('prSupplierName').value.trim());
+    params.set('transrid', document.getElementById('prTransRid').value.trim());
+    params.set('invoice', document.getElementById('prInvoiceNo').value.trim());
+    params.set('barcode', document.getElementById('prBarCode').value.trim());
+    params.set('item', document.getElementById('prItemName').value.trim());
+    params.set('company', document.getElementById('prCompany').value.trim());
+    params.set('group', document.getElementById('prGroup').value.trim());
+    window.open('purchase_report_print.php?' + params.toString(), '_blank');
+}
 function prResetFields() {
     if (!confirm('Are you sure you want to reset the fields?')) return;
     document.getElementById('prFrom').value = '<?php echo date('Y-m-d'); ?>';

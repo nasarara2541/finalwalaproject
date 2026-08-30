@@ -64,7 +64,7 @@ function buildNavMenu(): array {
                 ['label' => 'Dashboard',            'file' => 'admin_dashboard.php',           'bucket' => 'admin_area'],
                 ['label' => 'Profit Reports',       'file' => 'reports/admin_reports.php',     'bucket' => 'admin_area'],
                 ['label' => 'Item Details',         'file' => 'item_details.php',              'bucket' => 'admin_area'],
-                ['label' => 'Sales Report (Qasim)', 'file' => 'qasim/public/sales_report.php', 'bucket' => 'admin_area'],
+                ['label' => 'Sales Report', 'file' => 'qasim/public/sales_report.php', 'bucket' => 'admin_area'],
                 ['label' => 'Manage Users',         'file' => 'zeeshan/manage_users.php',      'bucket' => 'admin'],
             ],
         ],
