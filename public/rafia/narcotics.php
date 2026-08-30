@@ -178,7 +178,13 @@ function renderRows(rows) {
     const tbody = document.getElementById('results-body');
     document.getElementById('result-count').textContent = rows.length + ' entr' + (rows.length === 1 ? 'y' : 'ies');
     if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:10px;color:#888;">No narcotics register entries yet.</td></tr>';
+        const m = document.getElementById('f-month').value;
+        let msg = 'No narcotics register entries yet.';
+        if (m) {
+            const d = new Date(m + '-01T00:00:00');
+            msg = 'No entries for ' + d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) + '.';
+        }
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:10px;color:#888;">' + msg + '</td></tr>';
         return;
     }
     tbody.innerHTML = rows.map(r => `
